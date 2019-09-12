@@ -69,8 +69,8 @@ namespace SA
             if (m_animator != null)
             {
                 m_animator.applyRootMotion = false;
-                // m_animator.GetBoneTransform(HumanBodyBones.LeftHand).localScale = Vector3.one;
-                // m_animator.GetBoneTransform(HumanBodyBones.RightHand).localScale = Vector3.one;
+                m_animator.GetBoneTransform(HumanBodyBones.LeftHand).localScale = Vector3.one;
+                m_animator.GetBoneTransform(HumanBodyBones.RightHand).localScale = Vector3.one;
             }
         }
 
@@ -140,14 +140,9 @@ namespace SA
                 velocity = input.moveDir;
             }
 
-            if (input.moveAmount > 0)
-            {
-                m_rigidbody.drag = 0f;
-            }
-            else
-            {
-                m_rigidbody.drag = 4f;
-            }
+            if (input.moveAmount > 0) 
+            { m_rigidbody.drag = 0f; }
+            else { m_rigidbody.drag = 4f; }
 
             //  Free Movement                
             if (!states.isRunning)
@@ -165,10 +160,6 @@ namespace SA
             {
                 m_animator.SetBool(StaticStrings.run, states.isRunning);
                 m_animator.SetFloat(StaticStrings.vertical, input.moveAmount, 0.15f, delta);
-            }
-            else
-            {
-
             }
         }
 
