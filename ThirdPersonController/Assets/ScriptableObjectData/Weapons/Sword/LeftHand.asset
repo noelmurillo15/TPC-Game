@@ -9,12 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 636f4dd1148897940a7b5b0cbb73b6d2, type: 3}
-  m_Name: NormalAttack
+  m_Script: {fileID: 11500000, guid: 89b3f3232b0f2a94b9845ebd13d9b061, type: 3}
+  m_Name: LeftHand
   m_EditorClassIdentifier: 
-  attackAnimation: {fileID: 11400000, guid: 2358cffa9d43fef47bc9e95d99b8c183, type: 2}
-  canBeParried: 0
-  changeSpeed: 0
-  animSpeed: 1
-  canParry: 0
-  canBackStab: 0
+  position: {x: 0.09, y: 0.27, z: -3.48}
+  eulersAngles: {x: 0, y: -160, z: 0}
+  scale: {x: 1, y: 1, z: 1}

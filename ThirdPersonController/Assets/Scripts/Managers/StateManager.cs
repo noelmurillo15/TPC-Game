@@ -12,13 +12,17 @@ namespace SA
             MOVING, ON_AIR, INTERACTING, ATTACKING
         }
 
-        public CharacterState characterState;   //  Current State 
-        public States states;                   //  State Info
-        public InputVariables input;            //  Input Info
-        public ControllerStats stats;           //  Movement Info
-        public WeaponManager weaponManager;     //  Weapon Info
-        public GameObject activeModel;
-        public float delta;
+        public CharacterState m_characterState;       //  Current State 
+        public States m_states;                       //  State Info
+        public InputVariables m_input;                //  Input Info
+        public ControllerStats m_stats;               //  Movement Info
+
+        public WeaponManager m_weaponManager;         //  Weapon Info
+        public InventoryManager m_inventoryManager;   // Inventory Info
+        [HideInInspector] public Managers.ResourcesManager m_resourcesManager;
+
+        public GameObject m_activeModel;
+        public float m_delta;
         #endregion
 
         #region References
@@ -37,53 +41,172 @@ namespace SA
 
 
         #region Initialization
-        public void Init()
+        public void Initialize()
         {
+            if (m_resourcesManager == null)
+            {
+                m_resourcesManager = Resources.Load("ResourceManager") as Managers.ResourcesManager;
+            }
+
             SetupAnimator();
+            SetupRigidBody();
+
             m_transform = transform;
+            m_collider = GetComponent<Collider>();
 
             //  Layer masks
             gameObject.layer = 8;
             ignoreLayers = ~(1 << 9);
             ignoreForGroundCheck = ~(1 << 9 | 1 << 10);
 
-            m_rigidbody = GetComponent<Rigidbody>();
-            m_rigidbody.angularDrag = 999;
-            m_rigidbody.drag = 4;
-            m_rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
-
-            m_collider = GetComponent<Collider>();
+            SetupInventoryManager();
+            SetupWeaponManager();
         }
 
         void SetupAnimator()
         {   //  This will fail if no animator is attached
-            if (activeModel == null)
+            if (m_activeModel == null)
             {   //  If designer forgets to attach the activeaModel ~ this will find the model via Animator
                 m_animator = GetComponentInChildren<Animator>();
-                activeModel = m_animator.gameObject;
+                m_activeModel = m_animator.gameObject;
             }
 
             if (m_animator == null) //  If animator has not been found, find via ActiveModel
-                m_animator = activeModel.GetComponent<Animator>();
+                m_animator = m_activeModel.GetComponent<Animator>();
             else
             {   //  If animator was Ultimately found
                 m_animator.applyRootMotion = false;
                 m_animator.GetBoneTransform(HumanBodyBones.LeftHand).localScale = Vector3.one;
                 m_animator.GetBoneTransform(HumanBodyBones.RightHand).localScale = Vector3.one;
 
-                animatorHook = activeModel.AddComponent<AnimatorHook>();
+                animatorHook = m_activeModel.AddComponent<AnimatorHook>();
                 animatorHook.Init(this);
             }
+        }
+
+        void SetupRigidBody()
+        {
+            m_rigidbody = GetComponent<Rigidbody>();
+            m_rigidbody.angularDrag = 999;
+            m_rigidbody.drag = 4;
+            m_rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+        }
+
+        void SetupInventoryManager()
+        {
+            if (m_inventoryManager.rightItem)
+            {
+                Debug.Log("RightItem is Equipped");
+                WeaponToRuntime(m_inventoryManager.rightItem.obj, ref m_inventoryManager.rightSlot);
+                EquipWeapon(m_inventoryManager.rightSlot, false);
+            }
+            if (m_inventoryManager.leftItem)
+            {
+                Debug.Log("LeftItem is Equipped");
+                WeaponToRuntime(m_inventoryManager.leftItem.obj, ref m_inventoryManager.leftSlot);
+                EquipWeapon(m_inventoryManager.leftSlot, true);
+            }
+        }
+
+        void SetupWeaponManager()
+        {
+            if (m_inventoryManager.leftSlot == null && m_inventoryManager.rightSlot == null)
+                return;
+
+            if (m_inventoryManager.rightSlot != null)
+            {   //  Right hand Take Prio ~?
+                WeaponManager.ActionContainer rb = m_weaponManager.GetAction(InputType.RB);
+                rb.action = m_inventoryManager.rightSlot.weaponData.GetAction(InputType.RB);
+
+                WeaponManager.ActionContainer rt = m_weaponManager.GetAction(InputType.RT);
+                rt.action = m_inventoryManager.rightSlot.weaponData.GetAction(InputType.RT);
+
+                if (m_inventoryManager.leftSlot == null)
+                {   //  If not Dual Wielding, Get Left Trigger & Bumper Actions from Right Hand
+                    WeaponManager.ActionContainer lb = m_weaponManager.GetAction(InputType.LB);
+                    lb.action = m_inventoryManager.rightSlot.weaponData.GetAction(InputType.LB);
+
+                    WeaponManager.ActionContainer lt = m_weaponManager.GetAction(InputType.LT);
+                    lt.action = m_inventoryManager.rightSlot.weaponData.GetAction(InputType.LT);
+                }
+                else
+                {   //  If Dual Wielding, Get leftHand Actions
+                    WeaponManager.ActionContainer lb = m_weaponManager.GetAction(InputType.LB);
+                    lb.action = m_inventoryManager.leftSlot.weaponData.GetAction(InputType.LB);
+
+                    WeaponManager.ActionContainer lt = m_weaponManager.GetAction(InputType.LT);
+                    lt.action = m_inventoryManager.leftSlot.weaponData.GetAction(InputType.LT);
+                }
+                return;
+            }
+
+            if (m_inventoryManager.leftSlot != null)
+            {   //  There is no right hand equipped so grab all actions from Left Hand
+                WeaponManager.ActionContainer rb = m_weaponManager.GetAction(InputType.RB);
+                rb.action = m_inventoryManager.leftSlot.weaponData.GetAction(InputType.RB);
+
+                WeaponManager.ActionContainer rt = m_weaponManager.GetAction(InputType.RT);
+                rt.action = m_inventoryManager.leftSlot.weaponData.GetAction(InputType.RT);
+
+                WeaponManager.ActionContainer lb = m_weaponManager.GetAction(InputType.LB);
+                lb.action = m_inventoryManager.leftSlot.weaponData.GetAction(InputType.LB);
+
+                WeaponManager.ActionContainer lt = m_weaponManager.GetAction(InputType.LT);
+                lt.action = m_inventoryManager.leftSlot.weaponData.GetAction(InputType.LT);
+            }
+        }
+
+        void WeaponToRuntime(Object _obj, ref Inventory.RuntimeWeapon _slot)
+        {
+            Inventory.Weapon weaponData = (Inventory.Weapon)_obj;
+            GameObject weaponInstance = Instantiate(weaponData.modelPrefab) as GameObject;
+
+            weaponInstance.SetActive(false);
+
+            Inventory.RuntimeWeapon rw = new Inventory.RuntimeWeapon();
+            rw.weaponInstance = weaponInstance;
+            rw.weaponData = weaponData;
+
+            _slot = rw;
+            m_resourcesManager.runtime.RegisterRuntimeWeapons(rw);
+        }
+
+        void EquipWeapon(Inventory.RuntimeWeapon _rw, bool isMirrored)
+        {
+            Vector3 position = Vector3.zero;
+            Vector3 eulers = Vector3.zero;
+            Vector3 scale = Vector3.one;
+            Transform parent = null;
+
+            if (!isMirrored)
+            {
+                Debug.Log("Equipping Weapon to right hand : " + _rw.weaponInstance.name);
+                scale = _rw.weaponData.leftHandPosition.scale;
+                parent = m_animator.GetBoneTransform(HumanBodyBones.RightHand);
+            }
+            else
+            {
+                Debug.Log("Equipping Weapon to left hand : " + _rw.weaponInstance.name);
+                position = _rw.weaponData.leftHandPosition.position;
+                eulers = _rw.weaponData.leftHandPosition.eulersAngles;
+                parent = m_animator.GetBoneTransform(HumanBodyBones.LeftHand);
+            }
+
+            _rw.weaponInstance.transform.parent = parent;     //    local transform data depends on parent to be modified correctly             
+            _rw.weaponInstance.transform.localPosition = position;
+            _rw.weaponInstance.transform.localEulerAngles = eulers;
+            _rw.weaponInstance.transform.localScale = scale;
+            _rw.weaponInstance.SetActive(true); //  Activate Weapon
         }
         #endregion
 
         #region Updates
         public void Fixed_Tick(float _delta)
         {
-            delta = _delta;
-            states.onGround = OnGroundCheck();
+            m_delta = _delta;
+            m_states.onGround = OnGroundCheck();
 
-            switch (characterState)
+            switch (m_characterState)
             {
                 case CharacterState.MOVING:
                     HandleRotation();
@@ -94,7 +217,7 @@ namespace SA
                 case CharacterState.ATTACKING:
                     m_rigidbody.drag = 0f;
                     Vector3 v = m_rigidbody.velocity;
-                    Vector3 tv = input.animationDelta;
+                    Vector3 tv = m_input.animationDelta;
                     tv *= 50f;
                     tv.y = v.y;
                     m_rigidbody.velocity = tv;
@@ -106,24 +229,24 @@ namespace SA
 
         public void Tick(float _delta)
         {
-            delta = _delta;
-            states.onGround = OnGroundCheck();
+            m_delta = _delta;
+            m_states.onGround = OnGroundCheck();
 
-            switch (characterState)
+            switch (m_characterState)
             {
                 case CharacterState.MOVING:
                     bool interact = InteractionInputCheck();
-                    if(!interact) HandleMovementAnimations();
+                    if (!interact) HandleMovementAnimations();
                     break;
                 case CharacterState.INTERACTING:
                     break;
                 case CharacterState.ATTACKING:
-                    states.animIsInteracting = m_animator.GetBool("isInteracting");
-                    if (states.animIsInteracting == false)
+                    m_states.animIsInteracting = m_animator.GetBool("isInteracting");
+                    if (m_states.animIsInteracting == false)
                     {
-                        if (states.isInteracting)
+                        if (m_states.isInteracting)
                         {
-                            states.isInteracting = false;
+                            m_states.isInteracting = false;
                             ChangeState(CharacterState.MOVING);
                         }
                     }
@@ -158,41 +281,41 @@ namespace SA
 
         bool InteractionInputCheck()
         {
-            Action a = null;
-            if (input.rb)
+            WeaponManager.ActionContainer a = null;
+            if (m_input.rb)
             {
                 a = GetAction(InputType.RB);
-                if (a != null)
+                if (a.action.actionObj != null)
                 {
                     HandleAction(a);
                     return true;
                 }
             }
 
-            if (input.lb)
+            if (m_input.lb)
             {
                 a = GetAction(InputType.LB);
-                if (a != null)
+                if (a.action.actionObj != null)
                 {
                     HandleAction(a);
                     return true;
                 }
             }
 
-            if (input.rt)
+            if (m_input.rt)
             {
                 a = GetAction(InputType.RT);
-                if (a != null)
+                if (a.action.actionObj != null)
                 {
                     HandleAction(a);
                     return true;
                 }
             }
 
-            if (input.lt)
+            if (m_input.lt)
             {
                 a = GetAction(InputType.LT);
-                if (a != null)
+                if (a.action.actionObj != null)
                 {
                     HandleAction(a);
                     return true;
@@ -206,29 +329,29 @@ namespace SA
         {
             Vector3 velocity = m_transform.forward;
 
-            if (states.isLockedOn)
+            if (m_states.isLockedOn)
             {   //  LockOn HandleMovement   TODO : this might be outside of its own scope
-                velocity = input.moveDir;
+                velocity = m_input.moveDir;
             }
 
-            if (input.moveAmount > 0)
+            if (m_input.moveAmount > 0)
             { m_rigidbody.drag = 0f; }
             else { m_rigidbody.drag = 4f; }
 
             //  Free Movement                
-            if (!states.isRunning)
-                velocity *= input.moveAmount * stats.moveSpeed;
+            if (!m_states.isRunning)
+                velocity *= m_input.moveAmount * m_stats.moveSpeed;
             else
-                velocity *= input.moveAmount * stats.sprintSpeed;
+                velocity *= m_input.moveAmount * m_stats.sprintSpeed;
 
             m_rigidbody.velocity = velocity;
         }
 
         void HandleRotation()
         {
-            Vector3 targetDir = (states.isLockedOn == false) ?
-             input.moveDir : (input.lockOnTransform != null) ?  //  TODO : this might be T == null
-             input.lockOnTransform.position - m_transform.position : input.moveDir;
+            Vector3 targetDir = (m_states.isLockedOn == false) ?
+             m_input.moveDir : (m_input.lockOnTransform != null) ?  //  TODO : this might be T == null
+             m_input.lockOnTransform.position - m_transform.position : m_input.moveDir;
 
             targetDir.y = 0f;
             if (targetDir == Vector3.zero)
@@ -237,26 +360,26 @@ namespace SA
             }
 
             Quaternion tr = Quaternion.LookRotation(targetDir);
-            Quaternion targtRotation = Quaternion.Slerp(m_transform.rotation, tr, delta * stats.rotateSpeed * input.moveAmount);
+            Quaternion targtRotation = Quaternion.Slerp(m_transform.rotation, tr, m_delta * m_stats.rotateSpeed * m_input.moveAmount);
 
             m_transform.rotation = targtRotation;
         }
 
         void HandleMovementAnimations()
         {
-            if (!states.isLockedOn)
+            if (!m_states.isLockedOn)
             {
-                m_animator.SetBool(StaticStrings.run, states.isRunning);
-                m_animator.SetFloat(StaticStrings.vertical, input.moveAmount, 0.15f, delta);
+                m_animator.SetBool(StaticStrings.run, m_states.isRunning);
+                m_animator.SetFloat(StaticStrings.vertical, m_input.moveAmount, 0.15f, m_delta);
             }
         }
 
-        void HandleAction(Action _action)
+        void HandleAction(WeaponManager.ActionContainer _action)
         {
-            switch (_action.actionType)
+            switch (_action.action.actionType)
             {
                 case ActionType.ATTACK:
-                    AttackAction attackAction = (AttackAction)_action.actionObj;
+                    AttackAction attackAction = (AttackAction)_action.action.actionObj;
                     PlayAttackAction(_action, attackAction);
                     break;
                 case ActionType.BLOCK:
@@ -271,10 +394,10 @@ namespace SA
             }
         }
 
-        void PlayAttackAction(Action _action, AttackAction _attackAction)
+        void PlayAttackAction(WeaponManager.ActionContainer _action, AttackAction _attackAction)
         {
             //  Is the action a right-handed action or left?
-            m_animator.SetBool(StaticStrings.mirror, _action.mirrorAnimation);
+            m_animator.SetBool(StaticStrings.mirror, _action.isMirrored);
 
             //  Play the Attack Animation
             PlayActionAnimation(_attackAction.attackAnimation.value);
@@ -296,7 +419,7 @@ namespace SA
 
         void ChangeState(CharacterState _state)
         {
-            characterState = _state;
+            m_characterState = _state;
             switch (_state)
             {
                 case CharacterState.MOVING:
@@ -308,7 +431,7 @@ namespace SA
                 case CharacterState.ATTACKING:
                     m_animator.applyRootMotion = true;
                     m_animator.SetBool("isInteracting", true);
-                    states.isInteracting = true;
+                    m_states.isInteracting = true;
                     break;
                 case CharacterState.ON_AIR:
                     m_animator.applyRootMotion = false;
@@ -316,12 +439,12 @@ namespace SA
             }
         }
 
-        Action GetAction(InputType _inputType)
+        WeaponManager.ActionContainer GetAction(InputType _inputType)
         {
-            WeaponManager.ActionContainer ac = weaponManager.GetAction(_inputType);
+            WeaponManager.ActionContainer ac = m_weaponManager.GetAction(_inputType);
             if (ac == null)
                 return null;
-            return ac.action;
+            return ac;
         }
         #endregion        
     }
@@ -331,6 +454,7 @@ namespace SA
     public class WeaponManager
     {   //  Control what actions to do based on button input
         public ActionContainer[] actions;
+
 
         public ActionContainer GetAction(InputType _inputType)
         {
@@ -358,7 +482,22 @@ namespace SA
         {
             public InputType inputType;
             public Action action;
+            public bool isMirrored;
         }
+    }
+
+    [System.Serializable]
+    public class InventoryManager
+    {
+        //  Player Slots
+        public Inventory.RuntimeWeapon rightSlot;
+        public Inventory.RuntimeWeapon leftSlot;
+
+        //  Actual items on Player
+        public Inventory.Item rightItem;
+        public Inventory.Item leftItem;
+        public Inventory.Item consumableHandSlot;
+        public Inventory.Item spellHandSlot;
     }
 
     [System.Serializable]

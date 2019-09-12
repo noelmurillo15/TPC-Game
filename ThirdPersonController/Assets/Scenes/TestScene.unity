@@ -333,6 +333,12 @@ PrefabInstance:
       propertyPath: m_Avatar
       value: 
       objectReference: {fileID: 9000000, guid: 8e9bc542c2a033444aa90ee34b1eb2ed, type: 3}
+    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: inventoryManager.leftItem
+      value: 
+      objectReference: {fileID: 11400000, guid: 820f0b695a9ab9548b8946ee09224591,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3a48b3449cf16214b8d1402b80f80d76, type: 3}
 --- !u!114 &5384227095461636600 stripped

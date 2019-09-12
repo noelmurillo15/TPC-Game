@@ -4,7 +4,7 @@
 namespace SA
 {
     public class AnimatorHook : MonoBehaviour
-    {
+    {   //  Used to help with Root Motion and Animaton events
         StateManager stateManager;
         Animator m_animator;
 
@@ -17,7 +17,7 @@ namespace SA
 
         void OnAnimatorMove()
         {
-            stateManager.input.animationDelta = m_animator.deltaPosition;
+            stateManager.m_input.animationDelta = m_animator.deltaPosition;
             transform.localPosition = Vector3.zero;
         }
     }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   oh_idle: {fileID: 11400000, guid: a533bb3f199055242b50278a701db5fd, type: 2}
   th_idle: {fileID: 11400000, guid: 401da02221f76ec4db242bd03da393a2, type: 2}
-  modelPrefab: {fileID: -927199367670048503, guid: e6f2f2ce34060fe4492d14432369c9d2,
+  modelPrefab: {fileID: 2390084025570577617, guid: 62158cd82aa74e7499fdfbcd0960f059,
     type: 3}
   actions:
   - input: 0
@@ -25,3 +25,12 @@ MonoBehaviour:
     action:
       actionType: 0
       actionObj: {fileID: 11400000, guid: d51febdb856766949a7b397b31b4ae7c, type: 2}
+  - input: 1
+    action:
+      actionType: 0
+      actionObj: {fileID: 11400000, guid: b9a05b15221f6fe4e8bc6337f89c0266, type: 2}
+  - input: 3
+    action:
+      actionType: 0
+      actionObj: {fileID: 11400000, guid: d51febdb856766949a7b397b31b4ae7c, type: 2}
+  leftHandPosition: {fileID: 11400000, guid: f204484b5aab8c44885702e9b3294d33, type: 2}

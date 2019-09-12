@@ -7,21 +7,25 @@ namespace SA.Inventory
     [CreateAssetMenu(menuName = "Single Instances/Inventory", order = 0)]
     public class Inventory : ScriptableObject
     {
-        public Item[] all_items;
+        public List<Item> all_items = new List<Item>();
         Dictionary<string, int> dict = new Dictionary<string, int>();
 
 
-        public void Init()
-        {
-            for (int i = 0; i < all_items.Length; i++)
+        public void Initialize()
+        {            
+            #if UNITY_EDITOR
+            all_items = EditorUtilities.FindAssetsByType<Item>();
+            #endif
+
+            for (int i = 0; i < all_items.Count; i++)
             {
-                if (dict.ContainsKey(all_items[i].itemID))
+                if (dict.ContainsKey(all_items[i].name))
                 {
 
                 }
                 else
                 {
-                    dict.Add(all_items[i].itemID, i);
+                    dict.Add(all_items[i].name, i);
                 }
             }
         }

@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe1c7ac61fb1a014b8b74e7dd2f515f5, type: 3}
   m_Name: Sword
   m_EditorClassIdentifier: 
-  itemID: sword
   type: 0
   uiInfo:
     itemName: Sword
     itemDescription: Something
     skillDescription: Something Else
     itemIcon: {fileID: 0}
-  obj: {fileID: 0}
+  obj: {fileID: 11400000, guid: 2358e5021ac59f54b9f31ad3af32c43a, type: 2}

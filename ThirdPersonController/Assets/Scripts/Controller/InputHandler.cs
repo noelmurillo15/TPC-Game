@@ -4,7 +4,7 @@
 namespace SA
 {
     public class InputHandler : MonoBehaviour
-    {
+    {   //  Detects Input and passes it along to StateManager & CameraManager
         #region Class Member Variables
         float vertical;
         float horizontal;
@@ -33,12 +33,15 @@ namespace SA
 
         void Start()
         {
-            InitInGame();
+            Initialize();
         }
 
-        void InitInGame()
+        void Initialize()
         {
-            stateManager.Init();
+            stateManager.m_resourcesManager = Resources.Load("ResourcesManager") as Managers.ResourcesManager;
+            stateManager.m_resourcesManager.Initialize();
+
+            stateManager.Initialize();
             cameraManager.Init(stateManager);
             cameraTransform = cameraManager.m_transform;
         }
@@ -71,11 +74,14 @@ namespace SA
             rb_input = Input.GetButton(StaticStrings.RB);
             lb_input = Input.GetButton(StaticStrings.LB);
 
-            rt_axis = Input.GetAxis(StaticStrings.RT);
-            if (rt_axis != 0f) rt_input = true;
+            rt_input = Input.GetButton(StaticStrings.RT);
+            lt_input = Input.GetButton(StaticStrings.LT);
 
-            lt_axis = Input.GetAxis(StaticStrings.LT);
-            if (lt_axis != 0f) lt_input = true;
+            // rt_axis = Input.GetAxis(StaticStrings.RT);
+            // if (rt_axis != 0f) rt_input = true;
+
+            // lt_axis = Input.GetAxis(StaticStrings.LT);
+            // if (lt_axis != 0f) lt_input = true;
 
             if (b_input)
                 b_timer += delta;
@@ -83,10 +89,10 @@ namespace SA
 
         void SetInput_Update()
         {
-            stateManager.input.rb = rb_input;
-            stateManager.input.lb = lb_input;
-            stateManager.input.rt = rt_input;
-            stateManager.input.lt = lt_input;
+            stateManager.m_input.rb = rb_input;
+            stateManager.m_input.lb = lb_input;
+            stateManager.m_input.rt = rt_input;
+            stateManager.m_input.lt = lt_input;
         }
 
         void FixedUpdate()
@@ -116,18 +122,19 @@ namespace SA
 
         void SetInput_FixedUpdate()
         {
-            stateManager.input.vertical = vertical;
-            stateManager.input.horizontal = horizontal;
-            stateManager.input.moveAmount = Mathf.Clamp01(Mathf.Abs(vertical) + Mathf.Abs(horizontal));
+            stateManager.m_input.vertical = vertical;
+            stateManager.m_input.horizontal = horizontal;
+            stateManager.m_input.moveAmount = Mathf.Clamp01(Mathf.Abs(vertical) + Mathf.Abs(horizontal));
 
             Vector3 moveDir2 = cameraTransform.forward * vertical;
             moveDir2 += cameraTransform.right * horizontal;
 
             moveDir2.Normalize();
-            stateManager.input.moveDir = moveDir2;
+            stateManager.m_input.moveDir = moveDir2;
         }
     }
 
+    #region Helper Enums
     public enum GamePhase
     {
         IN_GAME, IN_MENU, IN_INVENTORY
@@ -137,4 +144,5 @@ namespace SA
     {
         RT, LT, RB, LB
     }
+    #endregion
 }

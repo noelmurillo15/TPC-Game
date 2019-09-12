@@ -1,11 +1,10 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 namespace SA
 {
     public class CameraManager : MonoBehaviour
-    {
+    {   //  Manages the Camera w/ Pivot
         public bool lockOn;
         public float followSpeed = 9f;
         public float mouseSpeed = 2f;
@@ -53,9 +52,6 @@ namespace SA
 
             float targetSpeed = controllerSpeed;
 
-
-
-
             FollowTarget(_delta);
             HandleRotation(_delta, vert, horiz, targetSpeed);
             HandlePivotPosition();
@@ -76,7 +72,7 @@ namespace SA
             float targetZ = defZ;
             CameraCollision(defZ, ref targetZ);
 
-            curZ = Mathf.Lerp(curZ, targetZ, stateManager.delta * zSpeed);
+            curZ = Mathf.Lerp(curZ, targetZ, stateManager.m_delta * zSpeed);
             Vector3 tp = Vector3.zero;
             tp.z = curZ;
             tp.y = 2.24f;

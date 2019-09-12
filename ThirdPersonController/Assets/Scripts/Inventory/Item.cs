@@ -6,7 +6,6 @@ namespace SA.Inventory
     [CreateAssetMenu(menuName = "Items/Item")]
     public class Item : ScriptableObject
     {
-        public string itemID;
         public ItemType type;
         public ItemUIStats uiInfo;
         public Object obj;
@@ -25,6 +24,6 @@ namespace SA.Inventory
 
     public enum ItemType
     {
-        WEAPON, ARMOR, CONSUMABLE
+        WEAPON, ARMOR, CONSUMABLE, SPELL
     }
 }

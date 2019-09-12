@@ -3,14 +3,17 @@
 
 namespace SA.Managers
 {
-    public class ResourcesManager : MonoBehaviour
+    [CreateAssetMenu(menuName = "Single Instances/Resources Manager")]
+    public class ResourcesManager : ScriptableObject
     {
         public Inventory.Inventory inventory;
+        public RuntimeReferences runtime;
 
 
-        void Awake()
+        public void Initialize()
         {
-            inventory.Init();
+            runtime.Initialize();
+            inventory.Initialize();
         }
 
         public Inventory.Item GetItem(string _id)

@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
+﻿
 
 namespace SA
 {
@@ -29,7 +26,7 @@ namespace SA
         public static string Select = "Select";
         public static string Start = "Start";
 
-        //  Animator Parameters
+        //  Animator Controller Parameters - Must match names exactly
         public static string vertical = "vertical";
         public static string horizontal = "horizontal";
         public static string mirror = "mirror";

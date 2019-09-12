@@ -9,12 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 636f4dd1148897940a7b5b0cbb73b6d2, type: 3}
-  m_Name: NormalAttack
+  m_Script: {fileID: 11500000, guid: df985487a335ef2498fb2739dd3146c7, type: 3}
+  m_Name: RuntimeReferences
   m_EditorClassIdentifier: 
-  attackAnimation: {fileID: 11400000, guid: 2358cffa9d43fef47bc9e95d99b8c183, type: 2}
-  canBeParried: 0
-  changeSpeed: 0
-  animSpeed: 1
-  canParry: 0
-  canBackStab: 0

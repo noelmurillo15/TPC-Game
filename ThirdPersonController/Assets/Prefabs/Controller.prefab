@@ -76,13 +76,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d03e37443e2bef641bd1263f3b018f41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterState: 0
-  states:
+  m_characterState: 0
+  m_states:
     onGround: 0
     isRunning: 0
     isLockedOn: 0
     isInAction: 0
-    isMoveEnabled: 1
+    isMoveEnabled: 0
     isDamageOn: 0
     isRotateEnabled: 0
     isAttackEnabled: 0
@@ -96,7 +96,7 @@ MonoBehaviour:
     isInteracting: 0
     closeWeapons: 0
     isInvisable: 0
-  input:
+  m_input:
     horizontal: 0
     vertical: 0
     moveAmount: 0
@@ -107,21 +107,37 @@ MonoBehaviour:
     lt: 0
     rb: 0
     lb: 0
-  stats: {fileID: 11400000, guid: 4211322a3dba51344992ff160fc3998b, type: 2}
-  weaponManager:
+  m_stats: {fileID: 11400000, guid: 4211322a3dba51344992ff160fc3998b, type: 2}
+  m_weaponManager:
     actions:
+    - inputType: 0
+      action:
+        actionType: 0
+        actionObj: {fileID: 0}
+      isMirrored: 0
+    - inputType: 1
+      action:
+        actionType: 0
+        actionObj: {fileID: 0}
+      isMirrored: 1
     - inputType: 2
       action:
-        mirrorAnimation: 0
         actionType: 0
-        actionObj: {fileID: 11400000, guid: b9a05b15221f6fe4e8bc6337f89c0266, type: 2}
+        actionObj: {fileID: 0}
+      isMirrored: 0
     - inputType: 3
       action:
-        mirrorAnimation: 1
         actionType: 0
-        actionObj: {fileID: 11400000, guid: d51febdb856766949a7b397b31b4ae7c, type: 2}
-  activeModel: {fileID: 0}
-  delta: 0
+        actionObj: {fileID: 0}
+      isMirrored: 1
+  m_inventoryManager:
+    rightItem: {fileID: 11400000, guid: 820f0b695a9ab9548b8946ee09224591, type: 2}
+    leftItem: {fileID: 11400000, guid: 820f0b695a9ab9548b8946ee09224591, type: 2}
+    consumableHandSlot: {fileID: 0}
+    spellHandSlot: {fileID: 0}
+  m_resourcesManager: {fileID: 0}
+  m_activeModel: {fileID: 0}
+  m_delta: 0
   m_animator: {fileID: 0}
   m_rigidbody: {fileID: 0}
   m_collider: {fileID: 0}

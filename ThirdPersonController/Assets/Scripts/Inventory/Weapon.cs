@@ -11,6 +11,7 @@ namespace SA.Inventory
         public StringVariable th_idle;
         public GameObject modelPrefab;
         public ActionHolder[] actions;
+        public LeftHandPosition leftHandPosition;
 
 
         public ActionHolder GetActionHolder(InputType _input)
@@ -29,6 +30,7 @@ namespace SA.Inventory
         public Action GetAction(InputType _input)
         {
             ActionHolder ah = GetActionHolder(_input);
+            if (ah == null) return null;
             return ah.action;
         }
     }
@@ -39,9 +41,4 @@ namespace SA.Inventory
         public InputType input;
         public Action action;
     }
-}
-
-public enum InputType
-{   //  Xbox Input
-    RB, LB, RT, LT
 }
