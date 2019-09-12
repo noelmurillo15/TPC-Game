@@ -1,46 +1,46 @@
 ﻿using UnityEngine;
+using SA.Scriptable;
 
 
 namespace SA
 {
     public class StateManager : MonoBehaviour
     {
-        public States states;
-        public InputVariables input;
-        public ControllerStats stats;
-        public GameObject activeModel;
-
-        #region References
-        [HideInInspector]
-        public Animator m_animator;
-        [HideInInspector]
-        public Rigidbody m_rigidbody;
-        [HideInInspector]
-        public Collider m_collider;
-        #endregion
-
-        #region LayerRefs
-        [HideInInspector]
-        public LayerMask ignoreLayers;
-        [HideInInspector]
-        public LayerMask ignoreForGroundCheck;
-        #endregion
-
-        public float delta;
-        public Transform m_transform;
-
+        #region Class Variables  
         public enum CharacterState
         {
             MOVING, ON_AIR, INTERACTING, ATTACKING
         }
 
-        public CharacterState characterState;
+        public CharacterState characterState;   //  Current State 
+        public States states;                   //  State Info
+        public InputVariables input;            //  Input Info
+        public ControllerStats stats;           //  Movement Info
+        public WeaponManager weaponManager;     //  Weapon Info
+        public GameObject activeModel;
+        public float delta;
+        #endregion
+
+        #region References
+        Transform m_transform;
+
+        [HideInInspector] public Animator m_animator;
+        [HideInInspector] public Rigidbody m_rigidbody;
+        [HideInInspector] public Collider m_collider;
+        [HideInInspector] public AnimatorHook animatorHook;
+        #endregion
+
+        #region LayerRefs
+        [HideInInspector] public LayerMask ignoreLayers;
+        [HideInInspector] public LayerMask ignoreForGroundCheck;
+        #endregion
 
 
+        #region Initialization
         public void Init()
         {
-            m_transform = transform;
             SetupAnimator();
+            m_transform = transform;
 
             //  Layer masks
             gameObject.layer = 8;
@@ -56,24 +56,28 @@ namespace SA
         }
 
         void SetupAnimator()
-        {
+        {   //  This will fail if no animator is attached
             if (activeModel == null)
-            {
-                m_animator = activeModel.GetComponent<Animator>();
+            {   //  If designer forgets to attach the activeaModel ~ this will find the model via Animator
+                m_animator = GetComponentInChildren<Animator>();
                 activeModel = m_animator.gameObject;
             }
 
-            if (m_animator == null)
-                m_animator = GetComponentInChildren<Animator>();
-
-            if (m_animator != null)
-            {
+            if (m_animator == null) //  If animator has not been found, find via ActiveModel
+                m_animator = activeModel.GetComponent<Animator>();
+            else
+            {   //  If animator was Ultimately found
                 m_animator.applyRootMotion = false;
                 m_animator.GetBoneTransform(HumanBodyBones.LeftHand).localScale = Vector3.one;
                 m_animator.GetBoneTransform(HumanBodyBones.RightHand).localScale = Vector3.one;
+
+                animatorHook = activeModel.AddComponent<AnimatorHook>();
+                animatorHook.Init(this);
             }
         }
+        #endregion
 
+        #region Updates
         public void Fixed_Tick(float _delta)
         {
             delta = _delta;
@@ -88,6 +92,12 @@ namespace SA
                 case CharacterState.INTERACTING:
                     break;
                 case CharacterState.ATTACKING:
+                    m_rigidbody.drag = 0f;
+                    Vector3 v = m_rigidbody.velocity;
+                    Vector3 tv = input.animationDelta;
+                    tv *= 50f;
+                    tv.y = v.y;
+                    m_rigidbody.velocity = tv;
                     break;
                 case CharacterState.ON_AIR:
                     break;
@@ -102,15 +112,116 @@ namespace SA
             switch (characterState)
             {
                 case CharacterState.MOVING:
-                    HandleMovementAnimations();
+                    bool interact = InteractionInputCheck();
+                    if(!interact) HandleMovementAnimations();
                     break;
                 case CharacterState.INTERACTING:
                     break;
                 case CharacterState.ATTACKING:
+                    states.animIsInteracting = m_animator.GetBool("isInteracting");
+                    if (states.animIsInteracting == false)
+                    {
+                        if (states.isInteracting)
+                        {
+                            states.isInteracting = false;
+                            ChangeState(CharacterState.MOVING);
+                        }
+                    }
                     break;
                 case CharacterState.ON_AIR:
                     break;
             }
+        }
+        #endregion
+
+        #region StateManager Functions
+        bool OnGroundCheck()
+        {
+            bool returnVal = false;
+
+            Vector3 origin = m_transform.position;
+            origin.y += 0.4f;
+            Vector3 dir = -Vector3.up;
+
+            float distance = 0.7f;
+            RaycastHit hit;
+
+            if (Physics.Raycast(origin, dir, out hit, distance, ignoreForGroundCheck))
+            {
+                returnVal = true;
+                Vector3 targetposition = hit.point;
+                m_transform.position = targetposition;
+            }
+
+            return returnVal;
+        }
+
+        bool InteractionInputCheck()
+        {
+            Action a = null;
+            if (input.rb)
+            {
+                a = GetAction(InputType.RB);
+                if (a != null)
+                {
+                    HandleAction(a);
+                    return true;
+                }
+            }
+
+            if (input.lb)
+            {
+                a = GetAction(InputType.LB);
+                if (a != null)
+                {
+                    HandleAction(a);
+                    return true;
+                }
+            }
+
+            if (input.rt)
+            {
+                a = GetAction(InputType.RT);
+                if (a != null)
+                {
+                    HandleAction(a);
+                    return true;
+                }
+            }
+
+            if (input.lt)
+            {
+                a = GetAction(InputType.LT);
+                if (a != null)
+                {
+                    HandleAction(a);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        void HandleMovement()
+        {
+            Vector3 velocity = m_transform.forward;
+
+            if (states.isLockedOn)
+            {   //  LockOn HandleMovement   TODO : this might be outside of its own scope
+                velocity = input.moveDir;
+            }
+
+            if (input.moveAmount > 0)
+            { m_rigidbody.drag = 0f; }
+            else { m_rigidbody.drag = 4f; }
+
+            //  Free Movement                
+            if (!states.isRunning)
+                velocity *= input.moveAmount * stats.moveSpeed;
+            else
+                velocity *= input.moveAmount * stats.sprintSpeed;
+
+            m_rigidbody.velocity = velocity;
         }
 
         void HandleRotation()
@@ -131,29 +242,6 @@ namespace SA
             m_transform.rotation = targtRotation;
         }
 
-        void HandleMovement()
-        {
-            Vector3 velocity = m_transform.forward;
-
-            if (states.isLockedOn)
-            {   //  LockOn HandleMovement   TODO : this might be outside of its own scope
-                velocity = input.moveDir;
-            }
-
-            if (input.moveAmount > 0) 
-            { m_rigidbody.drag = 0f; }
-            else { m_rigidbody.drag = 4f; }
-
-            //  Free Movement                
-            if (!states.isRunning)
-                velocity *= input.moveAmount * stats.moveSpeed;
-            else
-                velocity *= input.moveAmount * stats.sprintSpeed;
-
-            // velocity.y = m_rigidbody.velocity.y;
-            m_rigidbody.velocity = velocity;
-        }
-
         void HandleMovementAnimations()
         {
             if (!states.isLockedOn)
@@ -163,30 +251,115 @@ namespace SA
             }
         }
 
-        bool OnGroundCheck()
+        void HandleAction(Action _action)
         {
-            bool returnVal = false;
-
-            Vector3 origin = m_transform.position;
-            origin.y += 0.4f;
-            Vector3 dir = -Vector3.up;
-
-            float distance = 0.7f;
-            RaycastHit hit;
-
-            Debug.DrawRay(origin, dir * distance);
-
-            if (Physics.Raycast(origin, dir, out hit, distance, ignoreForGroundCheck))
+            switch (_action.actionType)
             {
-                returnVal = true;
-                Vector3 targetposition = hit.point;
-                m_transform.position = targetposition;
-            }
+                case ActionType.ATTACK:
+                    AttackAction attackAction = (AttackAction)_action.actionObj;
+                    PlayAttackAction(_action, attackAction);
+                    break;
+                case ActionType.BLOCK:
+                    break;
+                case ActionType.PARRY:
+                    break;
+                case ActionType.SPELL:
+                    break;
 
-            return returnVal;
+                default:
+                    break;
+            }
         }
+
+        void PlayAttackAction(Action _action, AttackAction _attackAction)
+        {
+            //  Is the action a right-handed action or left?
+            m_animator.SetBool(StaticStrings.mirror, _action.mirrorAnimation);
+
+            //  Play the Attack Animation
+            PlayActionAnimation(_attackAction.attackAnimation.value);
+
+            //  Change the anim speed if necessary            
+            if (_attackAction.changeSpeed)
+            { m_animator.SetFloat("speed", _attackAction.animSpeed); }
+
+            //  Switch State
+            ChangeState(CharacterState.ATTACKING);
+        }
+
+        void PlayActionAnimation(string _animationName)
+        {   //  The layer parameter is refering to Animator Controller Layer 
+            // m_animator.PlayInFixedTime(_animationName, 5, 0.2f);    //  Pass in the Override Layer where attacks take place
+            Debug.Log("Playing Animation : " + _animationName);
+            m_animator.CrossFade(_animationName, 0.2f);
+        }   //  PlayInFixedTime is kinda similar to CrossFade Animation but slightly better
+
+        void ChangeState(CharacterState _state)
+        {
+            characterState = _state;
+            switch (_state)
+            {
+                case CharacterState.MOVING:
+                    m_animator.applyRootMotion = false;
+                    break;
+                case CharacterState.INTERACTING:
+                    m_animator.applyRootMotion = false;
+                    break;
+                case CharacterState.ATTACKING:
+                    m_animator.applyRootMotion = true;
+                    m_animator.SetBool("isInteracting", true);
+                    states.isInteracting = true;
+                    break;
+                case CharacterState.ON_AIR:
+                    m_animator.applyRootMotion = false;
+                    break;
+            }
+        }
+
+        Action GetAction(InputType _inputType)
+        {
+            WeaponManager.ActionContainer ac = weaponManager.GetAction(_inputType);
+            if (ac == null)
+                return null;
+            return ac.action;
+        }
+        #endregion        
     }
 
+    #region Helper Classes
+    [System.Serializable]
+    public class WeaponManager
+    {   //  Control what actions to do based on button input
+        public ActionContainer[] actions;
+
+        public ActionContainer GetAction(InputType _inputType)
+        {
+            for (int x = 0; x < actions.Length; x++)
+            {
+                if (actions[x].inputType == _inputType)
+                    return actions[x];
+            }
+            return null;
+        }
+
+        public void Init()
+        {
+            actions = new ActionContainer[4];
+            for (int x = 0; x < actions.Length; x++)
+            {
+                ActionContainer a = new ActionContainer();
+                a.inputType = (InputType)x;
+                actions[x] = a;
+            }
+        }
+
+        [System.Serializable]
+        public class ActionContainer
+        {
+            public InputType inputType;
+            public Action action;
+        }
+    }
 
     [System.Serializable]
     public class InputVariables
@@ -195,7 +368,13 @@ namespace SA
         public float vertical;
         public float moveAmount;
         public Vector3 moveDir;
+        public Vector3 animationDelta;
         public Transform lockOnTransform;
+
+        public bool rt;
+        public bool lt;
+        public bool rb;
+        public bool lb;
     }
 
     [System.Serializable]
@@ -215,7 +394,8 @@ namespace SA
         public bool isAbleToBeParried;
         public bool isParryOn;
         public bool isLeftHand;
-        public bool animIsOnEmpty;
+        public bool animIsInteracting;
+        public bool isInteracting;
         public bool closeWeapons;
         public bool isInvisable;
     }
@@ -226,4 +406,5 @@ namespace SA
         public bool isLocal;
         public bool isInRoom;
     }
+    #endregion
 }

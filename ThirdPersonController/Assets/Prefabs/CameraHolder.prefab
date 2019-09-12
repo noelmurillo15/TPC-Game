@@ -134,10 +134,14 @@ MonoBehaviour:
   target: {fileID: 0}
   lockOnTransform: {fileID: 0}
   pivot: {fileID: 2653979368702718970}
-  cameraTransform: {fileID: 0}
+  cameraTransform: {fileID: 572473856683035567}
   m_transform: {fileID: 0}
   minAngle: -45
   maxAngle: 45
+  defZ: -5
+  zSpeed: 19
+  lookAngle: 0
+  tiltAngle: 0
 --- !u!1 &7445370372001829966
 GameObject:
   m_ObjectHideFlags: 0

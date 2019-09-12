@@ -76,6 +76,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d03e37443e2bef641bd1263f3b018f41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterState: 0
   states:
     onGround: 0
     isRunning: 0
@@ -91,7 +92,8 @@ MonoBehaviour:
     isAbleToBeParried: 0
     isParryOn: 0
     isLeftHand: 0
-    animIsOnEmpty: 0
+    animIsInteracting: 0
+    isInteracting: 0
     closeWeapons: 0
     isInvisable: 0
   input:
@@ -99,21 +101,37 @@ MonoBehaviour:
     vertical: 0
     moveAmount: 0
     moveDir: {x: 0, y: 0, z: 0}
+    animationDelta: {x: 0, y: 0, z: 0}
     lockOnTransform: {fileID: 0}
+    rt: 0
+    lt: 0
+    rb: 0
+    lb: 0
   stats: {fileID: 11400000, guid: 4211322a3dba51344992ff160fc3998b, type: 2}
-  activeModel: {fileID: 8051707835196491887}
+  weaponManager:
+    actions:
+    - inputType: 2
+      action:
+        mirrorAnimation: 0
+        actionType: 0
+        actionObj: {fileID: 11400000, guid: b9a05b15221f6fe4e8bc6337f89c0266, type: 2}
+    - inputType: 3
+      action:
+        mirrorAnimation: 1
+        actionType: 0
+        actionObj: {fileID: 11400000, guid: d51febdb856766949a7b397b31b4ae7c, type: 2}
+  activeModel: {fileID: 0}
+  delta: 0
   m_animator: {fileID: 0}
   m_rigidbody: {fileID: 0}
   m_collider: {fileID: 0}
+  animatorHook: {fileID: 0}
   ignoreLayers:
     serializedVersion: 2
     m_Bits: 0
   ignoreForGroundCheck:
     serializedVersion: 2
     m_Bits: 0
-  delta: 0
-  m_transform: {fileID: 0}
-  characterState: 0
 --- !u!1001 &2061668464750399846
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -198,12 +216,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8e9bc542c2a033444aa90ee34b1eb2ed, type: 3}
---- !u!1 &8051707835196491887 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: 8e9bc542c2a033444aa90ee34b1eb2ed,
-    type: 3}
-  m_PrefabInstance: {fileID: 2061668464750399846}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6477918187593349756 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 8e9bc542c2a033444aa90ee34b1eb2ed,

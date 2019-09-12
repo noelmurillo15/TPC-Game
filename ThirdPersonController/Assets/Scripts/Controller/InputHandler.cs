@@ -5,6 +5,7 @@ namespace SA
 {
     public class InputHandler : MonoBehaviour
     {
+        #region Class Member Variables
         float vertical;
         float horizontal;
         bool b_input;
@@ -27,6 +28,7 @@ namespace SA
         public StateManager stateManager;
         public CameraManager cameraManager;
         Transform cameraTransform;
+        #endregion
 
 
         void Start()
@@ -34,7 +36,7 @@ namespace SA
             InitInGame();
         }
 
-        public void InitInGame()
+        void InitInGame()
         {
             stateManager.Init();
             cameraManager.Init(stateManager);
@@ -43,33 +45,14 @@ namespace SA
 
         void Update()
         {
-            delta += Time.deltaTime;
+            delta = Time.deltaTime;
             GetInput_Update();
 
             switch (currentPhase)
             {
                 case GamePhase.IN_GAME:
-                    Ingame_UpdateStates();
+                    SetInput_Update();
                     stateManager.Tick(delta);
-                    break;
-                case GamePhase.IN_INVENTORY:
-                    break;
-                case GamePhase.IN_MENU:
-                    break;
-            }
-        }
-
-        void FixedUpdate()
-        {
-            delta += Time.deltaTime;
-            GetInput_FixedUpdate();
-
-            switch (currentPhase)
-            {
-                case GamePhase.IN_GAME:
-                    Ingame_FixedUpdateStates();
-                    stateManager.Fixed_Tick(delta);
-                    cameraManager.Tick(delta);
                     break;
                 case GamePhase.IN_INVENTORY:
                     break;
@@ -98,18 +81,40 @@ namespace SA
                 b_timer += delta;
         }
 
+        void SetInput_Update()
+        {
+            stateManager.input.rb = rb_input;
+            stateManager.input.lb = lb_input;
+            stateManager.input.rt = rt_input;
+            stateManager.input.lt = lt_input;
+        }
+
+        void FixedUpdate()
+        {
+            delta = Time.deltaTime;
+            GetInput_FixedUpdate();
+
+            switch (currentPhase)
+            {
+                case GamePhase.IN_GAME:
+                    SetInput_FixedUpdate();
+                    stateManager.Fixed_Tick(delta);
+                    cameraManager.Tick(delta);
+                    break;
+                case GamePhase.IN_INVENTORY:
+                    break;
+                case GamePhase.IN_MENU:
+                    break;
+            }
+        }
+
         void GetInput_FixedUpdate()
         {
             vertical = Input.GetAxis(StaticStrings.Vertical);
             horizontal = Input.GetAxis(StaticStrings.Horizontal);
         }
 
-        void Ingame_UpdateStates()
-        {
-
-        }
-
-        void Ingame_FixedUpdateStates()
+        void SetInput_FixedUpdate()
         {
             stateManager.input.vertical = vertical;
             stateManager.input.horizontal = horizontal;
@@ -126,5 +131,10 @@ namespace SA
     public enum GamePhase
     {
         IN_GAME, IN_MENU, IN_INVENTORY
+    }
+
+    public enum InputType
+    {
+        RT, LT, RB, LB
     }
 }
