@@ -168,16 +168,7 @@ namespace SA
         {
             if (!xbox)
             {
-                // b_input = Input.GetButton(StaticStrings.B);
-                // a_input = Input.GetButton(StaticStrings.A);
-                // x_input = Input.GetButton(StaticStrings.X);
-                // y_input = Input.GetButton(StaticStrings.Y);
-
-                // rb_input = Input.GetButton(StaticStrings.RB);
-                // lb_input = Input.GetButton(StaticStrings.LB);
-
-                // rt_input = Input.GetButton(StaticStrings.RT);
-                // lt_input = Input.GetButton(StaticStrings.LT);
+                //  TODO : Get keyboard equivalent buttons pressed
             }
             else
             {
@@ -205,8 +196,8 @@ namespace SA
         {
             if (!xbox)
             {
-                // vertical = Input.GetAxis(StaticStrings.Vertical);
-                // horizontal = Input.GetAxis(StaticStrings.Horizontal);
+                //  TODO : use mouse object to get camRotation delta
+                //  TODO : use WASD Composite to get movement delta
             }
             else
             {
@@ -274,6 +265,26 @@ namespace SA
             stateManager.m_input.rt = rt_input;
             stateManager.m_input.lt = lt_input;
 
+            if (b_input)
+            {
+                b_timer += delta;
+
+                if (b_timer > 0.5f)
+                {   //  Hold B to RUN
+                    stateManager.m_states.isRunning = true;
+                }
+            }
+            else
+            {
+                if (b_timer > 0.05f && b_timer < 0.5f)
+                {   //  Tap B to ROLL
+                    stateManager.HandleRoll();
+                }
+
+                b_timer = 0f;
+                stateManager.m_states.isRunning = false;
+            }
+
             stateManager.m_states.isLockedOn = isLockedOn;
         }
 
@@ -290,7 +301,8 @@ namespace SA
             moveDir2.Normalize();
 
             //  Pass Move Direction to StateManager Input
-            stateManager.m_input.moveDir = moveDir2;
+            if (stateManager.m_characterState != StateManager.CharacterState.ROLL)
+                stateManager.m_input.moveDir = moveDir2;
         }
         #endregion
 

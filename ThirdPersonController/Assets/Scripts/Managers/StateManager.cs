@@ -9,7 +9,7 @@ namespace SA
         #region Class Variables  
         public enum CharacterState
         {
-            MOVING, ON_AIR, INTERACTING, ATTACKING
+            MOVING, ON_AIR, INTERACTING, OVERRIDE_INTERACTING, ROLL
         }
 
         public CharacterState m_characterState;       //  Current State 
@@ -201,32 +201,6 @@ namespace SA
         #endregion
 
         #region Updates
-        public void Fixed_Tick(float _delta)
-        {
-            m_delta = _delta;
-            m_states.onGround = OnGroundCheck();
-
-            switch (m_characterState)
-            {
-                case CharacterState.MOVING:
-                    HandleRotation();
-                    HandleMovement();
-                    break;
-                case CharacterState.INTERACTING:
-                    break;
-                case CharacterState.ATTACKING:
-                    m_rigidbody.drag = 0f;
-                    Vector3 v = m_rigidbody.velocity;
-                    Vector3 tv = m_input.animationDelta;
-                    tv *= 50f;
-                    tv.y = v.y;
-                    m_rigidbody.velocity = tv;
-                    break;
-                case CharacterState.ON_AIR:
-                    break;
-            }
-        }
-
         public void Tick(float _delta)
         {
             m_delta = _delta;
@@ -240,7 +214,7 @@ namespace SA
                     break;
                 case CharacterState.INTERACTING:
                     break;
-                case CharacterState.ATTACKING:
+                case CharacterState.OVERRIDE_INTERACTING:
                     m_states.animIsInteracting = m_animator.GetBool("isInteracting");
                     if (m_states.animIsInteracting == false)
                     {
@@ -253,11 +227,48 @@ namespace SA
                     break;
                 case CharacterState.ON_AIR:
                     break;
+                case CharacterState.ROLL:
+                    m_states.animIsInteracting = m_animator.GetBool("isInteracting");
+                    if (m_states.animIsInteracting == false)
+                    {
+                        if (m_states.isInteracting)
+                        {
+                            m_states.isInteracting = false;
+                            ChangeState(CharacterState.MOVING);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        public void Fixed_Tick(float _delta)
+        {
+            m_delta = _delta;
+            // m_states.onGround = OnGroundCheck();
+
+            switch (m_characterState)
+            {
+                case CharacterState.MOVING:
+                    HandleRotation();
+                    HandleMovement();
+                    break;
+                case CharacterState.INTERACTING:
+                    break;
+                case CharacterState.OVERRIDE_INTERACTING:
+                    m_rigidbody.drag = 0f;
+                    Vector3 v = m_rigidbody.velocity;
+                    Vector3 tv = m_input.animationDelta;
+                    tv *= 50f;
+                    tv.y = v.y;
+                    m_rigidbody.velocity = tv;
+                    break;
+                case CharacterState.ON_AIR:
+                    break;
             }
         }
         #endregion
 
-        #region StateManager Functions
+        #region Private Functions
         bool OnGroundCheck()
         {
             bool returnVal = false;
@@ -354,7 +365,7 @@ namespace SA
 
             targetDir.y = 0f;
             if (targetDir == Vector3.zero)
-                targetDir = m_transform.forward;            
+                targetDir = m_transform.forward;
 
             Quaternion tr = Quaternion.LookRotation(targetDir);
             Quaternion targtRotation = Quaternion.Slerp(m_transform.rotation, tr, m_delta * m_stats.rotateSpeed * m_input.moveAmount);
@@ -410,35 +421,47 @@ namespace SA
             { m_animator.SetFloat("speed", _attackAction.animSpeed); }
 
             //  Switch State
-            ChangeState(CharacterState.ATTACKING);
+            ChangeState(CharacterState.OVERRIDE_INTERACTING);
         }
 
         void PlayActionAnimation(string _animationName)
         {   //  The layer parameter is refering to Animator Controller Layer 
             // m_animator.PlayInFixedTime(_animationName, 5, 0.2f);    //  Pass in the Override Layer where attacks take place
-            Debug.Log("Playing Animation : " + _animationName);
+            // Debug.Log("Playing Animation : " + _animationName);
             m_animator.CrossFade(_animationName, 0.2f);
         }   //  PlayInFixedTime is kinda similar to CrossFade Animation but slightly better
 
         void ChangeState(CharacterState _state)
         {
-            m_characterState = _state;
-            switch (_state)
+            if (m_characterState != _state)
             {
-                case CharacterState.MOVING:
-                    m_animator.applyRootMotion = false;
-                    break;
-                case CharacterState.INTERACTING:
-                    m_animator.applyRootMotion = false;
-                    break;
-                case CharacterState.ATTACKING:
-                    m_animator.applyRootMotion = true;
-                    m_animator.SetBool("isInteracting", true);
-                    m_states.isInteracting = true;
-                    break;
-                case CharacterState.ON_AIR:
-                    m_animator.applyRootMotion = false;
-                    break;
+                m_characterState = _state;
+                switch (_state)
+                {
+                    case CharacterState.MOVING:
+                        animatorHook.rm_mult = 1;
+                        m_animator.applyRootMotion = false;
+                        break;
+                    case CharacterState.INTERACTING:
+                        animatorHook.rm_mult = 1;
+                        m_animator.applyRootMotion = false;
+                        break;
+                    case CharacterState.OVERRIDE_INTERACTING:
+                        animatorHook.rm_mult = 1;
+                        m_animator.applyRootMotion = true;
+                        m_animator.SetBool("isInteracting", true);
+                        m_states.isInteracting = true;
+                        break;
+                    case CharacterState.ON_AIR:
+                        animatorHook.rm_mult = 1;
+                        m_animator.applyRootMotion = false;
+                        break;
+                    case CharacterState.ROLL:
+                        m_animator.applyRootMotion = true;
+                        m_animator.SetBool("isInteracting", true);
+                        m_states.isInteracting = true;
+                        break;
+                }
             }
         }
 
@@ -449,10 +472,40 @@ namespace SA
                 return null;
             return ac;
         }
-        #endregion        
+        #endregion    
+
+        #region Public Functions
+        public void HandleRoll()
+        {
+            Vector3 relativeDir = m_transform.InverseTransformDirection(m_input.moveDir);
+            float v = relativeDir.z;
+            float h = relativeDir.x;
+
+            if (relativeDir == Vector3.zero)
+            {   //  if no directional input, play step back animation
+                m_input.moveDir = -m_transform.forward;
+                m_input.targetRollSpeed = m_stats.backstepSpeed;
+            }
+            else
+            {   //  else roll using directional input
+                m_input.targetRollSpeed = m_stats.rollSpeed;
+            }
+
+            //  Override root motion multipler
+            animatorHook.rm_mult = m_input.targetRollSpeed;
+
+            //  Set Animations floats using relative Direction
+            m_animator.SetFloat(StaticStrings.vertical, v);
+            m_animator.SetFloat(StaticStrings.horizontal, h);
+
+            //  Play Animation and change state
+            PlayActionAnimation(StaticStrings.rolls);
+            ChangeState(CharacterState.ROLL);
+        }
+        #endregion
     }
 
-    #region Helper Classes
+    #region Helper Classes    
     [System.Serializable]
     public class WeaponManager
     {   //  Control what actions to do based on button input
@@ -517,6 +570,8 @@ namespace SA
         public bool lt;
         public bool rb;
         public bool lb;
+
+        public float targetRollSpeed;
     }
 
     [System.Serializable]

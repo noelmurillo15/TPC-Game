@@ -103,11 +103,11 @@ namespace SA
                 return;
             }
 
-            //  Rotates on Y-Axis
+            //  Rotates on Y-Axis of CameraManager Gameobject which moves Screen Space Horizontally
             lookAngle += smoothX * targetSpeed;
             transform.rotation = Quaternion.Euler(0f, lookAngle, 0f);
 
-            //  Rotates on X-Axis via Pivot
+            //  Rotates on X-Axis of Pivot Gameobject which moves Screen Space Vertically
             tiltAngle -= smoothY * targetSpeed;
             tiltAngle = Mathf.Clamp(tiltAngle, minAngle, maxAngle);
             m_pivot.localRotation = Quaternion.Euler(tiltAngle, 0f, 0f);
