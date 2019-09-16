@@ -4,27 +4,27 @@ namespace SA
 {
     public static class StaticStrings
     {
-        //   Input Manager Axes - Must match names exactly
-        public static string Horizontal = "Horizontal";
-        public static string Vertical = "Vertical";
-        public static string B = "B";
-        public static string A = "A";
-        public static string X = "X";
-        public static string Y = "Y";
-        public static string RT = "RT";
-        public static string RB = "RB";
-        public static string LT = "LT";
-        public static string LB = "LB";
-        public static string L = "L";
-        public static string R = "R";
-        public static string DPad_X = "DPad_X";
-        public static string DPad_Y = "DPad_Y";
-        public static string Mouse_X = "Mouse_X";
-        public static string Mouse_Y = "Mouse_Y";
-        public static string RightAxis_X = "RightAxis_X";
-        public static string RightAxis_Y = "RightAxis_Y";
-        public static string Select = "Select";
-        public static string Start = "Start";
+        //   Input Manager Axes - Must match names exactly : NEW INPUT SYSTEM DOES NOT REQUIRE THIS
+        // public static string Horizontal = "Horizontal";
+        // public static string Vertical = "Vertical";
+        // public static string B = "B";
+        // public static string A = "A";
+        // public static string X = "X";
+        // public static string Y = "Y";
+        // public static string RT = "RT";
+        // public static string RB = "RB";
+        // public static string LT = "LT";
+        // public static string LB = "LB";
+        // public static string L = "L";
+        // public static string R = "R";
+        // public static string DPad_X = "DPad_X";
+        // public static string DPad_Y = "DPad_Y";
+        // public static string Mouse_X = "Mouse_X";
+        // public static string Mouse_Y = "Mouse_Y";
+        // public static string RightAxis_X = "RightAxis_X";
+        // public static string RightAxis_Y = "RightAxis_Y";
+        // public static string Select = "Select";
+        // public static string Start = "Start";
 
         //  Animator Controller Parameters - Must match names exactly
         public static string vertical = "vertical";

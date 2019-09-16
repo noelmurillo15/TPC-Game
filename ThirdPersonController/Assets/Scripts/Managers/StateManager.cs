@@ -26,7 +26,7 @@ namespace SA
         #endregion
 
         #region References
-        Transform m_transform;
+        public Transform m_transform;
 
         [HideInInspector] public Animator m_animator;
         [HideInInspector] public Rigidbody m_rigidbody;
@@ -350,27 +350,30 @@ namespace SA
         void HandleRotation()
         {
             Vector3 targetDir = (m_states.isLockedOn == false) ?
-             m_input.moveDir : (m_input.lockOnTransform != null) ?  //  TODO : this might be T == null
-             m_input.lockOnTransform.position - m_transform.position : m_input.moveDir;
+             m_input.moveDir : m_input.lockOnTransform.position - m_transform.position;
 
             targetDir.y = 0f;
             if (targetDir == Vector3.zero)
-            {
-                targetDir = m_transform.forward;
-            }
+                targetDir = m_transform.forward;            
 
             Quaternion tr = Quaternion.LookRotation(targetDir);
             Quaternion targtRotation = Quaternion.Slerp(m_transform.rotation, tr, m_delta * m_stats.rotateSpeed * m_input.moveAmount);
-
             m_transform.rotation = targtRotation;
         }
 
         void HandleMovementAnimations()
         {
+            m_animator.SetBool("lockon", m_states.isLockedOn);
+
             if (!m_states.isLockedOn)
             {
                 m_animator.SetBool(StaticStrings.run, m_states.isRunning);
                 m_animator.SetFloat(StaticStrings.vertical, m_input.moveAmount, 0.15f, m_delta);
+            }
+            else
+            {
+                m_animator.SetFloat(StaticStrings.vertical, m_input.vertical, 0.15f, m_delta);
+                m_animator.SetFloat(StaticStrings.horizontal, m_input.horizontal, 0.15f, m_delta);
             }
         }
 

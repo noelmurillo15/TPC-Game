@@ -130,14 +130,14 @@ MonoBehaviour:
   lockOn: 0
   followSpeed: 9
   mouseSpeed: 2
-  controllerSpeed: 7
-  target: {fileID: 0}
-  lockOnTransform: {fileID: 0}
-  pivot: {fileID: 2653979368702718970}
-  cameraTransform: {fileID: 572473856683035567}
+  controllerSpeed: 5
+  m_target: {fileID: 0}
   m_transform: {fileID: 0}
-  minAngle: -45
-  maxAngle: 45
+  m_lockOnTransform: {fileID: 11400000, guid: 5bb38833afbc0ff4e8c950ff4a43327e, type: 2}
+  m_pivot: {fileID: 0}
+  m_cameraTransform: {fileID: 0}
+  minAngle: -35
+  maxAngle: 35
   defZ: -5
   zSpeed: 19
   lookAngle: 0
