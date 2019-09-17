@@ -33,6 +33,8 @@ namespace SA.Managers
 
         //  If the gameobject is not the player - force init
         public bool forceInit = false;
+
+        public State currentState;
         #endregion
 
         #region References
