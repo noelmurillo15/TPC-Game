@@ -128,9 +128,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lockOn: 0
-  followSpeed: 9
+  followSpeed: 12
   mouseSpeed: 2
-  controllerSpeed: 5
+  controllerSpeed: 4
   m_target: {fileID: 0}
   m_transform: {fileID: 0}
   m_lockOnTransform: {fileID: 11400000, guid: 5bb38833afbc0ff4e8c950ff4a43327e, type: 2}

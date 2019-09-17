@@ -23,19 +23,22 @@ namespace SA
 
         public GameObject m_activeModel;
         public float m_delta;
+        float timeSinceLastHit;
 
         //  Spell Action
         float savedTime;
         SpellAction currentSpellAction;
+
+        //  If the gameobject is not the player - force init
+        public bool forceInit = false;
         #endregion
 
         #region References
-        public Transform m_transform;
-
+        [HideInInspector] public Transform m_transform;
         [HideInInspector] public Animator m_animator;
         [HideInInspector] public Rigidbody m_rigidbody;
         [HideInInspector] public Collider m_collider;
-        [HideInInspector] public AnimatorHook animatorHook;
+        [HideInInspector] public AnimatorHook m_animatorHook;
         #endregion
 
         #region LayerRefs
@@ -45,9 +48,17 @@ namespace SA
 
 
         #region Initialization
+        void Start()
+        {   //  TODO : remove this for enemy
+            if (forceInit)
+            {
+                Initialize();
+            }
+        }
+
         public void Initialize()
         {
-            if (m_resourcesManager == null)
+            if (m_resourcesManager == null && !forceInit)
             {
                 m_resourcesManager = Resources.Load("ResourceManager") as Managers.ResourcesManager;
             }
@@ -83,8 +94,8 @@ namespace SA
                 m_animator.GetBoneTransform(HumanBodyBones.LeftHand).localScale = Vector3.one;
                 m_animator.GetBoneTransform(HumanBodyBones.RightHand).localScale = Vector3.one;
 
-                animatorHook = m_activeModel.AddComponent<AnimatorHook>();
-                animatorHook.Init(this);
+                m_animatorHook = m_activeModel.AddComponent<AnimatorHook>();
+                m_animatorHook.Init(this, forceInit);
             }
         }
 
@@ -98,15 +109,13 @@ namespace SA
 
         void SetupInventoryManager()
         {
-            if (m_inventoryManager.rightItem)
+            if (m_inventoryManager.rightItem != null)
             {
-                Debug.Log("RightItem is Equipped");
                 WeaponToRuntime(m_inventoryManager.rightItem.obj, ref m_inventoryManager.rightSlot);
                 EquipWeapon(m_inventoryManager.rightSlot, false);
             }
-            if (m_inventoryManager.leftItem)
+            if (m_inventoryManager.leftItem != null)
             {
-                Debug.Log("LeftItem is Equipped");
                 WeaponToRuntime(m_inventoryManager.leftItem.obj, ref m_inventoryManager.leftSlot);
                 EquipWeapon(m_inventoryManager.leftSlot, true);
             }
@@ -164,12 +173,14 @@ namespace SA
         {
             Inventory.Weapon weaponData = (Inventory.Weapon)_obj;
             GameObject weaponInstance = Instantiate(weaponData.modelPrefab) as GameObject;
-
+            WeaponHook wHook = weaponInstance.AddComponent<WeaponHook>();
+            wHook.Initialize(this);
             weaponInstance.SetActive(false);
 
             Inventory.RuntimeWeapon rw = new Inventory.RuntimeWeapon();
             rw.weaponInstance = weaponInstance;
             rw.weaponData = weaponData;
+            rw.weaponHook = wHook;
 
             _slot = rw;
             m_resourcesManager.runtime.RegisterRuntimeWeapons(rw);
@@ -184,13 +195,13 @@ namespace SA
 
             if (!isMirrored)
             {
-                Debug.Log("Equipping Weapon to right hand : " + _rw.weaponInstance.name);
+                Debug.Log("Equipping Weapon to right hand : " + _rw.weaponInstance.name + " of the " + gameObject.name);
                 scale = _rw.weaponData.leftHandPosition.scale;
                 parent = m_animator.GetBoneTransform(HumanBodyBones.RightHand);
             }
             else
             {
-                Debug.Log("Equipping Weapon to left hand : " + _rw.weaponInstance.name);
+                Debug.Log("Equipping Weapon to left hand : " + _rw.weaponInstance.name + " of the " + gameObject.name);
                 position = _rw.weaponData.leftHandPosition.position;
                 eulers = _rw.weaponData.leftHandPosition.eulersAngles;
                 parent = m_animator.GetBoneTransform(HumanBodyBones.LeftHand);
@@ -205,10 +216,26 @@ namespace SA
         #endregion
 
         #region Updates
+        void Update()
+        {
+            if (forceInit)
+            {   //  TODO : remove this later - for enemies
+                Tick(Time.deltaTime);
+            }
+        }
+
         public void Tick(float _delta)
         {
             m_delta = _delta;
-            m_states.onGround = OnGroundCheck();
+            // m_states.onGround = OnGroundCheck();
+
+            if (m_states.isGettingHit)
+            {
+                if (Time.realtimeSinceStartup - timeSinceLastHit < 0.2f)
+                {
+                    m_states.isGettingHit = false;
+                }
+            }
 
             switch (m_characterState)
             {
@@ -257,7 +284,7 @@ namespace SA
         public void Fixed_Tick(float _delta)
         {
             m_delta = _delta;
-            // m_states.onGround = OnGroundCheck();
+            m_states.onGround = OnGroundCheck();
 
             switch (m_characterState)
             {
@@ -306,11 +333,10 @@ namespace SA
         }
 
         bool InteractionInputCheck()
-        {
-            WeaponManager.ActionContainer a = null;
+        {   //  Only happens during movement state
             if (m_input.rb)
             {
-                a = GetAction(InputType.RB);
+                WeaponManager.ActionContainer a = GetAction(InputType.RB);
                 if (a.action.animationAction != null)
                 {
                     HandleAction(a);
@@ -320,7 +346,7 @@ namespace SA
 
             if (m_input.lb)
             {
-                a = GetAction(InputType.LB);
+                WeaponManager.ActionContainer a = GetAction(InputType.LB);
                 if (a.action.animationAction != null)
                 {
                     HandleAction(a);
@@ -330,7 +356,7 @@ namespace SA
 
             if (m_input.rt)
             {
-                a = GetAction(InputType.RT);
+                WeaponManager.ActionContainer a = GetAction(InputType.RT);
                 if (a.action.animationAction != null)
                 {
                     HandleAction(a);
@@ -340,7 +366,7 @@ namespace SA
 
             if (m_input.lt)
             {
-                a = GetAction(InputType.LT);
+                WeaponManager.ActionContainer a = GetAction(InputType.LT);
                 if (a.action.animationAction != null)
                 {
                     HandleAction(a);
@@ -514,21 +540,21 @@ namespace SA
                 switch (_state)
                 {
                     case CharacterState.MOVING:
-                        animatorHook.rm_mult = 1;
+                        m_animatorHook.rm_mult = 1;
                         m_animator.applyRootMotion = false;
                         break;
                     case CharacterState.INTERACTING:
-                        animatorHook.rm_mult = 1;
+                        m_animatorHook.rm_mult = 1;
                         m_animator.applyRootMotion = false;
                         break;
                     case CharacterState.OVERRIDE_INTERACTING:
-                        animatorHook.rm_mult = 1;
+                        m_animatorHook.rm_mult = 1;
                         m_animator.applyRootMotion = true;
                         m_animator.SetBool("isInteracting", true);
                         m_states.isInteracting = true;
                         break;
                     case CharacterState.ON_AIR:
-                        animatorHook.rm_mult = 1;
+                        m_animatorHook.rm_mult = 1;
                         m_animator.applyRootMotion = false;
                         break;
                     case CharacterState.ROLL:
@@ -543,8 +569,11 @@ namespace SA
         WeaponManager.ActionContainer GetAction(InputType _inputType)
         {
             WeaponManager.ActionContainer ac = m_weaponManager.GetAction(_inputType);
+
             if (ac == null)
                 return null;
+
+            m_inventoryManager.SetLastInput(_inputType);
             return ac;
         }
         #endregion    
@@ -567,7 +596,7 @@ namespace SA
             }
 
             //  Override root motion multipler
-            animatorHook.rm_mult = m_input.targetRollSpeed;
+            m_animatorHook.rm_mult = m_input.targetRollSpeed;
 
             //  Set Animations floats using relative Direction
             m_animator.SetFloat(StaticStrings.vertical, v);
@@ -576,6 +605,35 @@ namespace SA
             //  Play Animation and change state
             PlayActionAnimation(StaticStrings.rolls);
             ChangeState(CharacterState.ROLL);
+        }
+
+        public void SetDamageColliderStatus(bool _status)
+        {
+            WeaponHook wHook = m_inventoryManager.GetWeaponInUse().weaponHook;
+
+            if (wHook != null)
+            {
+                if (_status) { wHook.OpenDamageColliders(); }
+                else { wHook.CloseDamageColliders(); }
+            }
+            else { Debug.LogError("Weapon hook came back null from : " + gameObject.name); }
+        }
+
+        public void HandleDamageCollision(StateManager targetStateManager)
+        {
+            if (targetStateManager == this) return;
+            targetStateManager.GetHit();
+        }
+
+        public void GetHit()
+        {
+            if (!m_states.isGettingHit)
+            {
+                PlayActionAnimation("hit1");
+                m_states.isGettingHit = true;
+                timeSinceLastHit = Time.realtimeSinceStartup;
+                ChangeState(CharacterState.OVERRIDE_INTERACTING);
+            }
         }
         #endregion
     }
@@ -620,15 +678,33 @@ namespace SA
     [System.Serializable]
     public class InventoryManager
     {
-        //  Player Slots
+        InputType lastInput;
+
+        //  Equipped Weapon Data
         public Inventory.RuntimeWeapon rightSlot;
         public Inventory.RuntimeWeapon leftSlot;
 
-        //  Actual items on Player
+        //  Attached Item Data
         public Inventory.Item rightItem;
         public Inventory.Item leftItem;
         public Inventory.Item consumableHandSlot;
         public Inventory.Item spellHandSlot;
+
+
+        public void SetLastInput(InputType _type) { lastInput = _type; }
+
+        public Inventory.RuntimeWeapon GetWeaponInUse()
+        {
+            if (lastInput == InputType.RB || lastInput == InputType.RT)
+            { return rightSlot; }
+            else if (lastInput == InputType.LB || lastInput == InputType.LT)
+            { return leftSlot; }
+            else
+            {
+                Debug.LogError("Last input was not recognized!");
+                return null;
+            }
+        }
     }
 
     [System.Serializable]
@@ -670,6 +746,7 @@ namespace SA
         public bool isInteracting;
         public bool closeWeapons;
         public bool isInvisable;
+        public bool isGettingHit;
     }
 
     [System.Serializable]

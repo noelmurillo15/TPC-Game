@@ -48,6 +48,8 @@ MonoBehaviour:
   stateManager: {fileID: 0}
   cameraManager: {fileID: 0}
   m_lockOnTransform: {fileID: 11400000, guid: 5bb38833afbc0ff4e8c950ff4a43327e, type: 2}
-  t: {fileID: 0}
   isLockedOn: 0
-  lockOnInput: 0
+  lockOnBuffer: 0
+  m_enemies:
+  - {fileID: 0}
+  enemyIndex: 0
