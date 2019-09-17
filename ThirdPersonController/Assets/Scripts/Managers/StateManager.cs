@@ -23,6 +23,10 @@ namespace SA
 
         public GameObject m_activeModel;
         public float m_delta;
+
+        //  Spell Action
+        float savedTime;
+        SpellAction currentSpellAction;
         #endregion
 
         #region References
@@ -213,6 +217,15 @@ namespace SA
                     if (!interact) HandleMovementAnimations();
                     break;
                 case CharacterState.INTERACTING:
+                    if (m_states.isSpellCasting)
+                    {
+                        if (Time.realtimeSinceStartup - savedTime > 1)
+                        {
+                            m_states.isSpellCasting = false;
+                            PlaySavedSpellAction();
+                        }
+                    }
+                    HandleMovementAnimations();
                     break;
                 case CharacterState.OVERRIDE_INTERACTING:
                     m_states.animIsInteracting = m_animator.GetBool("isInteracting");
@@ -253,6 +266,8 @@ namespace SA
                     HandleMovement();
                     break;
                 case CharacterState.INTERACTING:
+                    HandleRotation();
+                    HandleMovement();
                     break;
                 case CharacterState.OVERRIDE_INTERACTING:
                     m_rigidbody.drag = 0f;
@@ -296,7 +311,7 @@ namespace SA
             if (m_input.rb)
             {
                 a = GetAction(InputType.RB);
-                if (a.action.actionObj != null)
+                if (a.action.animationAction != null)
                 {
                     HandleAction(a);
                     return true;
@@ -306,7 +321,7 @@ namespace SA
             if (m_input.lb)
             {
                 a = GetAction(InputType.LB);
-                if (a.action.actionObj != null)
+                if (a.action.animationAction != null)
                 {
                     HandleAction(a);
                     return true;
@@ -316,7 +331,7 @@ namespace SA
             if (m_input.rt)
             {
                 a = GetAction(InputType.RT);
-                if (a.action.actionObj != null)
+                if (a.action.animationAction != null)
                 {
                     HandleAction(a);
                     return true;
@@ -326,7 +341,7 @@ namespace SA
             if (m_input.lt)
             {
                 a = GetAction(InputType.LT);
-                if (a.action.actionObj != null)
+                if (a.action.animationAction != null)
                 {
                     HandleAction(a);
                     return true;
@@ -339,22 +354,25 @@ namespace SA
         void HandleMovement()
         {
             Vector3 velocity = m_transform.forward;
+            if (m_states.isLockedOn) { velocity = m_input.moveDir; }
 
-            if (m_states.isLockedOn)
-            {   //  LockOn HandleMovement   TODO : this might be outside of its own scope
-                velocity = m_input.moveDir;
-            }
-
+            //  Toggle RigidBody Drag value when moving
             if (m_input.moveAmount > 0)
             { m_rigidbody.drag = 0f; }
             else { m_rigidbody.drag = 4f; }
 
-            //  Free Movement                
-            if (!m_states.isRunning)
-                velocity *= m_input.moveAmount * m_stats.moveSpeed;
+            if (m_states.animIsInteracting)
+            {
+                m_states.isRunning = false;
+                velocity *= m_input.moveAmount * m_stats.walkSpeed;
+            }
             else
-                velocity *= m_input.moveAmount * m_stats.sprintSpeed;
-
+            {   //  Free Movement 
+                if (!m_states.isRunning)
+                    velocity *= m_input.moveAmount * m_stats.moveSpeed;
+                else
+                    velocity *= m_input.moveAmount * m_stats.sprintSpeed;
+            }
             m_rigidbody.velocity = velocity;
         }
 
@@ -379,7 +397,9 @@ namespace SA
             if (!m_states.isLockedOn)
             {
                 m_animator.SetBool(StaticStrings.run, m_states.isRunning);
-                m_animator.SetFloat(StaticStrings.vertical, m_input.moveAmount, 0.15f, m_delta);
+                float move = m_input.moveAmount;
+                if (m_states.animIsInteracting) { move = Mathf.Clamp(move, 0, 0.5f); }
+                m_animator.SetFloat(StaticStrings.vertical, move, 0.15f, m_delta);
             }
             else
             {
@@ -388,19 +408,21 @@ namespace SA
             }
         }
 
-        void HandleAction(WeaponManager.ActionContainer _action)
+        void HandleAction(WeaponManager.ActionContainer _actionContainer)
         {
-            switch (_action.action.actionType)
+            switch (_actionContainer.action.actionType)
             {
                 case ActionType.ATTACK:
-                    AttackAction attackAction = (AttackAction)_action.action.actionObj;
-                    PlayAttackAction(_action, attackAction);
+                    AttackAction attackAction = (AttackAction)_actionContainer.action.animationAction;
+                    PlayAttackAction(_actionContainer, attackAction);
                     break;
                 case ActionType.BLOCK:
                     break;
                 case ActionType.PARRY:
                     break;
                 case ActionType.SPELL:
+                    SpellAction spellAction = (SpellAction)_actionContainer.action.animationAction;
+                    PlaySpellAction(_actionContainer, spellAction);
                     break;
 
                 default:
@@ -408,10 +430,10 @@ namespace SA
             }
         }
 
-        void PlayAttackAction(WeaponManager.ActionContainer _action, AttackAction _attackAction)
+        void PlayAttackAction(WeaponManager.ActionContainer _actionContainer, AttackAction _attackAction)
         {
             //  Is the action a right-handed action or left?
-            m_animator.SetBool(StaticStrings.mirror, _action.isMirrored);
+            m_animator.SetBool(StaticStrings.mirror, _actionContainer.isMirrored);
 
             //  Play the Attack Animation
             PlayActionAnimation(_attackAction.attackAnimation.value);
@@ -422,6 +444,59 @@ namespace SA
 
             //  Switch State
             ChangeState(CharacterState.OVERRIDE_INTERACTING);
+        }
+
+        void PlaySpellAction(WeaponManager.ActionContainer _actionContainer, SpellAction _spellAction)
+        {
+            string targetAnimation = _spellAction.start_animation.value;
+            targetAnimation += (_actionContainer.isMirrored) ? "_l" : "_r";
+
+            //  Is the action a right-handed action or left?
+            m_animator.SetBool(StaticStrings.mirror, _actionContainer.isMirrored);
+
+            //  Play the Attack Animation
+            m_animator.CrossFade(targetAnimation, 0.2f);
+
+            //  Is it a spell?
+            m_states.isSpellCasting = true;
+            m_states.animIsInteracting = true;
+            m_animator.SetBool(StaticStrings.spellCasting, m_states.isSpellCasting);
+
+            //  Change the anim speed if necessary            
+            if (_spellAction.changeSpeed)
+            { m_animator.SetFloat("speed", _spellAction.animSpeed); }
+
+            //  Switch State
+            ChangeState(CharacterState.INTERACTING);
+            savedTime = Time.realtimeSinceStartup;
+            currentSpellAction = _spellAction;
+        }
+
+        void PlaySavedSpellAction()
+        {
+            m_animator.SetBool(StaticStrings.spellCasting, m_states.isSpellCasting);
+            PlayActionAnimation(currentSpellAction.cast_animation.value);
+            ChangeState(CharacterState.OVERRIDE_INTERACTING);
+            m_states.animIsInteracting = false;
+        }
+
+        public void CastSpellActual()
+        {
+            if (currentSpellAction is ProjectileSpell)
+            {
+                ProjectileSpell p = (ProjectileSpell)currentSpellAction;
+                GameObject go = Instantiate(p.projectile);
+
+                Vector3 tp = m_transform.position;
+                tp += m_transform.forward;
+                tp.y += 1.5f;
+
+                go.transform.position = tp;
+                go.transform.rotation = transform.rotation;
+
+                Rigidbody rb = go.GetComponent<Rigidbody>();
+                rb.AddForce(m_transform.forward * 10f, ForceMode.Impulse);
+            }
         }
 
         void PlayActionAnimation(string _animationName)

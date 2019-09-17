@@ -19,7 +19,7 @@ namespace SA
         public static string canMove = "canMove";
         public static string onEmpty = "onEmpty";
         public static string lockOn = "lockOn";
-        public static string spellCasting = "spellCasting";
+        public static string spellCasting = "spellcasting";
         public static string enableItem = "enableItem";
 
         //  Animator States

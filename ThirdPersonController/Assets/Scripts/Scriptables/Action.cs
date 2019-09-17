@@ -7,7 +7,7 @@ namespace SA.Scriptable
     public class Action
     {
         public ActionType actionType;
-        public Object actionObj;
+        public Object animationAction;
     }
 
     public enum ActionType

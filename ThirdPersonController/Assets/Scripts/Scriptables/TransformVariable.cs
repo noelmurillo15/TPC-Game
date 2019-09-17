@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 
-namespace SA
+namespace SA.Scriptable
 {
     [CreateAssetMenu(menuName = "Variables/Transform")]
     public class TransformVariable : ScriptableObject

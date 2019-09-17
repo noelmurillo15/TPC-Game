@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 
-namespace SA
+namespace SA.Scriptable
 {
     [CreateAssetMenu(menuName = "Single Instances/ControllerStats")]
     public class ControllerStats : ScriptableObject
@@ -11,5 +11,6 @@ namespace SA
         public float backstepSpeed;
         public float sprintSpeed;
         public float rotateSpeed;
+        public float walkSpeed;
     }
 }

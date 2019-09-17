@@ -4,7 +4,7 @@
 namespace SA
 {
     public class AnimatorHook : MonoBehaviour
-    {   //  Used to help with Root Motion and Animaton events
+    {   //  Used to help with Root Motion and Animaton callback events
         StateManager stateManager;
         Animator m_animator;
         public float rm_mult;
@@ -17,6 +17,7 @@ namespace SA
             m_animator = stateManager.m_animator;
         }
 
+        #region Animation Callback Events
         void OnAnimatorMove()
         {
             stateManager.m_input.animationDelta = m_animator.deltaPosition;
@@ -28,5 +29,26 @@ namespace SA
             Vector3 v = (stateManager.m_input.animationDelta * rm_mult) / stateManager.m_delta;
             stateManager.m_rigidbody.velocity = v;
         }
+
+        public void CloseParticle()
+        {
+
+        }
+
+        public void InitiateThrowForProjectile()
+        {
+            stateManager.CastSpellActual();
+        }
+
+        public void OpenDamageColliders()
+        {
+
+        }
+
+        public void CloseDamageColliders()
+        {
+
+        }
+        #endregion
     }
 }

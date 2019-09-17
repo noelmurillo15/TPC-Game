@@ -20,17 +20,21 @@ MonoBehaviour:
   - input: 0
     action:
       actionType: 0
-      actionObj: {fileID: 11400000, guid: b9a05b15221f6fe4e8bc6337f89c0266, type: 2}
+      animationAction: {fileID: 11400000, guid: b9a05b15221f6fe4e8bc6337f89c0266,
+        type: 2}
   - input: 2
     action:
       actionType: 0
-      actionObj: {fileID: 11400000, guid: d51febdb856766949a7b397b31b4ae7c, type: 2}
+      animationAction: {fileID: 11400000, guid: d51febdb856766949a7b397b31b4ae7c,
+        type: 2}
   - input: 1
     action:
       actionType: 0
-      actionObj: {fileID: 11400000, guid: b9a05b15221f6fe4e8bc6337f89c0266, type: 2}
+      animationAction: {fileID: 11400000, guid: b9a05b15221f6fe4e8bc6337f89c0266,
+        type: 2}
   - input: 3
     action:
       actionType: 0
-      actionObj: {fileID: 11400000, guid: d51febdb856766949a7b397b31b4ae7c, type: 2}
+      animationAction: {fileID: 11400000, guid: d51febdb856766949a7b397b31b4ae7c,
+        type: 2}
   leftHandPosition: {fileID: 11400000, guid: f204484b5aab8c44885702e9b3294d33, type: 2}

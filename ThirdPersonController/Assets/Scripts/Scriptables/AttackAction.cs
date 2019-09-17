@@ -3,7 +3,7 @@
 
 namespace SA.Scriptable
 {
-    [CreateAssetMenu(menuName = "Action/AttackAction")]
+    [CreateAssetMenu(menuName = "Actions/AttackAction")]
     public class AttackAction : ScriptableObject
     {   //  Holds Static String Animation Name and other info
         public StringVariable attackAnimation;

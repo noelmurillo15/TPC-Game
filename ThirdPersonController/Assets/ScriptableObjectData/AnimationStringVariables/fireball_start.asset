@@ -9,12 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ba1a68c6634f044f8bb0a64342d2c22, type: 3}
-  m_Name: PlayerControllerStats
+  m_Script: {fileID: 11500000, guid: 88e301789e9362f489bb338a83295a81, type: 3}
+  m_Name: fireball_start
   m_EditorClassIdentifier: 
-  moveSpeed: 7
-  rollSpeed: 2
-  backstepSpeed: 2.5
-  sprintSpeed: 10
-  rotateSpeed: 6
-  walkSpeed: 3
+  value: fireball_start

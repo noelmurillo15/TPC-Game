@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using SA.Scriptable;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 

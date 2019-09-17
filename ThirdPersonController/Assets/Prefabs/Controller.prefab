@@ -107,6 +107,7 @@ MonoBehaviour:
     lt: 0
     rb: 0
     lb: 0
+    targetRollSpeed: 0
   m_stats: {fileID: 11400000, guid: 4211322a3dba51344992ff160fc3998b, type: 2}
   m_weaponManager:
     actions:
@@ -131,13 +132,14 @@ MonoBehaviour:
         actionObj: {fileID: 0}
       isMirrored: 1
   m_inventoryManager:
-    rightItem: {fileID: 11400000, guid: 820f0b695a9ab9548b8946ee09224591, type: 2}
+    rightItem: {fileID: 11400000, guid: 2b91bdd9a058cb145963c254984d53cd, type: 2}
     leftItem: {fileID: 11400000, guid: 820f0b695a9ab9548b8946ee09224591, type: 2}
     consumableHandSlot: {fileID: 0}
     spellHandSlot: {fileID: 0}
   m_resourcesManager: {fileID: 0}
   m_activeModel: {fileID: 0}
   m_delta: 0
+  m_transform: {fileID: 0}
   m_animator: {fileID: 0}
   m_rigidbody: {fileID: 0}
   m_collider: {fileID: 0}
