@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using SA.Scriptable.Variables;
 
 
 namespace SA.Scriptable

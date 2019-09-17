@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using SA.Input;
+using UnityEngine;
 using SA.Scriptable;
+using SA.Scriptable.Variables;
 
 
 namespace SA.Inventory

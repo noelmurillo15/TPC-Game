@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
-using SA.Scriptable;
+using SA.Scriptable.Variables;
 
 
-namespace SA
+namespace SA.Managers
 {
     public class CameraManager : MonoBehaviour
     {   //  Manages the Camera w/ Pivot

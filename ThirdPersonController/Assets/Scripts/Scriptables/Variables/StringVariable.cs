@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 
-namespace SA.Scriptable
+namespace SA.Scriptable.Variables
 {
     [CreateAssetMenu(menuName = "Variables/String")]
     public class StringVariable : ScriptableObject

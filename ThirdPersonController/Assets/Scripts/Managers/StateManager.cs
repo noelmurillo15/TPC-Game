@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using SA.Input;
+using UnityEngine;
+using SA.Utilities;
 using SA.Scriptable;
 
 
-namespace SA
+namespace SA.Managers
 {
     public class StateManager : MonoBehaviour
     {

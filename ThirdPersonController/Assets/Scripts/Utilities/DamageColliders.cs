@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using SA.Managers;
 
 
-namespace SA
+namespace SA.Utilities
 {
     public class DamageColliders : MonoBehaviour
     {

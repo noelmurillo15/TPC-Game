@@ -1,24 +1,27 @@
 ﻿#if UNITY_EDITOR
-using System.Collections.Generic;
 using UnityEditor;
+using System.Collections.Generic;
 
 
-public static class EditorUtilities
+namespace SA.Utilities.Editor
 {
-    public static List<T> FindAssetsByType<T>() where T : UnityEngine.Object
+    public static class EditorUtilities
     {
-        List<T> assets = new List<T>();
-
-        string[] guids = AssetDatabase.FindAssets(string.Format("t:{0}", typeof(T)));
-
-        for (int i = 0; i < guids.Length; i++)
+        public static List<T> FindAssetsByType<T>() where T : UnityEngine.Object
         {
-            string assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
-            T asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
-            if (asset != null) assets.Add(asset);
-        }
+            List<T> assets = new List<T>();
 
-        return assets;
+            string[] guids = AssetDatabase.FindAssets(string.Format("t:{0}", typeof(T)));
+
+            for (int i = 0; i < guids.Length; i++)
+            {
+                string assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
+                T asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                if (asset != null) assets.Add(asset);
+            }
+
+            return assets;
+        }
     }
 }
 #endif

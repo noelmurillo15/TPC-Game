@@ -1,6 +1,6 @@
 ﻿
 
-namespace SA
+namespace SA.Utilities
 {
     public static class StaticStrings
     {

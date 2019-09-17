@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
-using SA.Scriptable;
+using SA.Managers;
+using SA.Scriptable.Variables;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
 
-namespace SA
+namespace SA.Input
 {
     public class InputHandler : MonoBehaviour
     {   //  Detects Input and passes it along to StateManager & CameraManager

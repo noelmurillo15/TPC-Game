@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 
 
-namespace SA
+namespace SA.Inventory
 {
     [CreateAssetMenu(menuName = "Single Instances/Runtime References")]
     public class RuntimeReferences : ScriptableObject
     {
-        public List<Inventory.RuntimeWeapon> runtimeWeapons = new List<Inventory.RuntimeWeapon>();
+        public List<RuntimeWeapon> runtimeWeapons = new List<RuntimeWeapon>();
 
         public void Initialize()
         {
             runtimeWeapons.Clear();
         }
 
-        public void RegisterRuntimeWeapons(Inventory.RuntimeWeapon _runtimeWeapon)
+        public void RegisterRuntimeWeapons(RuntimeWeapon _runtimeWeapon)
         {
             runtimeWeapons.Add(_runtimeWeapon);
         }
 
-        public void UnregisterRuntimeWeapons(Inventory.RuntimeWeapon _runtimeWeapon)
+        public void UnregisterRuntimeWeapons(RuntimeWeapon _runtimeWeapon)
         {
             if (runtimeWeapons.Contains(_runtimeWeapon))
             {
