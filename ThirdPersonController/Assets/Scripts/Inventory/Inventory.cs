@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+#if UNITY_EDITOR
 using SA.Utilities.Editor;
+#endif
 using System.Collections.Generic;
 
 
