@@ -32,7 +32,10 @@ namespace SA
             if (!isEnemy)
             {
                 Vector3 v = (stateManager.m_input.animationDelta * rm_mult) / stateManager.m_delta;
-                stateManager.m_rigidbody.velocity = v;
+                if (!float.IsNaN(v.x))
+                {
+                    stateManager.m_rigidbody.velocity = v;
+                }
             }
         }
 

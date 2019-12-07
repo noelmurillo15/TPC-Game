@@ -2,44 +2,9 @@
     "name": "ThirdPersonInput",
     "maps": [
         {
-            "name": "ThirdPersonKeyboardInput",
-            "id": "5fdced05-a5e7-483d-bec0-e0d1abb8f526",
-            "actions": [
-                {
-                    "name": "New action",
-                    "type": "Button",
-                    "id": "9c71fb59-6a7f-4183-972c-cd0ef2f6a6d9",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "f1fbc23c-9794-4350-a834-30630b54688b",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "New action",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
             "name": "ThirdPersonXboxInput",
             "id": "9e1a7afd-7157-4bca-b930-a0ba213e2547",
             "actions": [
-                {
-                    "name": "Start",
-                    "type": "Button",
-                    "id": "a6d4cd1f-f7ab-4df2-913d-09e5be0bd093",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
                 {
                     "name": "Select",
                     "type": "Button",
@@ -66,17 +31,6 @@
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "24eb41a7-6b81-46de-808e-5369e6afd2af",
-                    "path": "<XInputController>/start",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Start",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "fb93c7ad-847b-4010-bfa5-7c4fa72ece08",

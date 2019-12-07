@@ -7,13 +7,13 @@ using System.Collections.Generic;
 
 namespace SA.Input
 {
+    //  TODO : add persistant game manager and attach this script to it -Singleton
     public class InputHandler : MonoBehaviour
     {   //  Detects Input and passes it along to StateManager & CameraManager
         #region Class Member Variables
         //  New Input System        
         [SerializeField] bool xbox = false;
         Gamepad gamepad;
-        Mouse m_mouse;
 
         //  Input Variables
         float vertical;
@@ -70,8 +70,6 @@ namespace SA.Input
         {
             if (xbox)
             {
-                inputController.ThirdPersonXboxInput.Start.performed += PauseInput;
-                inputController.ThirdPersonXboxInput.Start.Enable();
                 inputController.ThirdPersonXboxInput.Select.performed += SelectInput;
                 inputController.ThirdPersonXboxInput.Select.Enable();
 
@@ -86,8 +84,6 @@ namespace SA.Input
         {
             if (xbox)
             {
-                inputController.ThirdPersonXboxInput.Start.performed -= PauseInput;
-                inputController.ThirdPersonXboxInput.Start.Disable();
                 inputController.ThirdPersonXboxInput.Select.performed -= SelectInput;
                 inputController.ThirdPersonXboxInput.Select.Disable();
 
@@ -122,7 +118,6 @@ namespace SA.Input
             else
             {
                 xbox = false;
-                m_mouse = Mouse.current;
             }
         }
         #endregion
@@ -309,11 +304,6 @@ namespace SA.Input
         #endregion
 
         #region Input Events
-        void PauseInput(InputAction.CallbackContext context)
-        {   //  TODO : apply behaviour
-            Debug.Log("Start Button was pressed!");
-        }
-
         void SelectInput(InputAction.CallbackContext context)
         {   //  TODO : apply behaviour
             Debug.Log("Select Button was pressed!");

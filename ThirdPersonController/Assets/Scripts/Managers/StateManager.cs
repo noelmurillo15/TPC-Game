@@ -336,44 +336,18 @@ namespace SA.Managers
 
         bool InteractionInputCheck()
         {   //  Only happens during movement state
-            if (m_input.rb)
-            {
-                WeaponManager.ActionContainer a = GetAction(InputType.RB);
-                if (a.action.animationAction != null)
-                {
-                    HandleAction(a);
-                    return true;
-                }
-            }
+            WeaponManager.ActionContainer a = null;
+            if (m_input.rb) { a = GetAction(InputType.RB); }
+            else if (m_input.lb) { a = GetAction(InputType.LB); }
+            else if (m_input.rt) { a = GetAction(InputType.RT); }
+            else if (m_input.lt) { a = GetAction(InputType.LT); }
 
-            if (m_input.lb)
-            {
-                WeaponManager.ActionContainer a = GetAction(InputType.LB);
-                if (a.action.animationAction != null)
-                {
-                    HandleAction(a);
-                    return true;
-                }
-            }
+            if (a == null || a.action == null) { return false; }
 
-            if (m_input.rt)
+            if (a.action.animationAction != null)
             {
-                WeaponManager.ActionContainer a = GetAction(InputType.RT);
-                if (a.action.animationAction != null)
-                {
-                    HandleAction(a);
-                    return true;
-                }
-            }
-
-            if (m_input.lt)
-            {
-                WeaponManager.ActionContainer a = GetAction(InputType.LT);
-                if (a.action.animationAction != null)
-                {
-                    HandleAction(a);
-                    return true;
-                }
+                HandleAction(a);
+                return true;
             }
 
             return false;
