@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using SA.Managers;
 using SA.Scriptable.Variables;
 using UnityEngine.InputSystem;
@@ -12,42 +13,42 @@ namespace SA.Input
     {   //  Detects Input and passes it along to StateManager & CameraManager
         #region Class Member Variables
         //  New Input System        
-        [SerializeField] bool xbox = false;
-        Gamepad gamepad;
+        [SerializeField] private bool xbox = false;
+        private Gamepad gamepad;
 
         //  Input Variables
-        float vertical;
-        float horizontal;
+        private float vertical;
+        private float horizontal;
 
-        float camVertical;
-        float camHorizontal;
+        private float camVertical;
+        private float camHorizontal;
 
-        bool b_input;
-        bool x_input;
-        bool a_input;
-        bool y_input;
+        private bool b_input;
+        private bool x_input;
+        private bool a_input;
+        private bool y_input;
 
-        bool rb_input;
-        bool rt_input;
-        bool lb_input;
-        bool lt_input;
+        private bool rb_input;
+        private bool rt_input;
+        private bool lb_input;
+        private bool lt_input;
 
-        float b_timer;
-        float delta;
+        private float b_timer;
+        private float delta;
 
         //  References
         public GamePhase currentPhase;
         public StateManager stateManager;
         public CameraManager cameraManager;
-        ThirdPersonInput inputController;
-        Transform cameraTransform;
+        private ThirdPersonInput inputController;
+        private Transform cameraTransform;
 
         //  LockOn
         public TransformVariable m_lockOnTransform;
 
         public bool isLockedOn;
-        [SerializeField] float lockOnBuffer;
-        float lockOnMaxDistance = 20f;
+        [SerializeField] private float lockOnBuffer;
+        private float lockOnMaxDistance = 20f;
 
         //  Enemies
         public List<Transform> m_enemies = new List<Transform>();
@@ -56,45 +57,42 @@ namespace SA.Input
 
 
         #region Initialization
-        void Awake()
+
+        private void Awake()
         {
             ControllerCheck();
         }
 
-        void Start()
+        private void Start()
         {
             Initialize();
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
-            if (xbox)
-            {
-                inputController.ThirdPersonXboxInput.Select.performed += SelectInput;
-                inputController.ThirdPersonXboxInput.Select.Enable();
+            if (!xbox) return;
+            inputController.ThirdPersonXboxInput.Select.performed += SelectInput;
+            inputController.ThirdPersonXboxInput.Select.Enable();
 
-                inputController.ThirdPersonXboxInput.LStick.performed += LeftStickInput;
-                inputController.ThirdPersonXboxInput.LStick.Enable();
-                inputController.ThirdPersonXboxInput.RStick.performed += LockOnInput;
-                inputController.ThirdPersonXboxInput.RStick.Enable();
-            }
+            inputController.ThirdPersonXboxInput.LStick.performed += LeftStickInput;
+            inputController.ThirdPersonXboxInput.LStick.Enable();
+            inputController.ThirdPersonXboxInput.RStick.performed += LockOnInput;
+            inputController.ThirdPersonXboxInput.RStick.Enable();
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
-            if (xbox)
-            {
-                inputController.ThirdPersonXboxInput.Select.performed -= SelectInput;
-                inputController.ThirdPersonXboxInput.Select.Disable();
+            if (!xbox) return;
+            inputController.ThirdPersonXboxInput.Select.performed -= SelectInput;
+            inputController.ThirdPersonXboxInput.Select.Disable();
 
-                inputController.ThirdPersonXboxInput.LStick.performed -= LeftStickInput;
-                inputController.ThirdPersonXboxInput.LStick.Disable();
-                inputController.ThirdPersonXboxInput.RStick.performed -= LockOnInput;
-                inputController.ThirdPersonXboxInput.RStick.Disable();
-            }
+            inputController.ThirdPersonXboxInput.LStick.performed -= LeftStickInput;
+            inputController.ThirdPersonXboxInput.LStick.Disable();
+            inputController.ThirdPersonXboxInput.RStick.performed -= LockOnInput;
+            inputController.ThirdPersonXboxInput.RStick.Disable();
         }
 
-        void Initialize()
+        private void Initialize()
         {
             m_lockOnTransform.value = null;
 
@@ -107,7 +105,7 @@ namespace SA.Input
             cameraTransform = cameraManager.m_transform;
         }
 
-        void ControllerCheck()
+        private void ControllerCheck()
         {
             inputController = new ThirdPersonInput();
             if (Gamepad.current != null)
@@ -123,7 +121,8 @@ namespace SA.Input
         #endregion
 
         #region Updates
-        void Update()
+
+        private void Update()
         {
             delta = Time.deltaTime;
             lockOnBuffer -= delta;
@@ -134,6 +133,7 @@ namespace SA.Input
                 case GamePhase.IN_GAME:
                     ApplyInput_Update();
                     stateManager.Tick(delta);
+                    cameraManager.Tick(delta, camHorizontal, camVertical);//    TODO : CAUTION!!! was in Fixed Update
                     break;
                 case GamePhase.IN_INVENTORY:
                     break;
@@ -142,7 +142,7 @@ namespace SA.Input
             }
         }
 
-        void FixedUpdate()
+        private void FixedUpdate()
         {
             delta = Time.fixedDeltaTime;
             GetInput_FixedUpdate();
@@ -151,8 +151,7 @@ namespace SA.Input
             {
                 case GamePhase.IN_GAME:
                     ApplyInput_FixedUpdate();
-                    stateManager.Fixed_Tick(delta);
-                    cameraManager.Tick(delta, camHorizontal, camVertical);
+                    stateManager.Fixed_Tick(delta);    
                     break;
                 case GamePhase.IN_INVENTORY:
                     break;
@@ -161,7 +160,7 @@ namespace SA.Input
             }
         }
 
-        void GetInput_Update()
+        private void GetInput_Update()
         {
             if (!xbox)
             {
@@ -189,7 +188,7 @@ namespace SA.Input
                 b_timer += delta;
         }
 
-        void GetInput_FixedUpdate()
+        private void GetInput_FixedUpdate()
         {
             if (!xbox)
             {
@@ -208,7 +207,7 @@ namespace SA.Input
             }
         }
 
-        void LockOnSafetyCheck()
+        private void LockOnSafetyCheck()
         {
             if (isLockedOn)
             {
@@ -255,7 +254,7 @@ namespace SA.Input
                 stateManager.m_input.lockOnTransform = m_lockOnTransform.value;
         }
 
-        void ApplyInput_Update()
+        private void ApplyInput_Update()
         {
             stateManager.m_input.rb = rb_input;
             stateManager.m_input.lb = lb_input;
@@ -285,7 +284,7 @@ namespace SA.Input
             stateManager.m_states.isLockedOn = isLockedOn;
         }
 
-        void ApplyInput_FixedUpdate()
+        private void ApplyInput_FixedUpdate()
         {
             //  Pass Move Input to StateManager Input
             stateManager.m_input.vertical = vertical;
@@ -304,17 +303,18 @@ namespace SA.Input
         #endregion
 
         #region Input Events
-        void SelectInput(InputAction.CallbackContext context)
+
+        private static void SelectInput(InputAction.CallbackContext context)
         {   //  TODO : apply behaviour
             Debug.Log("Select Button was pressed!");
         }
 
-        void LeftStickInput(InputAction.CallbackContext context)
+        private static void LeftStickInput(InputAction.CallbackContext context)
         {   //  TODO : apply behaviour
             Debug.Log("Left Stick was pressed!");
         }
 
-        void LockOnInput(InputAction.CallbackContext context)
+        private void LockOnInput(InputAction.CallbackContext context)
         {
             isLockedOn = !isLockedOn;
 

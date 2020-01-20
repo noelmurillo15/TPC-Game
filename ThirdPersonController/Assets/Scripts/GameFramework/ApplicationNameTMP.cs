@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ApplicationNameTMP : MonoBehaviour
 {
-    void Awake()
+    private void Awake()
     {
         GetComponent<TMP_Text>().text = Application.productName.ToString();
     }

@@ -6,24 +6,24 @@ using UnityEngine.InputSystem;
 [CreateAssetMenu]
 public class UI_InputHandler : ScriptableObject
 {
-    Gamepad gamepad;
-    Mouse mouse;
-    Keyboard keyboard;
-    GameSettingsManager gameSettingsUI;
-    InputAction pauseAction = null;
+    private Gamepad gamepad;
+    private Mouse mouse;
+    private Keyboard keyboard;
+    private GameSettingsManager gameSettingsUI;
+    private InputAction pauseAction = null;
 
 
     #region Unity Events
-    void Awake()
+
+    private void Awake()
     {
         Debug.Log("UI_Input::Awake()");
-        if (pauseAction != null)
-        {
-            pauseAction = new InputAction("pause", binding: "<Gamepad>/start");
-            pauseAction.AddBinding("<Keyboard>/escape");
-        }
+        if (pauseAction == null) return;
+        pauseAction = new InputAction("pause", binding: "<Gamepad>/start");
+        pauseAction.AddBinding("<Keyboard>/escape");
     }
-    void OnEnable()
+
+    private void OnEnable()
     {
         Debug.Log("UI_Input::OnEnable()");
         if (Gamepad.current != null)
@@ -52,7 +52,8 @@ public class UI_InputHandler : ScriptableObject
             }
         }
     }
-    void OnDisable()
+
+    private void OnDisable()
     {
         Debug.Log("UI_Input::OnDisable()");
         if (gamepad != null)
@@ -63,7 +64,7 @@ public class UI_InputHandler : ScriptableObject
         mouse = null;
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         Debug.Log("UI_Input::OnDestroy()");
         pauseAction.Dispose();
@@ -72,7 +73,8 @@ public class UI_InputHandler : ScriptableObject
     #endregion
 
     #region Helper Functions
-    void EnableGamepad()
+
+    private void EnableGamepad()
     {
         Debug.Log("UI_Input::EnableGamepad()");
         gamepad = Gamepad.current;
@@ -88,7 +90,7 @@ public class UI_InputHandler : ScriptableObject
         pauseAction.Enable();
     }
 
-    void DisableGamepad()
+    private void DisableGamepad()
     {
         Debug.Log("UI_Input::DisableGamepad()");
         if (pauseAction != null)
@@ -105,30 +107,27 @@ public class UI_InputHandler : ScriptableObject
     {
         Debug.Log("UI_Input::AssignGameSettings()");
         gameSettingsUI = gsm;
-        if (gamepad == null)
+        if (gamepad != null) return;
+        if (Gamepad.current != null)
         {
-            if (Gamepad.current != null)
-            {
-                EnableGamepad();
-            }
+            EnableGamepad();
         }
     }
     #endregion
 
     #region Input Callbacks
-    public void OnPauseAction(InputAction.CallbackContext context)
+
+    private void OnPauseAction(InputAction.CallbackContext context)
     {
         Debug.Log("UI_Input::OnPauseAction()");
-        if (gameSettingsUI != null)
+        if (gameSettingsUI == null) return;
+        if (!gameSettingsUI.paused)
         {
-            if (!gameSettingsUI.paused)
-            {
-                gameSettingsUI.Pause();
-            }
-            else
-            {
-                gameSettingsUI.Resume();
-            }
+            gameSettingsUI.Pause();
+        }
+        else
+        {
+            gameSettingsUI.Resume();
         }
     }
     #endregion

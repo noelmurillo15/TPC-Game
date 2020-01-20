@@ -10,7 +10,7 @@ namespace SA.Utilities
         public OnHit onHit;
 
 
-        void CheckCollisions()
+        private void CheckCollisions()
         {
 
         }
@@ -18,13 +18,8 @@ namespace SA.Utilities
         private void OnTriggerEnter(Collider other)
         {
             StateManager m_StateManager = other.transform.GetComponentInChildren<StateManager>();
-            if (m_StateManager != null)
-            {
-                if (onHit != null)
-                {
-                    onHit(m_StateManager);
-                }
-            }
+            if (m_StateManager == null) return;
+            onHit?.Invoke(m_StateManager);
         }
     }
 }

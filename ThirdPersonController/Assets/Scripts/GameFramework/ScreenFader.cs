@@ -10,11 +10,11 @@ namespace GameFramework
 {
     public class ScreenFader : MonoBehaviour
     {
-        CanvasGroup canvasGroup;
-        Coroutine currentFade = null;
+        private CanvasGroup canvasGroup;
+        private Coroutine currentFade = null;
 
 
-        void Awake()
+        private void Awake()
         {
             canvasGroup = GetComponent<CanvasGroup>();
         }
@@ -29,19 +29,19 @@ namespace GameFramework
             return Fade(1f, _time);
         }
 
-        public Coroutine FadeIn(float _time)
+        private Coroutine FadeIn(float _time)
         {
             return Fade(0f, _time);
         }
 
-        public Coroutine Fade(float _target, float _time)
+        private Coroutine Fade(float _target, float _time)
         {
             if (currentFade != null) { StopCoroutine(currentFade); }
             currentFade = StartCoroutine(FadeRoutine(_target, _time));
             return currentFade;
         }
 
-        IEnumerator FadeRoutine(float _target, float _time)
+        private IEnumerator FadeRoutine(float _target, float _time)
         {
             while (!Mathf.Approximately(canvasGroup.alpha, _target))
             {

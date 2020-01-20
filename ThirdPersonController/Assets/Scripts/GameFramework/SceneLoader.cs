@@ -13,9 +13,9 @@ namespace GameFramework
 {
     public class SceneLoader : MonoBehaviour
     {
-        [SerializeField] string[] sceneNames = null;
-        [SerializeField] int currentSceneIndex = 0;
-        [SerializeField] float transitionDelay = 2f;
+        [SerializeField] private string[] sceneNames = null;
+        [SerializeField] private int currentSceneIndex = 0;
+        [SerializeField] private float transitionDelay = 2f;
 
         public GameEvent OnLoadScene;
         public GameEvent OnFinishLoadScene;
@@ -61,23 +61,22 @@ namespace GameFramework
 
         public void LoadLevel(string name)
         {
-            for (int x = 0; x < sceneNames.Length; x++)
+            foreach (var t in sceneNames)
             {
-                if (sceneNames[x].Contains(name))
-                {
-                    StartCoroutine(LoadNewScene(sceneNames[x]));
-                    return;
-                }
+                if (!t.Contains(name)) continue;
+                StartCoroutine(LoadNewScene(t));
+                return;
             }
+
             Debug.LogError("SceneLoader::Could not find scene : " + name);
         }
 
-        public string GetCurrentSceneName()
+        public static string GetCurrentSceneName()
         {
             return SceneManager.GetActiveScene().name;
         }
 
-        IEnumerator LoadNewScene(int index)
+        private IEnumerator LoadNewScene(int index)
         {
             OnLoadScene.Raise();
             Debug.Log("__________ Loading : " + sceneNames[index] + " Scene __________");
@@ -90,7 +89,7 @@ namespace GameFramework
             OnFinishLoadScene.Raise();
         }
 
-        IEnumerator LoadNewScene(string name)
+        private IEnumerator LoadNewScene(string name)
         {
             OnLoadScene.Raise();
             Debug.Log("__________ Loading : " + name + " Scene __________");

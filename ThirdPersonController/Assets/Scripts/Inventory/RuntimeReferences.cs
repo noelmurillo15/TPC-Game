@@ -21,12 +21,10 @@ namespace SA.Inventory
 
         public void UnregisterRuntimeWeapons(RuntimeWeapon _runtimeWeapon)
         {
-            if (runtimeWeapons.Contains(_runtimeWeapon))
-            {
-                if (_runtimeWeapon.weaponInstance)
-                    Destroy(_runtimeWeapon.weaponInstance);
-                runtimeWeapons.Remove(_runtimeWeapon);
-            }
+            if (!runtimeWeapons.Contains(_runtimeWeapon)) return;
+            if (_runtimeWeapon.weaponInstance)
+                Destroy(_runtimeWeapon.weaponInstance);
+            runtimeWeapons.Remove(_runtimeWeapon);
         }
     }
 }

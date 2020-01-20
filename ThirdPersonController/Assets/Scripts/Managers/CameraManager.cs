@@ -18,25 +18,25 @@ namespace SA.Managers
         [HideInInspector] public Transform m_pivot;
         [HideInInspector] public Transform m_cameraTransform;
 
-        float turnSmoothing = 0.1f;
+        private float turnSmoothing = 0.1f;
         public float minAngle = -45f;
         public float maxAngle = 45f;
 
-        float smoothX, smoothY;
-        float smoothXVelocity, smoothYVelocity;
+        private float smoothX, smoothY;
+        private float smoothXVelocity, smoothYVelocity;
 
-        float curZ;
+        private float curZ;
         public float defZ;
         public float zSpeed;
 
         public float lookAngle;
         public float tiltAngle;
 
-        bool usedRightAxis;
-        bool changeTagetLeft;
-        bool changeTargetRight;
+        private bool usedRightAxis;
+        private bool changeTagetLeft;
+        private bool changeTargetRight;
 
-        StateManager m_stateManager;
+        private StateManager m_stateManager;
         #endregion
 
 
@@ -61,12 +61,12 @@ namespace SA.Managers
             HandlePivotPosition();
         }
 
-        void FollowTarget(float _delta)
+        private void FollowTarget(float _delta)
         {
             transform.position = Vector3.Lerp(transform.position, m_target.position, _delta);
         }
 
-        void HandleRotation(float _delta, float _vertical, float _horizontal, float targetSpeed)
+        private void HandleRotation(float _delta, float _vertical, float _horizontal, float targetSpeed)
         {
             if (turnSmoothing > 0)
             {   //  TurnSmoothing - calculate smooth damp
@@ -114,7 +114,7 @@ namespace SA.Managers
             m_pivot.localRotation = Quaternion.Euler(tiltAngle, 0f, 0f);
         }
 
-        void HandlePivotPosition()
+        private void HandlePivotPosition()
         {
             float targetZ = defZ;
             CameraCollision(defZ, ref targetZ);
@@ -126,7 +126,7 @@ namespace SA.Managers
             m_cameraTransform.localPosition = tp;
         }
 
-        void CameraCollision(float targetZ, ref float actualZ)
+        private static void CameraCollision(float targetZ, ref float actualZ)
         {   //  TODO : Implement
 
         }

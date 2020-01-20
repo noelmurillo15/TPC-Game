@@ -6,8 +6,8 @@ namespace SA
 {
     public class AnimatorHook : MonoBehaviour
     {   //  Used to help with Root Motion and Animaton callback events
-        StateManager stateManager;
-        Animator m_animator;
+        private StateManager stateManager;
+        private Animator m_animator;
         public float rm_mult;
         public bool isEnemy = false;    //  TODO : remove this later
 
@@ -21,7 +21,8 @@ namespace SA
         }
 
         #region Animation Callback Events
-        void OnAnimatorMove()
+
+        private void OnAnimatorMove()
         {
             stateManager.m_input.animationDelta = m_animator.deltaPosition;
             stateManager.m_input.animationDelta.y = 0f;
@@ -29,13 +30,11 @@ namespace SA
 
             if (rm_mult == 0) rm_mult = 1;
 
-            if (!isEnemy)
+            if (isEnemy) return;
+            Vector3 v = (stateManager.m_input.animationDelta * rm_mult) / stateManager.m_delta;
+            if (!float.IsNaN(v.x))
             {
-                Vector3 v = (stateManager.m_input.animationDelta * rm_mult) / stateManager.m_delta;
-                if (!float.IsNaN(v.x))
-                {
-                    stateManager.m_rigidbody.velocity = v;
-                }
+                stateManager.m_rigidbody.velocity = v;
             }
         }
 

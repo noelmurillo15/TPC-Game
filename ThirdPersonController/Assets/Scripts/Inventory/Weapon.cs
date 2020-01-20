@@ -1,4 +1,5 @@
-﻿using SA.Input;
+﻿using System.Linq;
+using SA.Input;
 using UnityEngine;
 using SA.Scriptable;
 using SA.Scriptable.Variables;
@@ -16,24 +17,15 @@ namespace SA.Inventory
         public LeftHandPosition leftHandPosition;
 
 
-        public ActionHolder GetActionHolder(InputType _input)
+        private ActionHolder GetActionHolder(InputType _input)
         {
-            for (int x = 0; x < actions.Length; x++)
-            {
-                if (actions[x].input == _input)
-                {
-                    return actions[x];
-                }
-            }
-
-            return null;
+            return actions.FirstOrDefault(t => t.input == _input);
         }
 
         public Action GetAction(InputType _input)
         {
             ActionHolder ah = GetActionHolder(_input);
-            if (ah == null) return null;
-            return ah.action;
+            return ah?.action;
         }
     }
 

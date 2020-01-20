@@ -11,7 +11,7 @@ namespace SA.Inventory
     public class Inventory : ScriptableObject
     {
         public List<Item> all_items = new List<Item>();
-        Dictionary<string, int> dict = new Dictionary<string, int>();
+        private Dictionary<string, int> dict = new Dictionary<string, int>();
 
 
         public void Initialize()

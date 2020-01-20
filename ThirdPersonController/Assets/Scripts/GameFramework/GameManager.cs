@@ -8,6 +8,7 @@ using System.Collections;
 using GameFramework.Events;
 using GameFramework.External;
 
+//    TODO : DO NOT REFACTOR - doing so will cause an error with containers
 
 namespace GameFramework.Managers
 {
@@ -15,7 +16,7 @@ namespace GameFramework.Managers
     {
         #region GameManager Class Members
         //  Singleton Design Pattern
-        static GameManager _instance;
+        private static GameManager _instance;
         public static GameManager Instance
         {
             get
@@ -35,14 +36,14 @@ namespace GameFramework.Managers
         public GameEvent OnApplicationQuitEvent = null;
 
         //  FPS tracker
-        float deltaTime = 0.0f;
+        private float deltaTime = 0.0f;
 
         //  Flags
-        bool displayFPS = false;
-        bool isGameOver = false;
-        bool isInventoryActive = false;
-        bool isMenuActive = false;
-        bool isPauseActive = false;
+        private bool displayFPS = false;
+        private bool isGameOver = false;
+        private bool isInventoryActive = false;
+        private bool isMenuActive = false;
+        private bool isPauseActive = false;
 
         public bool IsInventoryUIActive { get { return isInventoryActive; } set { isInventoryActive = value; } }
         public bool IsPauseUIActive { get { return isPauseActive; } set { isPauseActive = value; } }
@@ -64,7 +65,7 @@ namespace GameFramework.Managers
             _instance = this;
 
             // Game Settings
-            GameSettingsManager.settingsLoadedINI = false;
+            GameSettingsManager.SettingsLoadedIni = false;
             gameSettings = new SaveSettings();
             gameSettings.Initialize();
 
@@ -83,12 +84,12 @@ namespace GameFramework.Managers
             if (sceneLoader != null) { sceneLoader.Initialize(); }
         }
 
-        void Update()
+        private void Update()
         {
             deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
         }
 
-        void OnGUI()
+        private void OnGUI()
         {
             if (displayFPS)
             {
@@ -142,7 +143,7 @@ namespace GameFramework.Managers
             StartCoroutine(QuitSequence());
         }
 
-        IEnumerator QuitSequence()
+        private IEnumerator QuitSequence()
         {
             gameSettings.SaveGameSettings();
             yield return screenFader.FadeOut(3f);
@@ -150,7 +151,7 @@ namespace GameFramework.Managers
             sceneLoader.LoadCreditsScene();
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
             if (GameManager.Instance == this)
             {

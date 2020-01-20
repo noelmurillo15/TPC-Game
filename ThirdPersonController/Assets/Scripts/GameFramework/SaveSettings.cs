@@ -15,8 +15,8 @@ namespace GameFramework.External
     {
         #region Settings
         //  File
-        static string jsonString;
-        static string fileName = "GameSettings.json";
+        private static string jsonString;
+        private static string fileName = "GameSettings.json";
 
         //  Audio
         public float masterVolume;
@@ -35,7 +35,7 @@ namespace GameFramework.External
         #endregion
 
 
-        static object CreateJsonObj(string jsonString)
+        private static object CreateJsonObj(string jsonString)
         {
             Debug.Log("GameSettings::Creating Json Object");
             return JsonUtility.FromJson<SaveSettings>(jsonString);
@@ -64,15 +64,15 @@ namespace GameFramework.External
             if (VerifyDirectory(path)) { File.Delete(path); }
 
             //  Get Current Game Settings
-            masterVolume = GameSettingsManager.masterVolumeINI;
-            vsync = GameSettingsManager.vsyncINI;
-            msaa = GameSettingsManager.msaaINI;
-            renderDistance = GameSettingsManager.renderDistINI;
-            textureLimit = GameSettingsManager.textureLimitINI;
-            shadowDist = GameSettingsManager.shadowDistINI;
-            shadowCascade = GameSettingsManager.shadowCascadeINI;
-            anisoLevel = GameSettingsManager.anisoFilterLevelINI;
-            currentQualityLevel = GameSettingsManager.currentQualityLevelINI;
+            masterVolume = GameSettingsManager.MasterVolumeIni;
+            vsync = GameSettingsManager.VsyncIni;
+            msaa = GameSettingsManager.MsaaIni;
+            renderDistance = GameSettingsManager.RenderDistIni;
+            textureLimit = GameSettingsManager.TextureLimitIni;
+            shadowDist = GameSettingsManager.ShadowDistIni;
+            shadowCascade = GameSettingsManager.ShadowCascadeIni;
+            anisoLevel = GameSettingsManager.AnisoFilterLevelIni;
+            currentQualityLevel = GameSettingsManager.CurrentQualityLevelIni;
 
             //  Write to Json Save file
             jsonString = JsonUtility.ToJson(this);
@@ -89,7 +89,7 @@ namespace GameFramework.External
             }
         }
 
-        void OverwriteGameSettings(String jsonString)
+        private void OverwriteGameSettings(String jsonString)
         {
             Debug.Log("GameSetting::Overwriting INI game settings");
             try
@@ -116,22 +116,21 @@ namespace GameFramework.External
             //     ", cascade " + shadowCascade + ", MSAA : " + msaa + ", aniso : " + anisoLevel + ", texture limit : " + textureLimit);
 
             //  Overwrite Game Settings
-            GameSettingsManager.masterVolumeINI = masterVolume;
-            GameSettingsManager.vsyncINI = vsync;
-            GameSettingsManager.msaaINI = msaa;
-            GameSettingsManager.renderDistINI = renderDistance;
-            GameSettingsManager.textureLimitINI = textureLimit;
-            GameSettingsManager.shadowDistINI = shadowDist;
-            GameSettingsManager.shadowCascadeINI = shadowCascade;
-            GameSettingsManager.anisoFilterLevelINI = anisoLevel;
-            GameSettingsManager.currentQualityLevelINI = currentQualityLevel;
-            GameSettingsManager.settingsLoadedINI = true;
+            GameSettingsManager.MasterVolumeIni = masterVolume;
+            GameSettingsManager.VsyncIni = vsync;
+            GameSettingsManager.MsaaIni = msaa;
+            GameSettingsManager.RenderDistIni = renderDistance;
+            GameSettingsManager.TextureLimitIni = textureLimit;
+            GameSettingsManager.ShadowDistIni = shadowDist;
+            GameSettingsManager.ShadowCascadeIni = shadowCascade;
+            GameSettingsManager.AnisoFilterLevelIni = anisoLevel;
+            GameSettingsManager.CurrentQualityLevelIni = currentQualityLevel;
+            GameSettingsManager.SettingsLoadedIni = true;
         }
 
-        bool VerifyDirectory(string filePath)
+        private bool VerifyDirectory(string filePath)
         {
-            if (File.Exists(filePath)) { return true; }
-            else { return false; }
+            return File.Exists(filePath);
         }
 
 

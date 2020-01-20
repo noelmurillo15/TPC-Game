@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 
 
+//    TODO : DO NOT REFACTOR - doing so will cause an error with containers
+
 namespace GameFramework.Events
 {
     [CreateAssetMenu(menuName = "GameEvent")]
     public class GameEvent : ScriptableObject
     {
         public string eventName = string.Empty;
-        List<GameEventListeners> listeners = new List<GameEventListeners>();
+        private List<GameEventListeners> listeners = new List<GameEventListeners>();
 
 
         public void Raise()

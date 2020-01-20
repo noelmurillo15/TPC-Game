@@ -15,31 +15,31 @@ namespace SA.Utilities
             InitColliders(_stateManager);
         }
 
-        void InitColliders(StateManager _stateManager)
+        private void InitColliders(StateManager _stateManager)
         {
-            for (int x = 0; x < damageColliders.Length; x++)
+            foreach (var t in damageColliders)
             {
-                damageColliders[x].isTrigger = true;
-                damageColliders[x].enabled = false;
+                t.isTrigger = true;
+                t.enabled = false;
 
-                DamageColliders d = damageColliders[x].gameObject.AddComponent<DamageColliders>();
+                DamageColliders d = t.gameObject.AddComponent<DamageColliders>();
                 d.onHit = _stateManager.HandleDamageCollision;
             }
         }
 
         public void OpenDamageColliders()
         {
-            for (int i = 0; i < damageColliders.Length; i++)
+            foreach (var t in damageColliders)
             {
-                damageColliders[i].enabled = true;
+                t.enabled = true;
             }
         }
 
         public void CloseDamageColliders()
         {
-            for (int i = 0; i < damageColliders.Length; i++)
+            foreach (var t in damageColliders)
             {
-                damageColliders[i].enabled = false;
+                t.enabled = false;
             }
         }
     }
