@@ -43,6 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e98d28544c8f8244b9e804f58ea361f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onGamePauseEvent: {fileID: 11400000, guid: 2ddc1194658849545a5e09c4f0fca76f, type: 2}
+  onGameResumeEvent: {fileID: 11400000, guid: 94f4f5d27b45d9b4aa13ba85d2f9fee3, type: 2}
   xbox: 0
   currentPhase: 0
   stateManager: {fileID: 0}

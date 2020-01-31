@@ -1,17 +1,19 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using SA.Managers;
 using SA.Scriptable.Variables;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using ANM.Framework;
 
 
 namespace SA.Input
 {
-    //  TODO : add persistant game manager and attach this script to it -Singleton
+    //  TODO : add persistent game manager and attach this script to it -Singleton
     public class InputHandler : MonoBehaviour
     {   //  Detects Input and passes it along to StateManager & CameraManager
         #region Class Member Variables
+        public GameEvent onGamePauseEvent = null;
+        public GameEvent onGameResumeEvent = null;
         //  New Input System        
         [SerializeField] private bool xbox = false;
         private Gamepad gamepad;
@@ -96,7 +98,7 @@ namespace SA.Input
         {
             m_lockOnTransform.value = null;
 
-            stateManager.m_resourcesManager = Resources.Load("ResourcesManager") as Managers.ResourcesManager;
+            stateManager.m_resourcesManager = Resources.Load("ResourcesManager") as ResourcesManager;
             stateManager.m_resourcesManager.Initialize();
             stateManager.Initialize();
 
@@ -304,9 +306,16 @@ namespace SA.Input
 
         #region Input Events
 
-        private static void SelectInput(InputAction.CallbackContext context)
-        {   //  TODO : apply behaviour
-            Debug.Log("Select Button was pressed!");
+        private void SelectInput(InputAction.CallbackContext context)
+        {
+            if (GameManager.Instance.GetIsGamePaused())
+            {
+                onGameResumeEvent.Raise();
+            }
+            else
+            {
+                onGamePauseEvent.Raise();
+            }
         }
 
         private static void LeftStickInput(InputAction.CallbackContext context)
