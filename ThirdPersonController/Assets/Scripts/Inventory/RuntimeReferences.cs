@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-
 namespace SA.Inventory
 {
     [CreateAssetMenu(menuName = "Single Instances/Runtime References")]
@@ -22,8 +21,8 @@ namespace SA.Inventory
         public void UnregisterRuntimeWeapons(RuntimeWeapon _runtimeWeapon)
         {
             if (!runtimeWeapons.Contains(_runtimeWeapon)) return;
-            if (_runtimeWeapon.weaponInstance)
-                Destroy(_runtimeWeapon.weaponInstance);
+            if (_runtimeWeapon.WeaponInstance)
+                Destroy(_runtimeWeapon.WeaponInstance);
             runtimeWeapons.Remove(_runtimeWeapon);
         }
     }

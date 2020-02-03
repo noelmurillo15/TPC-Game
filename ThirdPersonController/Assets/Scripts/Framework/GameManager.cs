@@ -11,27 +11,22 @@ namespace ANM.Framework
 {
     public sealed class GameManager : MonoBehaviour
     {
-        private static GameManager _instance;
-        public static GameManager Instance
-        {  get  {  if (_instance == null) { _instance = FindObjectOfType<GameManager>(); }  return _instance;  }  }
-        
+        public static GameManager Instance { get; private set; }
+
         [HideInInspector] public SceneTransitionManager sceneTransitionManager = null;
-        public GameEvent onApplicationQuitEvent = null;
-        
-        public bool IsSceneTransitioning { get; set; } = false;
-        
-        [SerializeField] private float _deltaTime = 0.0f;
         [SerializeField] private bool _displayFps = false;
         [SerializeField] private bool _isMainMenuActive = false;
         [SerializeField] private bool _isGamePaused = false;
+        
+        private float _deltaTime = 0.0f;
         private SaveSettings _saveSettings;
 
 
         private void Awake()
         {
-            if (_instance != null && _instance != this) { Destroy(gameObject); return; }
+            if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             DontDestroyOnLoad(gameObject);
-            _instance = this;
+            Instance = this;
             
             SaveSettings.SettingsLoadedIni = false;
             _saveSettings = new SaveSettings();
@@ -87,7 +82,7 @@ namespace ANM.Framework
         #region Game Events
         public void StartGameEvent()
         {
-            sceneTransitionManager.LoadSceneByBuildIndex(2);
+            sceneTransitionManager.LoadGameplay();
         }
 
         public void ReloadScene()
@@ -118,14 +113,9 @@ namespace ANM.Framework
             sceneTransitionManager.SwitchToLoadedScene(sceneName);
         }
 
-        public void UnloadAllLoadedScenes()
-        {
-            sceneTransitionManager.UnloadAllSceneExcept("ExitScreen");
-        }
-
         public void UnloadScenesExceptMenu()
         {
-            sceneTransitionManager.UnloadAllSceneExcept("Menu Ui");
+            sceneTransitionManager.UnloadAllSceneExceptMenu();
         }
 
         public bool GetIsMainMenuActive()

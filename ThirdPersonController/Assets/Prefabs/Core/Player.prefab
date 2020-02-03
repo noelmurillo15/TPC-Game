@@ -11,8 +11,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 9.113905, y: 5.851486, z: 18.633858}
-  m_Center: {x: 0.013884611, y: -0.26766545, z: 8.125905}
+  m_Size: {x: 9.113905, y: 5.851486, z: 17}
+  m_Center: {x: 0.013884611, y: -0.26766545, z: 8.5}
 --- !u!65 &4776187337489052983
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -86,7 +86,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.4
+  m_Radius: 0.3
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
@@ -102,8 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d03e37443e2bef641bd1263f3b018f41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_characterState: 0
-  m_states:
+  states:
     onGround: 0
     isRunning: 0
     isLockedOn: 0
@@ -113,7 +112,7 @@ MonoBehaviour:
     isRotateEnabled: 0
     isAttackEnabled: 0
     isSpellCasting: 0
-    isIKEnabled: 0
+    isIkEnabled: 0
     isUsingItem: 0
     isAbleToBeParried: 0
     isParryOn: 0
@@ -121,9 +120,10 @@ MonoBehaviour:
     animIsInteracting: 0
     isInteracting: 0
     closeWeapons: 0
-    isInvisable: 0
+    isInvisible: 0
     isGettingHit: 0
-  m_input:
+  characterState: 0
+  inputVar:
     horizontal: 0
     vertical: 0
     moveAmount: 0
@@ -135,19 +135,9 @@ MonoBehaviour:
     rb: 0
     lb: 0
     targetRollSpeed: 0
-  m_stats: {fileID: 11400000, guid: 4211322a3dba51344992ff160fc3998b, type: 2}
-  m_weaponManager:
+  controlStats: {fileID: 11400000, guid: 4211322a3dba51344992ff160fc3998b, type: 2}
+  weaponManager:
     actions:
-    - inputType: 0
-      action:
-        actionType: 0
-        animationAction: {fileID: 0}
-      isMirrored: 0
-    - inputType: 1
-      action:
-        actionType: 0
-        animationAction: {fileID: 0}
-      isMirrored: 1
     - inputType: 2
       action:
         actionType: 0
@@ -158,19 +148,29 @@ MonoBehaviour:
         actionType: 0
         animationAction: {fileID: 0}
       isMirrored: 1
-  m_inventoryManager:
+    - inputType: 0
+      action:
+        actionType: 0
+        animationAction: {fileID: 0}
+      isMirrored: 0
+    - inputType: 1
+      action:
+        actionType: 0
+        animationAction: {fileID: 0}
+      isMirrored: 1
+  inventoryManager:
     rightItem: {fileID: 11400000, guid: 2b91bdd9a058cb145963c254984d53cd, type: 2}
     leftItem: {fileID: 11400000, guid: 820f0b695a9ab9548b8946ee09224591, type: 2}
     consumableHandSlot: {fileID: 0}
     spellHandSlot: {fileID: 0}
-  m_resourcesManager: {fileID: 0}
-  m_activeModel: {fileID: 0}
-  m_delta: 0
+  resourcesManager: {fileID: 0}
+  activeModel: {fileID: 0}
+  deltaTime: 0
   forceInit: 0
-  m_transform: {fileID: 0}
-  m_animator: {fileID: 0}
-  m_rigidbody: {fileID: 0}
-  m_collider: {fileID: 0}
+  myTransform: {fileID: 0}
+  myAnimator: {fileID: 0}
+  myRigidbody: {fileID: 0}
+  myCollider: {fileID: 0}
   animatorHook: {fileID: 0}
   ignoreLayers:
     serializedVersion: 2
@@ -198,10 +198,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5384227096225598490}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: 8e9bc542c2a033444aa90ee34b1eb2ed,
+    - target: {fileID: -6057140222963153312, guid: 8e9bc542c2a033444aa90ee34b1eb2ed,
         type: 3}
-      propertyPath: m_Name
-      value: viking
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: e8976f3ee72d8684f8bdad3a2921c4a9, type: 2}
+    - target: {fileID: -6057140222963153312, guid: 8e9bc542c2a033444aa90ee34b1eb2ed,
+        type: 3}
+      propertyPath: m_CullingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6057140222963153312, guid: 8e9bc542c2a033444aa90ee34b1eb2ed,
+        type: 3}
+      propertyPath: m_UpdateMode
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 8e9bc542c2a033444aa90ee34b1eb2ed,
         type: 3}
@@ -258,11 +268,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -6057140222963153312, guid: 8e9bc542c2a033444aa90ee34b1eb2ed,
-        type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: e8976f3ee72d8684f8bdad3a2921c4a9, type: 2}
     - target: {fileID: -4154779852888883423, guid: 8e9bc542c2a033444aa90ee34b1eb2ed,
         type: 3}
       propertyPath: m_LocalRotation.x
@@ -272,6 +277,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.061397478
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 8e9bc542c2a033444aa90ee34b1eb2ed,
+        type: 3}
+      propertyPath: m_Name
+      value: viking
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8e9bc542c2a033444aa90ee34b1eb2ed, type: 3}

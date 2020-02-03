@@ -2,7 +2,7 @@
     "name": "ThirdPersonInput",
     "maps": [
         {
-            "name": "ThirdPersonXboxInput",
+            "name": "CharacterInput",
             "id": "9e1a7afd-7157-4bca-b930-a0ba213e2547",
             "actions": [
                 {
@@ -34,10 +34,21 @@
                 {
                     "name": "",
                     "id": "fb93c7ad-847b-4010-bfa5-7c4fa72ece08",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a1c13fb7-c659-43aa-a641-7d564579d2bc",
                     "path": "<XInputController>/select",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Xbox",
                     "action": "Select",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -45,10 +56,21 @@
                 {
                     "name": "",
                     "id": "9f285ab2-b14f-4730-84ff-57bf9262bbbe",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "LStick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e67ca712-73af-4dff-8676-f630cb0d6700",
                     "path": "<XInputController>/leftStickPress",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Xbox",
                     "action": "LStick",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -56,10 +78,21 @@
                 {
                     "name": "",
                     "id": "46ce1872-15a3-4143-92c2-16af3cb98d2f",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "RStick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fc312608-3678-4e0f-aeae-f31cc55d5f76",
                     "path": "<XInputController>/rightStickPress",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Xbox",
                     "action": "RStick",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -67,5 +100,33 @@
             ]
         }
     ],
-    "controlSchemes": []
+    "controlSchemes": [
+        {
+            "name": "Xbox",
+            "bindingGroup": "Xbox",
+            "devices": [
+                {
+                    "devicePath": "<XInputController>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "PC",
+            "bindingGroup": "PC",
+            "devices": [
+                {
+                    "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
 }

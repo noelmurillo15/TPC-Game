@@ -7,10 +7,86 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5384227096225598493, guid: 3a48b3449cf16214b8d1402b80f80d76,
+    - target: {fileID: 3993623613908424454, guid: 3a48b3449cf16214b8d1402b80f80d76,
         type: 3}
-      propertyPath: m_Name
-      value: Enemy
+      propertyPath: m_CullingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3993623613908424454, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: m_UpdateMode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4021162175961415892, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4021162175961415892, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4776187337489052983, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4776187337489052983, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 10.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4776187337489052983, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4776187337489052983, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: m_Center.z
+      value: 22.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: m_weaponManager.actions.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: weaponManager.actions.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: m_stats
+      value: 
+      objectReference: {fileID: 11400000, guid: 4211322a3dba51344992ff160fc3998b,
+        type: 2}
+    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: m_inventoryManager.rightItem
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: m_inventoryManager.leftItem
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: forceInit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: inventoryManager.rightItem
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: inventoryManager.leftItem
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5384227096225598490, guid: 3a48b3449cf16214b8d1402b80f80d76,
         type: 3}
@@ -67,45 +143,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
-        type: 3}
-      propertyPath: m_weaponManager.actions.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
-        type: 3}
-      propertyPath: m_stats
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
-        type: 3}
-      propertyPath: m_inventoryManager.rightItem
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
-        type: 3}
-      propertyPath: m_inventoryManager.leftItem
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
-        type: 3}
-      propertyPath: forceInit
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4021162175961415892, guid: 3a48b3449cf16214b8d1402b80f80d76,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4021162175961415892, guid: 3a48b3449cf16214b8d1402b80f80d76,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5384227096225598492, guid: 3a48b3449cf16214b8d1402b80f80d76,
         type: 3}
       propertyPath: m_Mass
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384227096225598493, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: m_Name
+      value: Enemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3a48b3449cf16214b8d1402b80f80d76, type: 3}

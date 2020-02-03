@@ -68,10 +68,15 @@ namespace ANM.Framework
                 SceneManager.UnloadSceneAsync(_sceneNames[0]);
             };
         }
+
+        public void LoadGameplay()
+        {
+            StartCoroutine(LoadMultiScene(GameplaySceneName));
+        }
         
         public void LoadCredits()
         {
-            StartCoroutine(LoadNewScene(CreditsSceneName));
+            StartCoroutine(LoadSceneSimple(CreditsSceneName));
         }
 
         public void ReloadCurrentScene()
@@ -81,34 +86,22 @@ namespace ANM.Framework
             {
                 SceneManager.UnloadSceneAsync(sceneToBeReloaded).completed += operation =>
                 {
-                    StartCoroutine(LoadNewScene(sceneToBeReloaded));
+                    StartCoroutine(LoadMultiScene(sceneToBeReloaded));
                 };
             }
         }
-        
-        public void LoadSceneByBuildIndex(int index)
-        {
-            if (index > _sceneNames.Length - 1 || index < 0)
-            {
-                Debug.Log("Scene Index out of range : " + index);
-            }
-            else
-            {
-                StartCoroutine(LoadNewScene(index));
-            }
-        }
-        
+
         public void SwitchToLoadedScene(string sceneName)
         {
             if (!SceneManager.GetSceneByName(sceneName).isLoaded) return;
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
         }
 
-        public void UnloadAllSceneExcept(string sceneName)
+        public void UnloadAllSceneExceptMenu()
         {
             for (var i = 0; i < SceneManager.sceneCount; i++)
             {
-                if (SceneManager.GetSceneAt(i).name ==  sceneName)
+                if (SceneManager.GetSceneAt(i).name == MenuUiSceneName)
                 {
                     SceneManager.SetActiveScene(SceneManager.GetSceneAt(i));
                     continue;
@@ -121,39 +114,27 @@ namespace ANM.Framework
                 }
             }
         }
-        
-        private IEnumerator LoadNewScene(int index)
+
+        private IEnumerator LoadMultiScene(string sceneName)
         {
-            onLoadScene.Raise();
             yield return FadeOut();
-            AsyncOperation async = SceneManager.LoadSceneAsync(index, LoadSceneMode.Additive);
-            while (!async.isDone) { yield return null; }
-            SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(index));
+            onLoadScene.Raise();
+            yield return LoadNewAdditiveScene(sceneName);
             onFinishLoadScene.Raise();
             yield return FadeIn();
         }
 
-        private IEnumerator LoadNewScene(string sceneName)
+        private static IEnumerator LoadNewAdditiveScene(string sceneName)
         {
-            onLoadScene.Raise();
-            yield return FadeOut();
-            AsyncOperation async = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-            while (!async.isDone) { yield return null; }
+            yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-            onFinishLoadScene.Raise();
-            yield return FadeIn();
-        }
-        
-        public void LoadSceneEvent()
-        {    //    Handled by onStartSceneTransition ScriptableObject
-            GameManager.Instance.IsSceneTransitioning = true;
         }
 
-        public void FinishLoadSceneEvent()
-        {    //    Handled by onFinishSceneTransition ScriptableObject
-            GameManager.Instance.IsSceneTransitioning = false;
+        private static IEnumerator LoadSceneSimple(string sceneName)
+        {
+            yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         }
-        
+
         #region Screen Fade
         private void FadeOutImmediate()
         {

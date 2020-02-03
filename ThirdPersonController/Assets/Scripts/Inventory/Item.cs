@@ -1,20 +1,19 @@
 ﻿using UnityEngine;
 
-
 namespace SA.Inventory
 {
     [CreateAssetMenu(menuName = "Items/Item")]
     public class Item : ScriptableObject
     {
         public ItemType type;
-        public ItemUIStats uiInfo;
+        public ItemUiStats uiInfo;
         public Object obj;
 
     }
 
     //  TODO : SA put this in the Item Class
     [System.Serializable]
-    public class ItemUIStats
+    public class ItemUiStats
     {
         public string itemName;
         public string itemDescription;

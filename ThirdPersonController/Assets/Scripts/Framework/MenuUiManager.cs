@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 
 namespace ANM.Framework
 {
@@ -53,7 +52,6 @@ namespace ANM.Framework
         [SerializeField] private GameObject quitPanelSelectedObj = null;
 
         private EventSystem _eventSystem;
-        private Keyboard _keyboard;
         private GameManager _gameManager;
         private string[] _presets;
         
@@ -68,7 +66,6 @@ namespace ANM.Framework
 
         private void Start()
         {
-            _keyboard = Keyboard.current;
             _gameManager = GameManager.Instance;
             _gameManager.SwitchToLoadedScene("Level 1");
             _gameManager.SetIsMainMenuActive(SceneTransitionManager.IsMainMenuActive());
@@ -82,16 +79,6 @@ namespace ANM.Framework
             _gameManager.SetIsGamePaused(false);
         }
 
-        private void Update()
-        {
-            if (_gameManager.GetIsMainMenuActive()) return;
-
-            if (!_keyboard.tabKey.wasPressedThisFrame) return;
-            
-            if (!_gameManager.GetIsGamePaused()) { Pause(); }
-            else { Resume(); }
-        }
-        
         private void OnGUI()
         {
             if (_gameManager.GetIsMainMenuActive()) return;
@@ -165,7 +152,6 @@ namespace ANM.Framework
 
         public void ReturnToMenu()
         {    //    TODO : using this and trying to start a new game will freeze the game
-            _gameManager.onApplicationQuitEvent.Raise();
             menuUiCamera.gameObject.SetActive(true);
             videoPanel.SetActive(false);
             audioPanel.SetActive(false);
@@ -174,10 +160,11 @@ namespace ANM.Framework
             _gameManager.Reset();
             _gameManager.SetIsMainMenuActive(true);
             _gameManager.UnloadScenesExceptMenu();
+            _eventSystem.SetSelectedGameObject(mainPanelSelectedObj);
         }
 
         public void StartLoadSceneEvent()
-        {
+        {    //    Handled by onStartSceneTransition ScriptableObject
             if (SceneTransitionManager.IsMainMenuActive())
             {
                 menuUiCamera.gameObject.SetActive(false);
@@ -202,8 +189,6 @@ namespace ANM.Framework
         public void QuitGame()
         {
             onGameResumeEvent.Raise();
-            _gameManager.onApplicationQuitEvent.Raise();
-            _gameManager.UnloadScenesExceptMenu();
             _gameManager.LoadCredits();
         }
         

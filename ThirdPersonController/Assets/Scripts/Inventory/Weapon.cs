@@ -1,9 +1,8 @@
-﻿using System.Linq;
-using SA.Input;
+﻿using SA.Input;
+using System.Linq;
 using UnityEngine;
 using SA.Scriptable;
 using SA.Scriptable.Variables;
-
 
 namespace SA.Inventory
 {
@@ -24,7 +23,7 @@ namespace SA.Inventory
 
         public Action GetAction(InputType _input)
         {
-            ActionHolder ah = GetActionHolder(_input);
+            var ah = GetActionHolder(_input);
             return ah?.action;
         }
     }

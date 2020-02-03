@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ba1a68c6634f044f8bb0a64342d2c22, type: 3}
   m_Name: PlayerControllerStats
   m_EditorClassIdentifier: 
-  moveSpeed: 8
-  rollSpeed: 2
-  backstepSpeed: 2.5
-  sprintSpeed: 12
-  rotateSpeed: 6
-  walkSpeed: 3
+  moveSpeed: 4
+  rollSpeed: 1.25
+  backStepSpeed: 2.25
+  sprintSpeed: 6.25
+  rotateSpeed: 5
+  walkSpeed: 2.5

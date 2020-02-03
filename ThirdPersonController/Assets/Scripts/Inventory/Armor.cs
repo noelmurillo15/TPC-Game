@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-
 namespace SA.Inventory
 {
     [CreateAssetMenu(menuName = "Items/Armor")]
@@ -12,7 +11,6 @@ namespace SA.Inventory
         public bool baseBodyEnabled;
     }
 }
-
 
 public enum ArmorType
 {

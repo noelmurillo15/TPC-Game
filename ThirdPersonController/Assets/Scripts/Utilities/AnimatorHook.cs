@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using SA.Managers;
 
-
 namespace SA
 {
     public class AnimatorHook : MonoBehaviour
@@ -16,7 +15,7 @@ namespace SA
         {
             rm_mult = 1f;
             stateManager = _state;
-            m_animator = stateManager.m_animator;
+            m_animator = stateManager.myAnimator;
             isEnemy = _isEnemy;
         }
 
@@ -24,17 +23,17 @@ namespace SA
 
         private void OnAnimatorMove()
         {
-            stateManager.m_input.animationDelta = m_animator.deltaPosition;
-            stateManager.m_input.animationDelta.y = 0f;
+            stateManager.inputVar.animationDelta = m_animator.deltaPosition;
+            stateManager.inputVar.animationDelta.y = 0f;
             transform.localPosition = Vector3.zero;
 
             if (rm_mult == 0) rm_mult = 1;
 
             if (isEnemy) return;
-            Vector3 v = (stateManager.m_input.animationDelta * rm_mult) / stateManager.m_delta;
-            if (!float.IsNaN(v.x))
+            Vector3 v = (stateManager.inputVar.animationDelta * rm_mult) / stateManager.deltaTime;
+            if (!float.IsNaN(v.x) && !float.IsNaN(v.y))
             {
-                stateManager.m_rigidbody.velocity = v;
+                stateManager.myRigidbody.velocity = v;
             }
         }
 

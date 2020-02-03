@@ -1,20 +1,21 @@
 // GENERATED AUTOMATICALLY FROM 'Assets/Scripts/Input/ThirdPersonInput.inputactions'
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public class ThirdPersonInput : IInputActionCollection
+public class @ThirdPersonInput : IInputActionCollection, IDisposable
 {
-    private InputActionAsset asset;
-    public ThirdPersonInput()
+    public InputActionAsset asset { get; }
+    public @ThirdPersonInput()
     {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""ThirdPersonInput"",
     ""maps"": [
         {
-            ""name"": ""ThirdPersonXboxInput"",
+            ""name"": ""CharacterInput"",
             ""id"": ""9e1a7afd-7157-4bca-b930-a0ba213e2547"",
             ""actions"": [
                 {
@@ -46,10 +47,21 @@ public class ThirdPersonInput : IInputActionCollection
                 {
                     ""name"": """",
                     ""id"": ""fb93c7ad-847b-4010-bfa5-7c4fa72ece08"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""Select"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a1c13fb7-c659-43aa-a641-7d564579d2bc"",
                     ""path"": ""<XInputController>/select"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Xbox"",
                     ""action"": ""Select"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -57,10 +69,21 @@ public class ThirdPersonInput : IInputActionCollection
                 {
                     ""name"": """",
                     ""id"": ""9f285ab2-b14f-4730-84ff-57bf9262bbbe"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""LStick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e67ca712-73af-4dff-8676-f630cb0d6700"",
                     ""path"": ""<XInputController>/leftStickPress"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Xbox"",
                     ""action"": ""LStick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -68,10 +91,21 @@ public class ThirdPersonInput : IInputActionCollection
                 {
                     ""name"": """",
                     ""id"": ""46ce1872-15a3-4143-92c2-16af3cb98d2f"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""RStick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fc312608-3678-4e0f-aeae-f31cc55d5f76"",
                     ""path"": ""<XInputController>/rightStickPress"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Xbox"",
                     ""action"": ""RStick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -79,16 +113,44 @@ public class ThirdPersonInput : IInputActionCollection
             ]
         }
     ],
-    ""controlSchemes"": []
+    ""controlSchemes"": [
+        {
+            ""name"": ""Xbox"",
+            ""bindingGroup"": ""Xbox"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<XInputController>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""PC"",
+            ""bindingGroup"": ""PC"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Mouse>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        }
+    ]
 }");
-        // ThirdPersonXboxInput
-        m_ThirdPersonXboxInput = asset.GetActionMap("ThirdPersonXboxInput");
-        m_ThirdPersonXboxInput_Select = m_ThirdPersonXboxInput.GetAction("Select");
-        m_ThirdPersonXboxInput_LStick = m_ThirdPersonXboxInput.GetAction("LStick");
-        m_ThirdPersonXboxInput_RStick = m_ThirdPersonXboxInput.GetAction("RStick");
+        // CharacterInput
+        m_CharacterInput = asset.FindActionMap("CharacterInput", throwIfNotFound: true);
+        m_CharacterInput_Select = m_CharacterInput.FindAction("Select", throwIfNotFound: true);
+        m_CharacterInput_LStick = m_CharacterInput.FindAction("LStick", throwIfNotFound: true);
+        m_CharacterInput_RStick = m_CharacterInput.FindAction("RStick", throwIfNotFound: true);
     }
 
-    ~ThirdPersonInput()
+    public void Dispose()
     {
         UnityEngine.Object.Destroy(asset);
     }
@@ -132,55 +194,73 @@ public class ThirdPersonInput : IInputActionCollection
         asset.Disable();
     }
 
-    // ThirdPersonXboxInput
-    private readonly InputActionMap m_ThirdPersonXboxInput;
-    private IThirdPersonXboxInputActions m_ThirdPersonXboxInputActionsCallbackInterface;
-    private readonly InputAction m_ThirdPersonXboxInput_Select;
-    private readonly InputAction m_ThirdPersonXboxInput_LStick;
-    private readonly InputAction m_ThirdPersonXboxInput_RStick;
-    public struct ThirdPersonXboxInputActions
+    // CharacterInput
+    private readonly InputActionMap m_CharacterInput;
+    private ICharacterInputActions m_CharacterInputActionsCallbackInterface;
+    private readonly InputAction m_CharacterInput_Select;
+    private readonly InputAction m_CharacterInput_LStick;
+    private readonly InputAction m_CharacterInput_RStick;
+    public struct CharacterInputActions
     {
-        private ThirdPersonInput m_Wrapper;
-        public ThirdPersonXboxInputActions(ThirdPersonInput wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Select => m_Wrapper.m_ThirdPersonXboxInput_Select;
-        public InputAction @LStick => m_Wrapper.m_ThirdPersonXboxInput_LStick;
-        public InputAction @RStick => m_Wrapper.m_ThirdPersonXboxInput_RStick;
-        public InputActionMap Get() { return m_Wrapper.m_ThirdPersonXboxInput; }
+        private @ThirdPersonInput m_Wrapper;
+        public CharacterInputActions(@ThirdPersonInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Select => m_Wrapper.m_CharacterInput_Select;
+        public InputAction @LStick => m_Wrapper.m_CharacterInput_LStick;
+        public InputAction @RStick => m_Wrapper.m_CharacterInput_RStick;
+        public InputActionMap Get() { return m_Wrapper.m_CharacterInput; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(ThirdPersonXboxInputActions set) { return set.Get(); }
-        public void SetCallbacks(IThirdPersonXboxInputActions instance)
+        public static implicit operator InputActionMap(CharacterInputActions set) { return set.Get(); }
+        public void SetCallbacks(ICharacterInputActions instance)
         {
-            if (m_Wrapper.m_ThirdPersonXboxInputActionsCallbackInterface != null)
+            if (m_Wrapper.m_CharacterInputActionsCallbackInterface != null)
             {
-                Select.started -= m_Wrapper.m_ThirdPersonXboxInputActionsCallbackInterface.OnSelect;
-                Select.performed -= m_Wrapper.m_ThirdPersonXboxInputActionsCallbackInterface.OnSelect;
-                Select.canceled -= m_Wrapper.m_ThirdPersonXboxInputActionsCallbackInterface.OnSelect;
-                LStick.started -= m_Wrapper.m_ThirdPersonXboxInputActionsCallbackInterface.OnLStick;
-                LStick.performed -= m_Wrapper.m_ThirdPersonXboxInputActionsCallbackInterface.OnLStick;
-                LStick.canceled -= m_Wrapper.m_ThirdPersonXboxInputActionsCallbackInterface.OnLStick;
-                RStick.started -= m_Wrapper.m_ThirdPersonXboxInputActionsCallbackInterface.OnRStick;
-                RStick.performed -= m_Wrapper.m_ThirdPersonXboxInputActionsCallbackInterface.OnRStick;
-                RStick.canceled -= m_Wrapper.m_ThirdPersonXboxInputActionsCallbackInterface.OnRStick;
+                @Select.started -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnSelect;
+                @Select.performed -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnSelect;
+                @Select.canceled -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnSelect;
+                @LStick.started -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnLStick;
+                @LStick.performed -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnLStick;
+                @LStick.canceled -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnLStick;
+                @RStick.started -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnRStick;
+                @RStick.performed -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnRStick;
+                @RStick.canceled -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnRStick;
             }
-            m_Wrapper.m_ThirdPersonXboxInputActionsCallbackInterface = instance;
+            m_Wrapper.m_CharacterInputActionsCallbackInterface = instance;
             if (instance != null)
             {
-                Select.started += instance.OnSelect;
-                Select.performed += instance.OnSelect;
-                Select.canceled += instance.OnSelect;
-                LStick.started += instance.OnLStick;
-                LStick.performed += instance.OnLStick;
-                LStick.canceled += instance.OnLStick;
-                RStick.started += instance.OnRStick;
-                RStick.performed += instance.OnRStick;
-                RStick.canceled += instance.OnRStick;
+                @Select.started += instance.OnSelect;
+                @Select.performed += instance.OnSelect;
+                @Select.canceled += instance.OnSelect;
+                @LStick.started += instance.OnLStick;
+                @LStick.performed += instance.OnLStick;
+                @LStick.canceled += instance.OnLStick;
+                @RStick.started += instance.OnRStick;
+                @RStick.performed += instance.OnRStick;
+                @RStick.canceled += instance.OnRStick;
             }
         }
     }
-    public ThirdPersonXboxInputActions @ThirdPersonXboxInput => new ThirdPersonXboxInputActions(this);
-    public interface IThirdPersonXboxInputActions
+    public CharacterInputActions @CharacterInput => new CharacterInputActions(this);
+    private int m_XboxSchemeIndex = -1;
+    public InputControlScheme XboxScheme
+    {
+        get
+        {
+            if (m_XboxSchemeIndex == -1) m_XboxSchemeIndex = asset.FindControlSchemeIndex("Xbox");
+            return asset.controlSchemes[m_XboxSchemeIndex];
+        }
+    }
+    private int m_PCSchemeIndex = -1;
+    public InputControlScheme PCScheme
+    {
+        get
+        {
+            if (m_PCSchemeIndex == -1) m_PCSchemeIndex = asset.FindControlSchemeIndex("PC");
+            return asset.controlSchemes[m_PCSchemeIndex];
+        }
+    }
+    public interface ICharacterInputActions
     {
         void OnSelect(InputAction.CallbackContext context);
         void OnLStick(InputAction.CallbackContext context);

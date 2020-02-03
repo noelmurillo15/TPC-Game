@@ -1,57 +1,54 @@
-﻿using System.Linq;
+﻿using System;
 using SA.Input;
 using UnityEngine;
+using System.Linq;
 using SA.Utilities;
 using SA.Scriptable;
-
+using Action = SA.Scriptable.Action;
+using Object = UnityEngine.Object;
 
 namespace SA.Managers
 {
     public class StateManager : MonoBehaviour
     {
-        #region Class Variables  
         public enum CharacterState
-        {
-            MOVING, ON_AIR, INTERACTING, OVERRIDE_INTERACTING, ROLL
-        }
+        {  MOVING, ON_AIR, INTERACTING, OVERRIDE_INTERACTING, ROLL  }
 
-        public CharacterState m_characterState;       //  Current State 
-        public States m_states;                       //  State Info
-        public InputVariables m_input;                //  Input Info
-        public ControllerStats m_stats;               //  Movement Info
+        public CharacterState characterState;       //  Current State 
+        public ControllerStats controlStats;        //  Movement Info
+            
+        public States states;                       //  State Info
+        public InputVariables inputVar;             //  Input Info
+        public WeaponManager weaponManager;         //  Weapon Info
+        public InventoryManager inventoryManager;   // Inventory Info
+        
+        [HideInInspector] public ResourcesManager resourcesManager;
 
-        public WeaponManager m_weaponManager;         //  Weapon Info
-        public InventoryManager m_inventoryManager;   // Inventory Info
-        [HideInInspector] public Managers.ResourcesManager m_resourcesManager;
-
-        public GameObject m_activeModel;
-        public float m_delta;
-        private float timeSinceLastHit;
+        public GameObject activeModel;
+        public float deltaTime;
+        private float _timeSinceLastHit;
 
         //  Spell Action
-        private float savedTime;
-        private SpellAction currentSpellAction;
+        private float _savedTime;
+        private SpellAction _currentSpellAction;
 
         //  If the gameobject is not the player - force init
         public bool forceInit = false;
-        #endregion
 
-        #region References
-        [HideInInspector] public Transform m_transform;
-        [HideInInspector] public Animator m_animator;
-        [HideInInspector] public Rigidbody m_rigidbody;
-        [HideInInspector] public Collider m_collider;
-        [HideInInspector] public AnimatorHook m_animatorHook;
-        #endregion
+        [HideInInspector] public Transform myTransform;
+        [HideInInspector] public Animator myAnimator;
+        [HideInInspector] public Rigidbody myRigidbody;
+        [HideInInspector] public Collider myCollider;
+        [HideInInspector] public AnimatorHook animatorHook;
 
-        #region LayerRefs
         [HideInInspector] public LayerMask ignoreLayers;
         [HideInInspector] public LayerMask ignoreForGroundCheck;
-        #endregion
-
-
-        #region Initialization
-
+        
+        private static readonly int IsInteracting = Animator.StringToHash("isInteracting");
+        private static readonly int Lockon = Animator.StringToHash("lockon");
+        private static readonly int Speed = Animator.StringToHash("speed");
+        
+        
         private void Start()
         {   //  TODO : remove this for enemy
             if (forceInit)
@@ -62,16 +59,16 @@ namespace SA.Managers
 
         public void Initialize()
         {
-            if (m_resourcesManager == null && !forceInit)
+            if (resourcesManager == null && !forceInit)
             {
-                m_resourcesManager = Resources.Load("ResourceManager") as Managers.ResourcesManager;
+                resourcesManager = Resources.Load("ResourceManager") as ResourcesManager;
             }
 
             SetupAnimator();
             SetupRigidBody();
 
-            m_transform = transform;
-            m_collider = GetComponent<Collider>();
+            myTransform = transform;
+            myCollider = GetComponent<Collider>();
 
             //  Layer masks
             gameObject.layer = 8;
@@ -84,188 +81,186 @@ namespace SA.Managers
 
         private void SetupAnimator()
         {   //  This will fail if no animator is attached
-            if (m_activeModel == null)
-            {   //  If designer forgets to attach the activeaModel ~ this will find the model via Animator
-                m_animator = GetComponentInChildren<Animator>();
-                m_activeModel = m_animator.gameObject;
+            if (activeModel == null)
+            {   //  If designer forgets to attach the active Model ~ this will find the model via Animator
+                myAnimator = GetComponentInChildren<Animator>();
+                activeModel = myAnimator.gameObject;
             }
 
-            if (m_animator == null) //  If animator has not been found, find via ActiveModel
-                m_animator = m_activeModel.GetComponent<Animator>();
+            if (myAnimator == null) //  If animator has not been found, find via ActiveModel
+                myAnimator = activeModel.GetComponent<Animator>();
             else
             {   //  If animator was Ultimately found
-                m_animator.applyRootMotion = false;
-                m_animator.GetBoneTransform(HumanBodyBones.LeftHand).localScale = Vector3.one;
-                m_animator.GetBoneTransform(HumanBodyBones.RightHand).localScale = Vector3.one;
+                myAnimator.applyRootMotion = false;
+                myAnimator.GetBoneTransform(HumanBodyBones.LeftHand).localScale = Vector3.one;
+                myAnimator.GetBoneTransform(HumanBodyBones.RightHand).localScale = Vector3.one;
 
-                m_animatorHook = m_activeModel.AddComponent<AnimatorHook>();
-                m_animatorHook.Init(this, forceInit);
+                animatorHook = activeModel.AddComponent<AnimatorHook>();
+                animatorHook.Init(this, forceInit);
             }
         }
 
         private void SetupRigidBody()
         {
-            m_rigidbody = GetComponent<Rigidbody>();
-            m_rigidbody.angularDrag = 999;
-            m_rigidbody.drag = 4;
-            m_rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+            myRigidbody = GetComponent<Rigidbody>();
+            myRigidbody.angularDrag = 999;
+            myRigidbody.drag = 4;
+            myRigidbody.constraints = RigidbodyConstraints.FreezeRotationX | 
+                                      RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         }
 
         private void SetupInventoryManager()
         {
-            if (m_inventoryManager.rightItem != null)
+            if (inventoryManager.rightItem != null)
             {
-                WeaponToRuntime(m_inventoryManager.rightItem.obj, ref m_inventoryManager.rightSlot);
-                EquipWeapon(m_inventoryManager.rightSlot, false);
+                WeaponToRuntime(inventoryManager.rightItem.obj, ref inventoryManager.rightSlot);
+                EquipWeapon(inventoryManager.rightSlot, false);
             }
 
-            if (m_inventoryManager.leftItem == null) return;
-            WeaponToRuntime(m_inventoryManager.leftItem.obj, ref m_inventoryManager.leftSlot);
-            EquipWeapon(m_inventoryManager.leftSlot, true);
+            if (inventoryManager.leftItem == null) return;
+            WeaponToRuntime(inventoryManager.leftItem.obj, ref inventoryManager.leftSlot);
+            EquipWeapon(inventoryManager.leftSlot, true);
         }
 
         private void SetupWeaponManager()
         {
-            if (m_inventoryManager.leftSlot == null && m_inventoryManager.rightSlot == null)
+            if (inventoryManager.leftSlot == null && inventoryManager.rightSlot == null)
                 return;
 
-            if (m_inventoryManager.rightSlot != null)
+            if (inventoryManager.rightSlot != null)
             {   //  Right hand Take Prio ~?
-                WeaponManager.ActionContainer rb = m_weaponManager.GetAction(InputType.RB);
-                rb.action = m_inventoryManager.rightSlot.weaponData.GetAction(InputType.RB);
+                var rb = weaponManager.GetAction(InputType.RB);
+                rb.action = inventoryManager.rightSlot.WeaponData.GetAction(InputType.RB);
 
-                WeaponManager.ActionContainer rt = m_weaponManager.GetAction(InputType.RT);
-                rt.action = m_inventoryManager.rightSlot.weaponData.GetAction(InputType.RT);
+                var rt = weaponManager.GetAction(InputType.RT);
+                rt.action = inventoryManager.rightSlot.WeaponData.GetAction(InputType.RT);
 
-                if (m_inventoryManager.leftSlot == null)
+                if (inventoryManager.leftSlot == null)
                 {   //  If not Dual Wielding, Get Left Trigger & Bumper Actions from Right Hand
-                    WeaponManager.ActionContainer lb = m_weaponManager.GetAction(InputType.LB);
-                    lb.action = m_inventoryManager.rightSlot.weaponData.GetAction(InputType.LB);
+                    var lb = weaponManager.GetAction(InputType.LB);
+                    lb.action = inventoryManager.rightSlot.WeaponData.GetAction(InputType.LB);
 
-                    WeaponManager.ActionContainer lt = m_weaponManager.GetAction(InputType.LT);
-                    lt.action = m_inventoryManager.rightSlot.weaponData.GetAction(InputType.LT);
+                    var lt = weaponManager.GetAction(InputType.LT);
+                    lt.action = inventoryManager.rightSlot.WeaponData.GetAction(InputType.LT);
                 }
                 else
                 {   //  If Dual Wielding, Get leftHand Actions
-                    WeaponManager.ActionContainer lb = m_weaponManager.GetAction(InputType.LB);
-                    lb.action = m_inventoryManager.leftSlot.weaponData.GetAction(InputType.LB);
+                    var lb = weaponManager.GetAction(InputType.LB);
+                    lb.action = inventoryManager.leftSlot.WeaponData.GetAction(InputType.LB);
 
-                    WeaponManager.ActionContainer lt = m_weaponManager.GetAction(InputType.LT);
-                    lt.action = m_inventoryManager.leftSlot.weaponData.GetAction(InputType.LT);
+                    var lt = weaponManager.GetAction(InputType.LT);
+                    lt.action = inventoryManager.leftSlot.WeaponData.GetAction(InputType.LT);
                 }
                 return;
             }
 
-            if (m_inventoryManager.leftSlot == null) return;
+            if (inventoryManager.leftSlot == null) return;
             {
                 //  There is no right hand equipped so grab all actions from Left Hand
-                WeaponManager.ActionContainer rb = m_weaponManager.GetAction(InputType.RB);
-                rb.action = m_inventoryManager.leftSlot.weaponData.GetAction(InputType.RB);
+                var rb = weaponManager.GetAction(InputType.RB);
+                rb.action = inventoryManager.leftSlot.WeaponData.GetAction(InputType.RB);
 
-                WeaponManager.ActionContainer rt = m_weaponManager.GetAction(InputType.RT);
-                rt.action = m_inventoryManager.leftSlot.weaponData.GetAction(InputType.RT);
+                var rt = weaponManager.GetAction(InputType.RT);
+                rt.action = inventoryManager.leftSlot.WeaponData.GetAction(InputType.RT);
 
-                WeaponManager.ActionContainer lb = m_weaponManager.GetAction(InputType.LB);
-                lb.action = m_inventoryManager.leftSlot.weaponData.GetAction(InputType.LB);
+                var lb = weaponManager.GetAction(InputType.LB);
+                lb.action = inventoryManager.leftSlot.WeaponData.GetAction(InputType.LB);
 
-                WeaponManager.ActionContainer lt = m_weaponManager.GetAction(InputType.LT);
-                lt.action = m_inventoryManager.leftSlot.weaponData.GetAction(InputType.LT);
+                var lt = weaponManager.GetAction(InputType.LT);
+                lt.action = inventoryManager.leftSlot.WeaponData.GetAction(InputType.LT);
             }
         }
 
         private void WeaponToRuntime(Object _obj, ref Inventory.RuntimeWeapon _slot)
         {
-            Inventory.Weapon weaponData = (Inventory.Weapon)_obj;
-            GameObject weaponInstance = Instantiate(weaponData.modelPrefab) as GameObject;
-            WeaponHook wHook = weaponInstance.AddComponent<WeaponHook>();
+            var weaponData = (Inventory.Weapon)_obj;
+            var weaponInstance = Instantiate(weaponData.modelPrefab);
+            var wHook = weaponInstance.AddComponent<WeaponHook>();
             wHook.Initialize(this);
             weaponInstance.SetActive(false);
 
-            Inventory.RuntimeWeapon rw = new Inventory.RuntimeWeapon();
-            rw.weaponInstance = weaponInstance;
-            rw.weaponData = weaponData;
-            rw.weaponHook = wHook;
+            var rw = new Inventory.RuntimeWeapon
+            {
+                WeaponInstance = weaponInstance, WeaponData = weaponData, WeaponHook = wHook
+            };
 
             _slot = rw;
-            m_resourcesManager.runtime.RegisterRuntimeWeapons(rw);
+            resourcesManager.runtime.RegisterRuntimeWeapons(rw);
         }
 
         private void EquipWeapon(Inventory.RuntimeWeapon _rw, bool isMirrored)
         {
-            Vector3 position = Vector3.zero;
-            Vector3 eulers = Vector3.zero;
-            Vector3 scale = Vector3.one;
+            var position = Vector3.zero;
+            var eulers = Vector3.zero;
+            var scale = Vector3.one;
             Transform parent = null;
 
             if (!isMirrored)
             {
-                Debug.Log("Equipping Weapon to right hand : " + _rw.weaponInstance.name + " of the " + gameObject.name);
-                scale = _rw.weaponData.leftHandPosition.scale;
-                parent = m_animator.GetBoneTransform(HumanBodyBones.RightHand);
+                Debug.Log("Equipping Weapon to right hand : " + _rw.WeaponInstance.name + " of the " + gameObject.name);
+                scale = _rw.WeaponData.leftHandPosition.scale;
+                parent = myAnimator.GetBoneTransform(HumanBodyBones.RightHand);
             }
             else
             {
-                Debug.Log("Equipping Weapon to left hand : " + _rw.weaponInstance.name + " of the " + gameObject.name);
-                position = _rw.weaponData.leftHandPosition.position;
-                eulers = _rw.weaponData.leftHandPosition.eulersAngles;
-                parent = m_animator.GetBoneTransform(HumanBodyBones.LeftHand);
+                Debug.Log("Equipping Weapon to left hand : " + _rw.WeaponInstance.name + " of the " + gameObject.name);
+                position = _rw.WeaponData.leftHandPosition.position;
+                eulers = _rw.WeaponData.leftHandPosition.eulersAngles;
+                parent = myAnimator.GetBoneTransform(HumanBodyBones.LeftHand);
             }
 
-            _rw.weaponInstance.transform.parent = parent;     //    local transform data depends on parent to be modified correctly             
-            _rw.weaponInstance.transform.localPosition = position;
-            _rw.weaponInstance.transform.localEulerAngles = eulers;
-            _rw.weaponInstance.transform.localScale = scale;
-            _rw.weaponInstance.SetActive(true); //  Activate Weapon
+            _rw.WeaponInstance.transform.parent = parent;     //    local transform data depends on parent to be modified correctly             
+            _rw.WeaponInstance.transform.localPosition = position;
+            _rw.WeaponInstance.transform.localEulerAngles = eulers;
+            _rw.WeaponInstance.transform.localScale = scale;
+            _rw.WeaponInstance.SetActive(true); //  Activate Weapon
         }
-        #endregion
-
-        #region Updates
-
+        
         private void Update()
         {
             if (forceInit)
-            {   //  TODO : remove this later - for enemies
+            {   //  TODO : enemies wont properly animate without this here
                 Tick(Time.deltaTime);
             }
         }
 
-        public void Tick(float _delta)
+        public void Tick(float d)
         {
-            m_delta = _delta;
-            // m_states.onGround = OnGroundCheck();
+            deltaTime = d;
+            states.onGround = OnGroundCheck();
 
-            if (m_states.isGettingHit)
+            if (states.isGettingHit)
             {
-                if (Time.realtimeSinceStartup - timeSinceLastHit < 0.2f)
+                if (Time.realtimeSinceStartup - _timeSinceLastHit < 0.2f)
                 {
-                    m_states.isGettingHit = false;
+                    states.isGettingHit = false;
                 }
             }
 
-            switch (m_characterState)
+            switch (characterState)
             {
                 case CharacterState.MOVING:
                     bool interact = InteractionInputCheck();
                     if (!interact) HandleMovementAnimations();
                     break;
                 case CharacterState.INTERACTING:
-                    if (m_states.isSpellCasting)
+                    if (states.isSpellCasting)
                     {
-                        if (Time.realtimeSinceStartup - savedTime > 1)
+                        if (Time.realtimeSinceStartup - _savedTime > 1)
                         {
-                            m_states.isSpellCasting = false;
+                            states.isSpellCasting = false;
                             PlaySavedSpellAction();
                         }
                     }
                     HandleMovementAnimations();
                     break;
                 case CharacterState.OVERRIDE_INTERACTING:
-                    m_states.animIsInteracting = m_animator.GetBool("isInteracting");
-                    if (m_states.animIsInteracting == false)
+                    states.animIsInteracting = myAnimator.GetBool(IsInteracting);
+                    if (states.animIsInteracting == false)
                     {
-                        if (m_states.isInteracting)
+                        if (states.isInteracting)
                         {
-                            m_states.isInteracting = false;
+                            states.isInteracting = false;
                             ChangeState(CharacterState.MOVING);
                         }
                     }
@@ -273,12 +268,12 @@ namespace SA.Managers
                 case CharacterState.ON_AIR:
                     break;
                 case CharacterState.ROLL:
-                    m_states.animIsInteracting = m_animator.GetBool("isInteracting");
-                    if (m_states.animIsInteracting == false)
+                    states.animIsInteracting = myAnimator.GetBool(IsInteracting);
+                    if (states.animIsInteracting == false)
                     {
-                        if (m_states.isInteracting)
+                        if (states.isInteracting)
                         {
-                            m_states.isInteracting = false;
+                            states.isInteracting = false;
                             ChangeState(CharacterState.MOVING);
                         }
                     }
@@ -286,12 +281,12 @@ namespace SA.Managers
             }
         }
 
-        public void Fixed_Tick(float _delta)
+        public void Fixed_Tick(float d)
         {
-            m_delta = _delta;
-            m_states.onGround = OnGroundCheck();
+            deltaTime = d;
+            states.onGround = OnGroundCheck();
 
-            switch (m_characterState)
+            switch (characterState)
             {
                 case CharacterState.MOVING:
                     HandleRotation();
@@ -302,103 +297,101 @@ namespace SA.Managers
                     HandleMovement();
                     break;
                 case CharacterState.OVERRIDE_INTERACTING:
-                    m_rigidbody.drag = 0f;
-                    Vector3 v = m_rigidbody.velocity;
-                    Vector3 tv = m_input.animationDelta;
+                    myRigidbody.drag = 0f;
+                    Vector3 v = myRigidbody.velocity;
+                    Vector3 tv = inputVar.animationDelta;
                     tv *= 50f;
                     tv.y = v.y;
-                    m_rigidbody.velocity = tv;
+                    myRigidbody.velocity = tv;
                     break;
                 case CharacterState.ON_AIR:
                     break;
             }
         }
-        #endregion
-
-        #region Private Functions
 
         private bool OnGroundCheck()
-        {
-            Vector3 origin = m_transform.position;
-            origin.y += 0.4f;
+        {    //    If character falls through the ground while lockon, check Animator->LocomotionLockedOn->BlendState
+            Vector3 origin = myTransform.position;
+            origin.y += 0.7f;
             Vector3 dir = -Vector3.up;
 
-            float distance = 0.7f;
-            RaycastHit hit;
+            float distance = 1.4f;
+            if (!Physics.Raycast(origin, dir, out var hit, distance, ignoreForGroundCheck)) return false;
 
-            if (!Physics.Raycast(origin, dir, out hit, distance, ignoreForGroundCheck)) return false;
-            Vector3 targetposition = hit.point;
-            m_transform.position = targetposition;
+            var targetPosition = hit.point;
+            myTransform.position = targetPosition;
             return true;
         }
 
         private bool InteractionInputCheck()
         {   //  Only happens during movement state
             WeaponManager.ActionContainer a = null;
-            if (m_input.rb) { a = GetAction(InputType.RB); }
-            else if (m_input.lb) { a = GetAction(InputType.LB); }
-            else if (m_input.rt) { a = GetAction(InputType.RT); }
-            else if (m_input.lt) { a = GetAction(InputType.LT); }
+            if (inputVar.rb) { a = GetAction(InputType.RB); }
+            else if (inputVar.lb) { a = GetAction(InputType.LB); }
+            else if (inputVar.rt) { a = GetAction(InputType.RT); }
+            else if (inputVar.lt) { a = GetAction(InputType.LT); }
 
             if (a?.action == null) { return false; }
-
             if (a.action.animationAction == null) return false;
+            
             HandleAction(a);
             return true;
         }
 
         private void HandleMovement()
         {
-            Vector3 velocity = m_transform.forward;
-            if (m_states.isLockedOn) { velocity = m_input.moveDir; }
+            var v = myTransform.forward;
+            
+            if (states.isLockedOn)  
+                v = inputVar.moveDir; 
 
-            //  Toggle RigidBody Drag value when moving
-            m_rigidbody.drag = m_input.moveAmount > 0 ? 0f : 4f;
+            myRigidbody.drag = inputVar.moveAmount > 0 ? 0f : 4f;
 
-            if (m_states.animIsInteracting)
+            if (states.animIsInteracting)
             {
-                m_states.isRunning = false;
-                velocity *= m_input.moveAmount * m_stats.walkSpeed;
+                states.isRunning = false;
+                v *= inputVar.moveAmount * controlStats.walkSpeed;
             }
             else
-            {   //  Free Movement 
-                if (!m_states.isRunning)
-                    velocity *= m_input.moveAmount * m_stats.moveSpeed;
+            {
+                if (!states.isRunning)
+                    v *= inputVar.moveAmount * controlStats.moveSpeed;
                 else
-                    velocity *= m_input.moveAmount * m_stats.sprintSpeed;
+                    v *= inputVar.moveAmount * controlStats.sprintSpeed;
             }
-            m_rigidbody.velocity = velocity;
+            myRigidbody.velocity = v;
         }
 
         private void HandleRotation()
         {
-            Vector3 targetDir = (m_states.isLockedOn == false) ?
-             m_input.moveDir : m_input.lockOnTransform.position - m_transform.position;
+            var targetDir = (states.isLockedOn == false) ?
+             inputVar.moveDir :  inputVar.lockOnTransform.position - myTransform.position;
 
             targetDir.y = 0f;
             if (targetDir == Vector3.zero)
-                targetDir = m_transform.forward;
+                targetDir = myTransform.forward;
 
-            Quaternion tr = Quaternion.LookRotation(targetDir);
-            Quaternion targtRotation = Quaternion.Slerp(m_transform.rotation, tr, m_delta * m_stats.rotateSpeed * m_input.moveAmount);
-            m_transform.rotation = targtRotation;
+            var tr = Quaternion.LookRotation(targetDir);
+            var targetRotation = Quaternion.Slerp(
+                myTransform.rotation, tr, deltaTime * controlStats.rotateSpeed * inputVar.moveAmount);
+            myTransform.rotation = targetRotation;
         }
 
         private void HandleMovementAnimations()
         {
-            m_animator.SetBool("lockon", m_states.isLockedOn);
+            myAnimator.SetBool(Lockon, states.isLockedOn);
 
-            if (!m_states.isLockedOn)
+            if (!states.isLockedOn)
             {
-                m_animator.SetBool(StaticStrings.run, m_states.isRunning);
-                float move = m_input.moveAmount;
-                if (m_states.animIsInteracting) { move = Mathf.Clamp(move, 0, 0.5f); }
-                m_animator.SetFloat(StaticStrings.vertical, move, 0.15f, m_delta);
+                myAnimator.SetBool(StaticStrings.run, states.isRunning);
+                float move = inputVar.moveAmount;
+                if (states.animIsInteracting) { move = Mathf.Clamp(move, 0, 0.5f); }
+                myAnimator.SetFloat(StaticStrings.vertical, move, 0.15f, deltaTime);
             }
             else
             {
-                m_animator.SetFloat(StaticStrings.vertical, m_input.vertical, 0.15f, m_delta);
-                m_animator.SetFloat(StaticStrings.horizontal, m_input.horizontal, 0.15f, m_delta);
+                myAnimator.SetFloat(StaticStrings.vertical, inputVar.vertical, 0.15f, deltaTime);
+                myAnimator.SetFloat(StaticStrings.horizontal, inputVar.horizontal, 0.15f, deltaTime);
             }
         }
 
@@ -407,7 +400,7 @@ namespace SA.Managers
             switch (_actionContainer.action.actionType)
             {
                 case ActionType.ATTACK:
-                    AttackAction attackAction = (AttackAction)_actionContainer.action.animationAction;
+                    var attackAction = (AttackAction)_actionContainer.action.animationAction;
                     PlayAttackAction(_actionContainer, attackAction);
                     break;
                 case ActionType.BLOCK:
@@ -415,7 +408,7 @@ namespace SA.Managers
                 case ActionType.PARRY:
                     break;
                 case ActionType.SPELL:
-                    SpellAction spellAction = (SpellAction)_actionContainer.action.animationAction;
+                    var spellAction = (SpellAction)_actionContainer.action.animationAction;
                     PlaySpellAction(_actionContainer, spellAction);
                     break;
             }
@@ -424,14 +417,14 @@ namespace SA.Managers
         private void PlayAttackAction(WeaponManager.ActionContainer _actionContainer, AttackAction _attackAction)
         {
             //  Is the action a right-handed action or left?
-            m_animator.SetBool(StaticStrings.mirror, _actionContainer.isMirrored);
+            myAnimator.SetBool(StaticStrings.mirror, _actionContainer.isMirrored);
 
             //  Play the Attack Animation
             PlayActionAnimation(_attackAction.attackAnimation.value);
 
             //  Change the anim speed if necessary            
             if (_attackAction.changeSpeed)
-            { m_animator.SetFloat("speed", _attackAction.animSpeed); }
+            { myAnimator.SetFloat(Speed, _attackAction.animSpeed); }
 
             //  Switch State
             ChangeState(CharacterState.OVERRIDE_INTERACTING);
@@ -443,125 +436,123 @@ namespace SA.Managers
             targetAnimation += (_actionContainer.isMirrored) ? "_l" : "_r";
 
             //  Is the action a right-handed action or left?
-            m_animator.SetBool(StaticStrings.mirror, _actionContainer.isMirrored);
+            myAnimator.SetBool(StaticStrings.mirror, _actionContainer.isMirrored);
 
             //  Play the Attack Animation
-            m_animator.CrossFade(targetAnimation, 0.2f);
+            myAnimator.CrossFade(targetAnimation, 0.2f);
 
             //  Is it a spell?
-            m_states.isSpellCasting = true;
-            m_states.animIsInteracting = true;
-            m_animator.SetBool(StaticStrings.spellCasting, m_states.isSpellCasting);
+            states.isSpellCasting = true;
+            states.animIsInteracting = true;
+            myAnimator.SetBool(StaticStrings.spellCasting, states.isSpellCasting);
 
             //  Change the anim speed if necessary            
             if (_spellAction.changeSpeed)
-            { m_animator.SetFloat("speed", _spellAction.animSpeed); }
+            { myAnimator.SetFloat(Speed, _spellAction.animSpeed); }
 
             //  Switch State
             ChangeState(CharacterState.INTERACTING);
-            savedTime = Time.realtimeSinceStartup;
-            currentSpellAction = _spellAction;
+            _savedTime = Time.realtimeSinceStartup;
+            _currentSpellAction = _spellAction;
         }
 
         private void PlaySavedSpellAction()
         {
-            m_animator.SetBool(StaticStrings.spellCasting, m_states.isSpellCasting);
-            PlayActionAnimation(currentSpellAction.cast_animation.value);
+            myAnimator.SetBool(StaticStrings.spellCasting, states.isSpellCasting);
+            PlayActionAnimation(_currentSpellAction.cast_animation.value);
             ChangeState(CharacterState.OVERRIDE_INTERACTING);
-            m_states.animIsInteracting = false;
+            states.animIsInteracting = false;
         }
 
         public void CastSpellActual()
         {
-            if (!(currentSpellAction is ProjectileSpell)) return;
-            ProjectileSpell p = (ProjectileSpell)currentSpellAction;
-            GameObject go = Instantiate(p.projectile);
+            if (!(_currentSpellAction is ProjectileSpell)) return;
+            var projectile = (ProjectileSpell)_currentSpellAction;
+            var go = Instantiate(projectile.projectile);
 
-            Vector3 tp = m_transform.position;
-            tp += m_transform.forward;
+            Vector3 tp = myTransform.position;
+            tp += myTransform.forward;
             tp.y += 1.5f;
 
             go.transform.position = tp;
             go.transform.rotation = transform.rotation;
 
             Rigidbody rb = go.GetComponent<Rigidbody>();
-            rb.AddForce(m_transform.forward * 10f, ForceMode.Impulse);
+            rb.AddForce(myTransform.forward * 10f, ForceMode.Impulse);
         }
 
         private void PlayActionAnimation(string _animationName)
         {   //  The layer parameter is refering to Animator Controller Layer 
             // m_animator.PlayInFixedTime(_animationName, 5, 0.2f);    //  Pass in the Override Layer where attacks take place
             // Debug.Log("Playing Animation : " + _animationName);
-            m_animator.CrossFade(_animationName, 0.2f);
+            myAnimator.CrossFade(_animationName, 0.2f);
         }   //  PlayInFixedTime is kinda similar to CrossFade Animation but slightly better
 
         private void ChangeState(CharacterState _state)
         {
-            if (m_characterState == _state) return;
-            m_characterState = _state;
+            if (characterState == _state) return;
+            characterState = _state;
             switch (_state)
             {
                 case CharacterState.MOVING:
-                    m_animatorHook.rm_mult = 1;
-                    m_animator.applyRootMotion = false;
+                    animatorHook.rm_mult = 1;
+                    myAnimator.applyRootMotion = false;
                     break;
                 case CharacterState.INTERACTING:
-                    m_animatorHook.rm_mult = 1;
-                    m_animator.applyRootMotion = false;
+                    animatorHook.rm_mult = 1;
+                    myAnimator.applyRootMotion = false;
                     break;
                 case CharacterState.OVERRIDE_INTERACTING:
-                    m_animatorHook.rm_mult = 1;
-                    m_animator.applyRootMotion = true;
-                    m_animator.SetBool("isInteracting", true);
-                    m_states.isInteracting = true;
+                    animatorHook.rm_mult = 1;
+                    myAnimator.applyRootMotion = true;
+                    myAnimator.SetBool(IsInteracting, true);
+                    states.isInteracting = true;
                     break;
                 case CharacterState.ON_AIR:
-                    m_animatorHook.rm_mult = 1;
-                    m_animator.applyRootMotion = false;
+                    animatorHook.rm_mult = 1;
+                    myAnimator.applyRootMotion = false;
                     break;
                 case CharacterState.ROLL:
-                    m_animator.applyRootMotion = true;
-                    m_animator.SetBool("isInteracting", true);
-                    m_states.isInteracting = true;
+                    myAnimator.applyRootMotion = true;
+                    myAnimator.SetBool(IsInteracting, true);
+                    states.isInteracting = true;
                     break;
             }
         }
 
         private WeaponManager.ActionContainer GetAction(InputType _inputType)
         {
-            WeaponManager.ActionContainer ac = m_weaponManager.GetAction(_inputType);
+            var ac = weaponManager.GetAction(_inputType);
 
             if (ac == null)
                 return null;
 
-            m_inventoryManager.SetLastInput(_inputType);
+            inventoryManager.SetLastInput(_inputType);
             return ac;
         }
-        #endregion    
 
-        #region Public Functions
         public void HandleRoll()
         {
-            Vector3 relativeDir = m_transform.InverseTransformDirection(m_input.moveDir);
+            Vector3 relativeDir = myTransform.InverseTransformDirection(inputVar.moveDir);
             float v = relativeDir.z;
             float h = relativeDir.x;
 
             if (relativeDir == Vector3.zero)
             {   //  if no directional input, play step back animation
-                m_input.moveDir = -m_transform.forward;
-                m_input.targetRollSpeed = m_stats.backstepSpeed;
+                inputVar.moveDir = -myTransform.forward;
+                inputVar.targetRollSpeed = controlStats.backStepSpeed;
             }
             else
             {   //  else roll using directional input
-                m_input.targetRollSpeed = m_stats.rollSpeed;
+                inputVar.targetRollSpeed = controlStats.rollSpeed;
             }
 
-            //  Override root motion multipler
-            m_animatorHook.rm_mult = m_input.targetRollSpeed;
+            //  Override root motion multiplier
+            animatorHook.rm_mult = inputVar.targetRollSpeed;
 
             //  Set Animations floats using relative Direction
-            m_animator.SetFloat(StaticStrings.vertical, v);
-            m_animator.SetFloat(StaticStrings.horizontal, h);
+            myAnimator.SetFloat(StaticStrings.vertical, v);
+            myAnimator.SetFloat(StaticStrings.horizontal, h);
 
             //  Play Animation and change state
             PlayActionAnimation(StaticStrings.rolls);
@@ -570,7 +561,7 @@ namespace SA.Managers
 
         public void SetDamageColliderStatus(bool _status)
         {
-            WeaponHook wHook = m_inventoryManager.GetWeaponInUse().weaponHook;
+            var wHook = inventoryManager.GetWeaponInUse().WeaponHook;
 
             if (wHook != null)
             {
@@ -588,19 +579,15 @@ namespace SA.Managers
 
         private void GetHit()
         {
-            if (!m_states.isGettingHit)
-            {
-                PlayActionAnimation("hit1");
-                m_states.isGettingHit = true;
-                timeSinceLastHit = Time.realtimeSinceStartup;
-                ChangeState(CharacterState.OVERRIDE_INTERACTING);
-            }
+            if (states.isGettingHit) return;
+            PlayActionAnimation("hit1");
+            states.isGettingHit = true;
+            _timeSinceLastHit = Time.realtimeSinceStartup;
+            ChangeState(CharacterState.OVERRIDE_INTERACTING);
         }
-        #endregion
     }
 
-    #region Helper Classes    
-    [System.Serializable]
+    [Serializable]
     public class WeaponManager
     {   //  Control what actions to do based on button input
         public ActionContainer[] actions;
@@ -616,13 +603,12 @@ namespace SA.Managers
             actions = new ActionContainer[4];
             for (int x = 0; x < actions.Length; x++)
             {
-                ActionContainer a = new ActionContainer();
-                a.inputType = (InputType)x;
+                var a = new ActionContainer {inputType = (InputType) x};
                 actions[x] = a;
             }
         }
 
-        [System.Serializable]
+        [Serializable]
         public class ActionContainer
         {
             public InputType inputType;
@@ -631,10 +617,10 @@ namespace SA.Managers
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class InventoryManager
     {
-        private InputType lastInput;
+        private InputType _lastInput;
 
         //  Equipped Weapon Data
         public Inventory.RuntimeWeapon rightSlot;
@@ -647,11 +633,11 @@ namespace SA.Managers
         public Inventory.Item spellHandSlot;
 
 
-        public void SetLastInput(InputType _type) { lastInput = _type; }
+        public void SetLastInput(InputType _type) { _lastInput = _type; }
 
         public Inventory.RuntimeWeapon GetWeaponInUse()
         {
-            switch (lastInput)
+            switch (_lastInput)
             {
                 case InputType.RB:
                 case InputType.RT:
@@ -666,12 +652,13 @@ namespace SA.Managers
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class InputVariables
     {
         public float horizontal;
         public float vertical;
         public float moveAmount;
+        
         public Vector3 moveDir;
         public Vector3 animationDelta;
         public Transform lockOnTransform;
@@ -684,7 +671,7 @@ namespace SA.Managers
         public float targetRollSpeed;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class States
     {
         public bool onGround;
@@ -696,7 +683,7 @@ namespace SA.Managers
         public bool isRotateEnabled;
         public bool isAttackEnabled;
         public bool isSpellCasting;
-        public bool isIKEnabled;
+        public bool isIkEnabled;
         public bool isUsingItem;
         public bool isAbleToBeParried;
         public bool isParryOn;
@@ -704,15 +691,14 @@ namespace SA.Managers
         public bool animIsInteracting;
         public bool isInteracting;
         public bool closeWeapons;
-        public bool isInvisable;
+        public bool isInvisible;
         public bool isGettingHit;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class NetworkStates
     {
         public bool isLocal;
         public bool isInRoom;
     }
-    #endregion
 }

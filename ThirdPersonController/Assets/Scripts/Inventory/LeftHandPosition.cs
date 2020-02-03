@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-
 namespace SA.Inventory
 {    
     [CreateAssetMenu(menuName = "Weapons/Left Hand Position")]

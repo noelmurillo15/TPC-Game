@@ -1,129 +1,126 @@
 ﻿using UnityEngine;
 using SA.Scriptable.Variables;
 
-
 namespace SA.Managers
 {
     public class CameraManager : MonoBehaviour
     {   //  Manages the Camera w/ Pivot
-        #region Class Members
         public bool lockOn;
         public float followSpeed = 9f;
         public float mouseSpeed = 2f;
         public float controllerSpeed = 7f;
 
-        public Transform m_target;
-        public Transform m_transform;
-        public TransformVariable m_lockOnTransform;
-        [HideInInspector] public Transform m_pivot;
-        [HideInInspector] public Transform m_cameraTransform;
-
-        private float turnSmoothing = 0.1f;
+        public Transform myTarget;
+        public Transform myTransform;
+        public TransformVariable lockOnTransformVar;
+        
         public float minAngle = -45f;
         public float maxAngle = 45f;
 
-        private float smoothX, smoothY;
-        private float smoothXVelocity, smoothYVelocity;
-
-        private float curZ;
         public float defZ;
         public float zSpeed;
-
         public float lookAngle;
         public float tiltAngle;
+        
+        [HideInInspector] public Transform myPivot;
+        [HideInInspector] public Transform myCameraTransform;
+        
+        private float _turnSmoothing = 0.1f;
+        private float _smoothX, _smoothY;
+        private float _smoothXVelocity, _smoothYVelocity;
+        private float _curZ;
+        private bool _usedRightAxis;
+        private bool _changeTargetLeft;
+        private bool _changeTargetRight;
+        private StateManager _stateManager;
 
-        private bool usedRightAxis;
-        private bool changeTagetLeft;
-        private bool changeTargetRight;
 
-        private StateManager m_stateManager;
-        #endregion
-
-
-        public void Init(StateManager _stateManager)
+        public void Init(StateManager states)
         {
-            m_transform = this.transform;
-            m_stateManager = _stateManager;
-            m_target = m_stateManager.transform;
+            myTransform = transform;
+            _stateManager = states;
+            myTarget = _stateManager.transform;
 
-            if (m_cameraTransform == null) m_cameraTransform = Camera.main.transform;
-            if (m_pivot == null) m_pivot = m_cameraTransform.parent;
+            if (myCameraTransform == null) myCameraTransform = Camera.main.transform;
+            if (myPivot == null) myPivot = myCameraTransform.parent;
 
-            m_lockOnTransform.value = null;
+            lockOnTransformVar.value = null;
         }
 
-        public void Tick(float _delta, float _mouseX, float _mouseY)
+        public void Fixed_Tick(float _delta, float _mouseX, float _mouseY)
         {
-            float targetSpeed = controllerSpeed;
-
             FollowTarget(_delta);
-            HandleRotation(_delta, _mouseY, _mouseX, targetSpeed);
+            HandleRotation(_delta, _mouseY, _mouseX, controllerSpeed);
             HandlePivotPosition();
         }
 
-        private void FollowTarget(float _delta)
+        
+        private void FollowTarget(float d)
         {
-            transform.position = Vector3.Lerp(transform.position, m_target.position, _delta);
+            myTransform.position = Vector3.Lerp(myTransform.position, myTarget.position, d);
         }
 
-        private void HandleRotation(float _delta, float _vertical, float _horizontal, float targetSpeed)
+        private void HandleRotation(float d, float vertical, float horizontal, float speed)
         {
-            if (turnSmoothing > 0)
-            {   //  TurnSmoothing - calculate smooth damp
-                smoothX = Mathf.SmoothDamp(smoothX, _horizontal, ref smoothXVelocity, turnSmoothing);
-                smoothY = Mathf.SmoothDamp(smoothY, _vertical, ref smoothYVelocity, turnSmoothing);
+            if (_turnSmoothing > 0)
+            {   //    Apply Input Smoothing
+                _smoothX = Mathf.SmoothDamp(
+                    _smoothX, horizontal, ref _smoothXVelocity, _turnSmoothing);
+                _smoothY = Mathf.SmoothDamp(
+                    _smoothY, vertical, ref _smoothYVelocity, _turnSmoothing);
             }
             else
-            {   //  Get Raw Input
-                smoothX = _horizontal;
-                smoothY = _vertical;
+            {   //    Apply Raw Input
+                _smoothX = horizontal;
+                _smoothY = vertical;
             }
 
-            if (m_lockOnTransform.value != null)
-            {   //  LockOn Target
-                Vector3 targetDir = m_lockOnTransform.value.position - transform.position;
+            if (lockOnTransformVar.value != null)
+            {    //    Override Tilt & Look Input when LockedOn
+                Vector3 targetDir = lockOnTransformVar.value.position - myTransform.position;
                 targetDir.Normalize();
                 targetDir.y = 0f;
 
                 if (targetDir == Vector3.zero)
-                    targetDir = transform.forward;
+                    targetDir = myTransform.forward;
 
                 Quaternion targetRot = Quaternion.LookRotation(targetDir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, _delta * followSpeed);
-                lookAngle = transform.eulerAngles.y;
+                myTransform.rotation = Quaternion.Slerp(myTransform.rotation, targetRot, d * followSpeed);
+                lookAngle = myTransform.eulerAngles.y;
 
-                Vector3 tiltDir = m_lockOnTransform.value.position - m_pivot.position;
+                Vector3 tiltDir = lockOnTransformVar.value.position - myPivot.position;
                 tiltDir.Normalize();
                 if (tiltDir == Vector3.zero)
-                    tiltDir = m_pivot.forward;
+                    tiltDir = myPivot.forward;
 
                 Quaternion tiltRot = Quaternion.LookRotation(tiltDir);
-                Vector3 tiltEulers = Quaternion.Slerp(m_pivot.rotation, tiltRot, _delta * followSpeed).eulerAngles;
-                tiltEulers.y = 0f;
-                tiltAngle = tiltEulers.x;
+                myPivot.rotation = Quaternion.Slerp(myPivot.rotation, tiltRot, d * followSpeed);
+                //Vector3 tiltEulers = Quaternion.Slerp(myPivot.rotation, tiltRot, d * followSpeed).eulerAngles;
+                //tiltEulers.y = 0f;
+                tiltAngle = myPivot.eulerAngles.x;
                 return;
             }
 
-            //  Rotates on Y-Axis of CameraManager Gameobject which moves Screen Space Horizontally
-            lookAngle += smoothX * targetSpeed;
-            transform.rotation = Quaternion.Euler(0f, lookAngle, 0f);
+            //  Look : Rotates on Y-Axis of CameraManager Gameobject which moves Screen Space Horizontally
+            lookAngle += _smoothX * speed;
+            myTransform.rotation = Quaternion.Euler(0f, lookAngle, 0f);
 
-            //  Rotates on X-Axis of Pivot Gameobject which moves Screen Space Vertically
-            tiltAngle -= smoothY * targetSpeed;
+            //  Tilt : Rotates on X-Axis of Pivot Gameobject which moves Screen Space Vertically
+            tiltAngle -= _smoothY * speed;
             tiltAngle = Mathf.Clamp(tiltAngle, minAngle, maxAngle);
-            m_pivot.localRotation = Quaternion.Euler(tiltAngle, 0f, 0f);
+            myPivot.localRotation = Quaternion.Euler(tiltAngle, 0f, 0f);
         }
 
         private void HandlePivotPosition()
         {
-            float targetZ = defZ;
+            var targetZ = defZ;
             CameraCollision(defZ, ref targetZ);
 
-            curZ = Mathf.Lerp(curZ, targetZ, m_stateManager.m_delta * zSpeed);
-            Vector3 tp = Vector3.zero;
-            tp.z = curZ;
-            tp.y = 2.24f;
-            m_cameraTransform.localPosition = tp;
+            _curZ = Mathf.Lerp(_curZ, targetZ, _stateManager.deltaTime * zSpeed);
+            var pivotPosition = Vector3.zero;
+            pivotPosition.z = _curZ;
+            pivotPosition.y = 2.24f;
+            myCameraTransform.localPosition = pivotPosition;
         }
 
         private static void CameraCollision(float targetZ, ref float actualZ)
@@ -132,10 +129,11 @@ namespace SA.Managers
         }
 
 
-        public static CameraManager singleton;
+        public static CameraManager Instance;
         private void Awake()
         {
-            singleton = this;
+            if(Instance != null && Instance != this) { Destroy(gameObject); }
+            Instance = this;
         }
     }
 }

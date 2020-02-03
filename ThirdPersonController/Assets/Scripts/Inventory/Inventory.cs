@@ -4,32 +4,25 @@ using SA.Utilities.Editor;
 #endif
 using System.Collections.Generic;
 
-
 namespace SA.Inventory
 {
     [CreateAssetMenu(menuName = "Single Instances/Inventory", order = 0)]
     public class Inventory : ScriptableObject
     {
-        public List<Item> all_items = new List<Item>();
+        public List<Item> allItems = new List<Item>();
         private Dictionary<string, int> dict = new Dictionary<string, int>();
 
 
         public void Initialize()
         {            
             #if UNITY_EDITOR
-            all_items = EditorUtilities.FindAssetsByType<Item>();
+            allItems = EditorUtilities.FindAssetsByType<Item>();
             #endif
 
-            for (int i = 0; i < all_items.Count; i++)
+            for (var i = 0; i < allItems.Count; i++)
             {
-                if (dict.ContainsKey(all_items[i].name))
-                {
-
-                }
-                else
-                {
-                    dict.Add(all_items[i].name, i);
-                }
+                if (dict.ContainsKey(allItems[i].name)) return;
+                dict.Add(allItems[i].name, i);
             }
         }
 
@@ -40,7 +33,7 @@ namespace SA.Inventory
 
             if (dict.TryGetValue(_id, out index))
             {
-                temp = all_items[index];
+                temp = allItems[index];
             }
 
             if (index == -1)
