@@ -38,7 +38,6 @@ namespace ANM.Framework
             _saveSettings.Initialize();
 
             sceneTransitionManager = gameObject.GetComponentInChildren<SceneTransitionManager>();
-            sceneTransitionManager.ScreenMaskBrightness = 0f;
             Time.timeScale = 1;
         }
 

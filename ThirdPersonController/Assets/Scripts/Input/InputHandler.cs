@@ -182,9 +182,9 @@ namespace SA.Input
 
                 lt_input = gamepad.leftTrigger.isPressed;
                 rt_input = gamepad.rightTrigger.isPressed;
-
-                LockOnSafetyCheck();
             }
+            
+            LockOnSafetyCheck();
 
             if (b_input)
                 b_timer += delta;

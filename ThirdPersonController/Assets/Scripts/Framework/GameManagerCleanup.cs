@@ -13,7 +13,6 @@ namespace ANM.Framework
         {
             Invoke($"ApplicationQuit", 3f);
             if (GameManager.Instance == null) return;
-            GameManager.Instance.sceneTransitionManager.ScreenMaskBrightness = 0f;
             GameManager.Instance.UnloadAllLoadedScenes();
         }
 

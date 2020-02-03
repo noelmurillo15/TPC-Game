@@ -15,30 +15,18 @@ namespace ANM.Framework
     public class SceneTransitionManager : MonoBehaviour
     {
         [SerializeField] private CanvasGroup canvasGroup;
-        [SerializeField] private float fadeOutDelay = 2f;
+        [SerializeField] private float fadeOutDelay = 1.5f;
         [SerializeField] private float fadeInDelay = 0.5f;
 
         private const string MenuUiSceneName = "Menu Ui";
-        private const string CreditsSceneName = "ExitScreen";
+        private const string CreditsSceneName = "Credits";
         private const string GameplaySceneName = "Level 1";
-        
-        
-        public float ScreenMaskBrightness
-        {
-            get => _screenMaskBrightness;
-            set
-            {
-                _screenMaskBrightness = value;
-                FadeInImmediate();
-            }
-        }
-        private float _screenMaskBrightness = 0.5f;
 
         public GameEvent onLoadScene;
         public GameEvent onFinishLoadScene;
         
         [SerializeField] private string[] _sceneNames = null;
-        private Coroutine _currentFade = null;
+        private Coroutine _currentFade;
         
 
         private void Start()
@@ -142,7 +130,7 @@ namespace ANM.Framework
             while (!async.isDone) { yield return null; }
             SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(index));
             onFinishLoadScene.Raise();
-            yield return FadeIn(fadeInDelay);
+            yield return FadeIn();
         }
 
         private IEnumerator LoadNewScene(string sceneName)
@@ -153,7 +141,7 @@ namespace ANM.Framework
             while (!async.isDone) { yield return null; }
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
             onFinishLoadScene.Raise();
-            yield return FadeIn(fadeInDelay);
+            yield return FadeIn();
         }
         
         public void LoadSceneEvent()
@@ -174,7 +162,7 @@ namespace ANM.Framework
         
         private void FadeInImmediate()
         {
-            canvasGroup.alpha = ScreenMaskBrightness;
+            canvasGroup.alpha = 0f;
         }
 
         public Coroutine FadeOut()
@@ -182,9 +170,9 @@ namespace ANM.Framework
             return Fade(1f, fadeOutDelay);
         }
 
-        private Coroutine FadeIn(float time)
+        private Coroutine FadeIn()
         {
-            return Fade(ScreenMaskBrightness, time);
+            return Fade(0f, fadeInDelay);
         }
 
         private Coroutine Fade(float target, float time)
