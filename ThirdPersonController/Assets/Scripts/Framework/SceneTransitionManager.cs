@@ -31,8 +31,8 @@ namespace ANM.Framework
 
         private void Start()
         {
-            FadeInImmediate();
             canvasGroup = GetComponent<CanvasGroup>();
+            FadeInImmediate();
             
             var sceneNumber = SceneManager.sceneCountInBuildSettings;
             _sceneNames = new string[sceneNumber];

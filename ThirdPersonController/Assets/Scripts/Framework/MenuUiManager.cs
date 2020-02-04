@@ -1,5 +1,5 @@
 ﻿/*
- * GameSettingsManager - Manages GameSettings UI & Functionality
+ * GameSettingsManager - Manages GameSettings Ui & Functionality
  * Created by : Allan N. Murillo
  */
 
@@ -45,11 +45,11 @@ namespace ANM.Framework
         [SerializeField] private AudioSource bgMusic = null;
         [SerializeField] private AudioSource[] sfx = null;
 
-        [SerializeField] private GameObject mainPanelSelectedObj = null;
-        [SerializeField] private GameObject pausePanelSelectedObj = null;
-        [SerializeField] private GameObject audioPanelSelectedObj = null;
-        [SerializeField] private GameObject videoPanelSelectedObj = null;
-        [SerializeField] private GameObject quitPanelSelectedObj = null;
+        [SerializeField] private Button mainPanelSelectedObj = null;
+        [SerializeField] private Button pausePanelSelectedObj = null;
+        [SerializeField] private Button audioPanelSelectedObj = null;
+        [SerializeField] private Button videoPanelSelectedObj = null;
+        [SerializeField] private Button quitPanelSelectedObj = null;
 
         private EventSystem _eventSystem;
         private GameManager _gameManager;
@@ -69,10 +69,14 @@ namespace ANM.Framework
             _gameManager = GameManager.Instance;
             _gameManager.SwitchToLoadedScene("Level 1");
             _gameManager.SetIsMainMenuActive(SceneTransitionManager.IsMainMenuActive());
-            
-            mainPanel.SetActive(_gameManager.GetIsMainMenuActive());
-            menuUiCamera.gameObject.SetActive(_gameManager.GetIsMainMenuActive());
 
+            var isMainMenu = _gameManager.GetIsMainMenuActive();
+            mainPanel.SetActive(isMainMenu);
+            menuUiCamera.gameObject.SetActive(isMainMenu);
+
+            UpdateSelectedObject(isMainMenu ? 
+                mainPanelSelectedObj : pausePanelSelectedObj);
+            
             pausePanel.SetActive(false);
             videoPanel.SetActive(false);
             audioPanel.SetActive(false);
@@ -89,7 +93,8 @@ namespace ANM.Framework
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = h * 2 / 100;
             style.normal.textColor = Color.white;
-            var text = _gameManager.GetIsGamePaused() ? "Press TAB or Xbox Select to Resume" : "Press TAB or Xbox Select to Pause";
+            var text = _gameManager.GetIsGamePaused() ? 
+                "Press Tab or Xbox Start to Resume" : "Press Tab or Xbox Start to Pause";
             GUI.Label(rect, text, style);
         }
 
@@ -106,7 +111,6 @@ namespace ANM.Framework
 
         public void OnPauseEvent()
         {
-            _eventSystem.SetSelectedGameObject(pausePanelSelectedObj);
             menuUiCamera.gameObject.SetActive(true);
             TurnOnMainPanel();
         }
@@ -135,7 +139,7 @@ namespace ANM.Framework
             {
                 quitOptionsPanel.SetActive(true);
             }
-            _eventSystem.SetSelectedGameObject(quitPanelSelectedObj);
+            UpdateSelectedObject(quitPanelSelectedObj);
         }
 
         public void QuitCancel()
@@ -145,9 +149,8 @@ namespace ANM.Framework
             else
                 quitOptionsPanel.SetActive(false);
 
-            _eventSystem.SetSelectedGameObject(_gameManager.GetIsMainMenuActive()
-                ? mainPanelSelectedObj
-                : pausePanelSelectedObj);
+            UpdateSelectedObject(_gameManager.GetIsMainMenuActive() ?
+                mainPanelSelectedObj : pausePanelSelectedObj);
         }
 
         public void ReturnToMenu()
@@ -160,7 +163,7 @@ namespace ANM.Framework
             _gameManager.Reset();
             _gameManager.SetIsMainMenuActive(true);
             _gameManager.UnloadScenesExceptMenu();
-            _eventSystem.SetSelectedGameObject(mainPanelSelectedObj);
+            UpdateSelectedObject(mainPanelSelectedObj);
         }
 
         public void StartLoadSceneEvent()
@@ -202,18 +205,27 @@ namespace ANM.Framework
         
         private void TurnOnMainPanel()
         {
-            if (_gameManager.GetIsMainMenuActive())
-            {
+            var isMainMenu = _gameManager.GetIsMainMenuActive();
+            
+            if (isMainMenu)
                 mainPanel.SetActive(true);
-                _eventSystem.SetSelectedGameObject(mainPanelSelectedObj);
-            }
             else
-            {
                 pausePanel.SetActive(true);
-                _eventSystem.SetSelectedGameObject(pausePanelSelectedObj);
-            }
+            
+            UpdateSelectedObject(isMainMenu ?
+                mainPanelSelectedObj : pausePanelSelectedObj);
+            
             videoPanel.SetActive(false);
             audioPanel.SetActive(false);
+        }
+
+        private void UpdateSelectedObject(Button obj)
+        {
+            _eventSystem.SetSelectedGameObject(null);
+            _eventSystem.SetSelectedGameObject(obj.gameObject);
+            
+            obj.Select();
+            obj.OnSelect(null);
         }
         #endregion
 
@@ -239,7 +251,7 @@ namespace ANM.Framework
             if (audioPanelAnimator == null) return;
             audioPanelAnimator.enabled = true;
             audioPanelAnimator.Play("Audio Panel In");
-            _eventSystem.SetSelectedGameObject(audioPanelSelectedObj);
+            UpdateSelectedObject(audioPanelSelectedObj);
         }
         
         private IEnumerator SaveAudioSettings()
@@ -290,7 +302,7 @@ namespace ANM.Framework
             if (videoPanelAnimator == null) return;
             videoPanelAnimator.enabled = true;
             videoPanelAnimator.Play("Video Panel In");
-            _eventSystem.SetSelectedGameObject(videoPanelSelectedObj);
+            UpdateSelectedObject(videoPanelSelectedObj);
         }
         
         private IEnumerator SaveVideoSettings()
@@ -494,6 +506,7 @@ namespace ANM.Framework
             SaveSettings.ShadowDistIni = shadowDist[SaveSettings.CurrentQualityLevelIni];
             SaveSettings.ShadowCascadeIni = 3;
             SaveSettings.TextureLimitIni = 0;
+            SaveSettings.SettingsLoadedIni = true;
         }
 
         private void ApplyIniSettings()

@@ -1,4 +1,7 @@
-﻿using System;
+﻿/*
+ * InputHandler - Detects Input and passes it along to StateManager & CameraManager
+ */
+
 using UnityEngine;
 using SA.Managers;
 using ANM.Framework;
@@ -8,26 +11,15 @@ using System.Collections.Generic;
 
 namespace SA.Input
 {
-    //  TODO : add persistent game manager and attach this script to it -Singleton
     public class InputHandler : MonoBehaviour
-    {   //  Detects Input and passes it along to StateManager & CameraManager
-        #region Class Member Variables
+    {
         public GameEvent onGamePauseEvent;
         public GameEvent onGameResumeEvent;
-
-        [SerializeField] private bool xbox = false;
         
-        private Mouse _mouse;
-        private Gamepad _gamepad;
-        private Keyboard _keyboard;
+        private Vector2 _moveDirection;
+        private Vector2 _lookRotation;
 
-        private float _vertical;
-        private float _horizontal;
-
-        private float _camVertical;
-        private float _camHorizontal;
-
-        private bool _bInput;
+        private bool _rollInput;
         private bool _xInput;
         private bool _aInput;
         private bool _yInput;
@@ -39,14 +31,12 @@ namespace SA.Input
 
         private float _bTimer;
         private float _delta;
-
-        private const string XboxControllerName = "XInputControllerWindows";
-
+        
         //  References
         public GamePhase currentPhase;
         public StateManager stateManager;
         public CameraManager cameraManager;
-        private ThirdPersonInput _inputController;
+        private ThirdPersonInput _controls;
         private Transform _cameraTransform;
 
         //  LockOn
@@ -58,40 +48,26 @@ namespace SA.Input
         //  Enemies
         public List<Transform> m_enemies = new List<Transform>();
         public int enemyIndex;
-        #endregion
-
+        
 
         private void Awake()
         {
-            ControllerCheck();
+            ControllerSetup();
         }
-
+        
         private void Start()
         {
             Initialize();
         }
-
-        private void OnEnable()
-        {
-            _inputController.CharacterInput.Select.performed += SelectInput;
-            _inputController.CharacterInput.Select.Enable();
-            _inputController.CharacterInput.LStick.performed += LeftStickInput;
-            _inputController.CharacterInput.LStick.Enable();
-            _inputController.CharacterInput.RStick.performed += RightStickInput;
-            _inputController.CharacterInput.RStick.Enable();
-        }
-
+        
         private void OnDisable()
         {
-            _inputController.CharacterInput.Select.performed -= SelectInput;
-            _inputController.CharacterInput.Select.Disable();
-            _inputController.CharacterInput.LStick.performed -= LeftStickInput;
-            _inputController.CharacterInput.LStick.Disable();
-            _inputController.CharacterInput.RStick.performed -= RightStickInput;
-            _inputController.CharacterInput.RStick.Disable();
+            _controls.CharacterInput.LockOnToggle.performed -= LockOnInputCallback;
+            _controls.CharacterInput.LockOnToggle.Disable();
+            _controls.Disable();
         }
 
-
+        
         private void Update()
         {
             _delta = Time.deltaTime;
@@ -110,43 +86,33 @@ namespace SA.Input
                     break;
             }
         }
-        
+
         private void GetInput()
         {
-            if (!xbox)
-            {
-                //  TODO : Get keyboard equivalent buttons pressed
-            }
-            else
-            {
-                if (_gamepad == null) { xbox = false; return; }
+            _aInput = GetButtonStatus(_controls.CharacterInput.A.phase);
+            _rollInput = GetButtonStatus(_controls.CharacterInput.Roll.phase);
+            _xInput = GetButtonStatus(_controls.CharacterInput.X.phase);
+            _yInput = GetButtonStatus(_controls.CharacterInput.Y.phase);
 
-                _aInput = _gamepad.aButton.isPressed;
-                _bInput = _gamepad.bButton.isPressed;
-                _xInput = _gamepad.xButton.isPressed;
-                _yInput = _gamepad.yButton.isPressed;
+            _rbInput = GetButtonStatus(_controls.CharacterInput.RB.phase);
+            _rtInput = GetButtonStatus(_controls.CharacterInput.RT.phase);
+            _lbInput = GetButtonStatus(_controls.CharacterInput.LB.phase);
+            _ltInput = GetButtonStatus(_controls.CharacterInput.LT.phase);
 
-                _rbInput = _gamepad.rightShoulder.isPressed;
-                _lbInput = _gamepad.leftShoulder.isPressed;
-
-                _ltInput = _gamepad.leftTrigger.isPressed;
-                _rtInput = _gamepad.rightTrigger.isPressed;
-            }
-            
             LockOnSafetyCheck();
 
-            if (_bInput)
+            if (_rollInput)
                 _bTimer += _delta;
         }
-        
+
         private void ApplyInput()
         {
             stateManager.inputVar.rb = _rbInput;
             stateManager.inputVar.lb = _lbInput;
             stateManager.inputVar.rt = _rtInput;
             stateManager.inputVar.lt = _ltInput;
-
-            if (_bInput)
+            
+            if (_rollInput)
             {
                 _bTimer += _delta;
 
@@ -168,19 +134,19 @@ namespace SA.Input
 
             stateManager.states.isLockedOn = isLockedOn;
         }
-
+        
         
         private void FixedUpdate()
         {
             _delta = Time.fixedDeltaTime;
-            GetFixedInput();
+            //GetFixedInput();
 
             switch (currentPhase)
             {
                 case GamePhase.IN_GAME:
                     ApplyFixedInput();
                     stateManager.Fixed_Tick(_delta);
-                    cameraManager.Fixed_Tick(_delta, _camHorizontal, _camVertical);
+                    cameraManager.Fixed_Tick(_delta, _lookRotation.x, _lookRotation.y);
                     break;
                 case GamePhase.IN_INVENTORY:
                     break;
@@ -189,35 +155,22 @@ namespace SA.Input
             }
         }
         
-        private void GetFixedInput()
+        /*private void GetFixedInput()
         {
-            if (!xbox)
-            {
-                //  TODO : use WASD Composite to get movement delta
-                _camVertical = _mouse.delta.ReadValue().y;
-                _camHorizontal = _mouse.delta.ReadValue().x;
-            }
-            else
-            {
-                if (_gamepad == null) { xbox = false; return; }
 
-                _vertical = _gamepad.leftStick.ReadValue().y;
-                _horizontal = _gamepad.leftStick.ReadValue().x;
-
-                _camVertical = _gamepad.rightStick.ReadValue().y;
-                _camHorizontal = _gamepad.rightStick.ReadValue().x;
-            }
-        }
+        }*/
         
         private void ApplyFixedInput()
         {
-            stateManager.inputVar.vertical = _vertical;
-            stateManager.inputVar.horizontal = _horizontal;
-            stateManager.inputVar.moveAmount = Mathf.Clamp01(Mathf.Abs(_vertical) + Mathf.Abs(_horizontal));
+            var vertical = _moveDirection.y;
+            var horizontal = _moveDirection.x;
+            stateManager.inputVar.vertical = vertical;
+            stateManager.inputVar.horizontal = horizontal;
+            stateManager.inputVar.moveAmount = Mathf.Clamp01(Mathf.Abs(vertical) + Mathf.Abs(horizontal));
 
             //  Moves player based on camera angle
-            Vector3 moveDirection = _cameraTransform.forward * _vertical;
-            moveDirection += _cameraTransform.right * _horizontal;
+            Vector3 moveDirection = _cameraTransform.forward * vertical;
+            moveDirection += _cameraTransform.right * horizontal;
             moveDirection.Normalize();
 
             //  Pass Move Direction to StateManager Input
@@ -239,63 +192,29 @@ namespace SA.Input
             _cameraTransform = cameraManager.myTransform;
         }
 
-        private void ControllerCheck()
+        private void ControllerSetup()
         {
-            _inputController = new ThirdPersonInput();
-            if (Gamepad.current != null)
-            {
-                xbox = true;
-                _gamepad = Gamepad.current;
-            }
-            else
-            {
-                xbox = false;
-                _gamepad = null;
-            }
-            _keyboard = Keyboard.current;
-            _mouse = Mouse.current;
+            if(_controls == null)
+                _controls = new ThirdPersonInput();
             
-            InputSystem.onDeviceChange += (device, change) =>
-            {
-                switch (change)
-                {
-                    case InputDeviceChange.Added:
-                        //Debug.Log("InputHandler::New Device Added : " + device.name);
-                        break;
-                    case InputDeviceChange.Removed:
-                        Debug.Log("InputHandler::New Device Removed : " + device.name);
-                        if (device.name.Contains(XboxControllerName))
-                        {  xbox = false; }
-                        break;
-                    case InputDeviceChange.Disconnected:
-                        Debug.Log("InputHandler::Device Disconnected : " + device.name);
-                        if (device.name.Contains(XboxControllerName))
-                        {  xbox = false;  }
-                        break;
-                    case InputDeviceChange.Reconnected:
-                        Debug.Log("InputHandler::Device Reconnected : " + device.name);
-                        if (device.name.Contains(XboxControllerName))
-                        {  xbox = true;  }
-                        break;
-                    case InputDeviceChange.Enabled:
-                        //Debug.Log("InputHandler::Device Enabled : " + device.name);
-                        break;
-                    case InputDeviceChange.Disabled:
-                        //Debug.Log("InputHandler::Device Disabled : " + device.name);
-                        break;
-                    case InputDeviceChange.UsageChanged:
-                        //Debug.Log("InputHandler::Device usage change : " + device.name);
-                        break;
-                    case InputDeviceChange.ConfigurationChanged:
-                        //Debug.Log("InputHandler::Device config change : " + device.name);
-                        break;
-                    case InputDeviceChange.Destroyed:
-                        //Debug.Log("InputHandler::Device destroyed : " + device.name);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(change), change, null);
-                }
+            _controls.CharacterInput.Movement.performed += context =>
+                _moveDirection = context.ReadValue<Vector2>();
+
+            _controls.CharacterInput.CameraRotation.performed += context =>
+                _lookRotation = context.ReadValue<Vector2>();
+
+            _controls.CharacterInput.Pause.performed += context => 
+            { 
+                if (GameManager.Instance.GetIsGamePaused())  onGameResumeEvent.Raise();
+                else  onGamePauseEvent.Raise();
             };
+
+            /*_controls.CharacterInput.RB.started += context => _rbInput = true;
+            _controls.CharacterInput.RB.canceled += context => _rbInput = false; */
+
+            _controls.CharacterInput.LockOnToggle.performed += LockOnInputCallback;
+            
+            _controls.Enable();
         }
         
         private void LockOnSafetyCheck()
@@ -311,14 +230,14 @@ namespace SA.Input
                 {   //  Swap Target
                     if (lockOnBuffer <= 0f)
                     {
-                        if (_camHorizontal < -0.8f)
+                        if (_lookRotation.x < -0.8f)
                         {
                             enemyIndex--;
                             if (enemyIndex < 0) { enemyIndex = m_enemies.Count - 1; }
                             m_lockOnTransform.value = m_enemies[enemyIndex];
                             lockOnBuffer = 0.5f;
                         }
-                        else if (_camHorizontal > 0.8f)
+                        else if (_lookRotation.x > 0.8f)
                         {
                             enemyIndex++;
                             if (enemyIndex > m_enemies.Count - 1) { enemyIndex = 0; }
@@ -345,25 +264,13 @@ namespace SA.Input
                 stateManager.inputVar.lockOnTransform = m_lockOnTransform.value;
         }
         
-        
-        private void SelectInput(InputAction.CallbackContext context)
+        private static bool GetButtonStatus(InputActionPhase phase)
         {
-            if (GameManager.Instance.GetIsGamePaused())
-            {
-                onGameResumeEvent.Raise();
-            }
-            else
-            {
-                onGamePauseEvent.Raise();
-            }
+            return phase == InputActionPhase.Started;
         }
+        
 
-        private static void LeftStickInput(InputAction.CallbackContext context)
-        {   //  TODO : apply behaviour
-            Debug.Log("InputHandler::Left Stick was pressed!");
-        }
-
-        private void RightStickInput(InputAction.CallbackContext context)
+        private void LockOnInputCallback(InputAction.CallbackContext context)
         {
             isLockedOn = !isLockedOn;
 
