@@ -1,6 +1,11 @@
-﻿using UnityEngine;
-using SA.Managers;
+﻿/*
+ * WeaponHook - 
+ * Created by : Allan N. Murillo
+ * Last Edited : 2/24/2020
+ */
 
+using UnityEngine;
+using SA.Managers;
 
 namespace SA.Utilities
 {
@@ -9,21 +14,21 @@ namespace SA.Utilities
         public Collider[] damageColliders;
 
 
-        public void Initialize(StateManager _stateManager)
+        public void Initialize(StateManager stateManager)
         {
             damageColliders = GetComponentsInChildren<Collider>();
-            InitColliders(_stateManager);
+            InitColliders(stateManager);
         }
 
-        private void InitColliders(StateManager _stateManager)
+        private void InitColliders(StateManager stateManager)
         {
             foreach (var t in damageColliders)
             {
                 t.isTrigger = true;
                 t.enabled = false;
 
-                DamageColliders d = t.gameObject.AddComponent<DamageColliders>();
-                d.onHit = _stateManager.HandleDamageCollision;
+                var d = t.gameObject.AddComponent<DamageColliders>();
+                d.onHit = stateManager.HandleDamageCollision;
             }
         }
 

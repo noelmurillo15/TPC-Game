@@ -1,4 +1,10 @@
-﻿using UnityEngine;
+﻿/*
+ * CameraManager - 
+ * Created by : Allan N. Murillo
+ * Last Edited : 2/24/2020
+ */
+
+using UnityEngine;
 using SA.Scriptable.Variables;
 
 namespace SA.Managers
@@ -47,10 +53,10 @@ namespace SA.Managers
             lockOnTransformVar.value = null;
         }
 
-        public void Fixed_Tick(float _delta, float _mouseX, float _mouseY)
+        public void Fixed_Tick(float delta, float mouseX, float mouseY)
         {
-            FollowTarget(_delta);
-            HandleRotation(_delta, _mouseY, _mouseX, controllerSpeed);
+            FollowTarget(delta);
+            HandleRotation(delta, mouseY, mouseX, controllerSpeed);
             HandlePivotPosition();
         }
 
@@ -84,7 +90,7 @@ namespace SA.Managers
                 if (targetDir == Vector3.zero)
                     targetDir = myTransform.forward;
 
-                Quaternion targetRot = Quaternion.LookRotation(targetDir);
+                var targetRot = Quaternion.LookRotation(targetDir);
                 myTransform.rotation = Quaternion.Slerp(myTransform.rotation, targetRot, d * followSpeed);
                 lookAngle = myTransform.eulerAngles.y;
 
@@ -93,7 +99,7 @@ namespace SA.Managers
                 if (tiltDir == Vector3.zero)
                     tiltDir = myPivot.forward;
 
-                Quaternion tiltRot = Quaternion.LookRotation(tiltDir);
+                var tiltRot = Quaternion.LookRotation(tiltDir);
                 myPivot.rotation = Quaternion.Slerp(myPivot.rotation, tiltRot, d * followSpeed);
                 //Vector3 tiltEulers = Quaternion.Slerp(myPivot.rotation, tiltRot, d * followSpeed).eulerAngles;
                 //tiltEulers.y = 0f;
@@ -101,11 +107,11 @@ namespace SA.Managers
                 return;
             }
 
-            //  Look : Rotates on Y-Axis of CameraManager Gameobject which moves Screen Space Horizontally
+            //  Look : Rotates on Y-Axis of CameraManager Game object which moves Screen Space Horizontally
             lookAngle += _smoothX * speed;
             myTransform.rotation = Quaternion.Euler(0f, lookAngle, 0f);
 
-            //  Tilt : Rotates on X-Axis of Pivot Gameobject which moves Screen Space Vertically
+            //  Tilt : Rotates on X-Axis of Pivot Game object which moves Screen Space Vertically
             tiltAngle -= _smoothY * speed;
             tiltAngle = Mathf.Clamp(tiltAngle, minAngle, maxAngle);
             myPivot.localRotation = Quaternion.Euler(tiltAngle, 0f, 0f);
@@ -129,11 +135,11 @@ namespace SA.Managers
         }
 
 
-        public static CameraManager Instance;
+        public static CameraManager instance;
         private void Awake()
         {
-            if(Instance != null && Instance != this) { Destroy(gameObject); }
-            Instance = this;
+            if(instance != null && instance != this) { Destroy(gameObject); }
+            instance = this;
         }
     }
 }

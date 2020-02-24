@@ -1,21 +1,20 @@
 ﻿/*
  * InputHandler - Detects Input and passes it along to StateManager & CameraManager
+ * Created by : Allan N. Murillo
+ * Last Edited : 2/24/2020
  */
 
-using UnityEngine;
-using SA.Managers;
-using ANM.Framework;
-using SA.Scriptable.Variables;
-using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using ANM.Framework.Managers;
+using SA.Managers;
+using SA.Scriptable.Variables;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
-namespace SA.Input
+namespace ANM.Input
 {
     public class InputHandler : MonoBehaviour
     {
-        public GameEvent onGamePauseEvent;
-        public GameEvent onGameResumeEvent;
-        
         private Vector2 _moveDirection;
         private Vector2 _lookRotation;
 
@@ -40,13 +39,13 @@ namespace SA.Input
         private Transform _cameraTransform;
 
         //  LockOn
-        public TransformVariable m_lockOnTransform;
+        public TransformVariable mLockOnTransform;
         public bool isLockedOn;
         [SerializeField] private float lockOnBuffer;
         private const float LockOnMaxDistance = 20f;
 
         //  Enemies
-        public List<Transform> m_enemies = new List<Transform>();
+        public List<Transform> mEnemies = new List<Transform>();
         public int enemyIndex;
         
 
@@ -66,7 +65,6 @@ namespace SA.Input
             _controls.CharacterInput.LockOnToggle.Disable();
             _controls.Disable();
         }
-
         
         private void Update()
         {
@@ -155,10 +153,10 @@ namespace SA.Input
             }
         }
         
-        /*private void GetFixedInput()
+        private void GetFixedInput()
         {
 
-        }*/
+        }
         
         private void ApplyFixedInput()
         {
@@ -169,7 +167,7 @@ namespace SA.Input
             stateManager.inputVar.moveAmount = Mathf.Clamp01(Mathf.Abs(vertical) + Mathf.Abs(horizontal));
 
             //  Moves player based on camera angle
-            Vector3 moveDirection = _cameraTransform.forward * vertical;
+            var moveDirection = _cameraTransform.forward * vertical;
             moveDirection += _cameraTransform.right * horizontal;
             moveDirection.Normalize();
 
@@ -177,25 +175,23 @@ namespace SA.Input
             if (stateManager.characterState != StateManager.CharacterState.ROLL)
                 stateManager.inputVar.moveDir = moveDirection;
         }
-        
-        
+
         private void Initialize()
         {
-            m_lockOnTransform.value = null;
+            mLockOnTransform.value = null;
 
             stateManager.resourcesManager = Resources.Load("ResourcesManager") as ResourcesManager;
-            stateManager.resourcesManager.Initialize();
+            stateManager.resourcesManager?.Initialize();
             stateManager.Initialize();
 
-            if (cameraManager == null) cameraManager = CameraManager.Instance;
+            if (cameraManager == null) cameraManager = CameraManager.instance;
             cameraManager.Init(stateManager);
             _cameraTransform = cameraManager.myTransform;
         }
 
         private void ControllerSetup()
         {
-            if(_controls == null)
-                _controls = new ThirdPersonInput();
+            if(_controls == null) _controls = new ThirdPersonInput();
             
             _controls.CharacterInput.Movement.performed += context =>
                 _moveDirection = context.ReadValue<Vector2>();
@@ -203,11 +199,8 @@ namespace SA.Input
             _controls.CharacterInput.CameraRotation.performed += context =>
                 _lookRotation = context.ReadValue<Vector2>();
 
-            _controls.CharacterInput.Pause.performed += context => 
-            { 
-                if (GameManager.Instance.GetIsGamePaused())  onGameResumeEvent.Raise();
-                else  onGamePauseEvent.Raise();
-            };
+            _controls.CharacterInput.Pause.performed += context =>
+                GameManager.Instance.TogglePause();
 
             /*_controls.CharacterInput.RB.started += context => _rbInput = true;
             _controls.CharacterInput.RB.canceled += context => _rbInput = false; */
@@ -221,10 +214,10 @@ namespace SA.Input
         {
             if (isLockedOn)
             {
-                if (m_enemies.Count == 0)
+                if (mEnemies.Count == 0)
                 {   //  Safety
                     isLockedOn = false;
-                    m_lockOnTransform.value = null;
+                    mLockOnTransform.value = null;
                 }
                 else
                 {   //  Swap Target
@@ -233,35 +226,35 @@ namespace SA.Input
                         if (_lookRotation.x < -0.8f)
                         {
                             enemyIndex--;
-                            if (enemyIndex < 0) { enemyIndex = m_enemies.Count - 1; }
-                            m_lockOnTransform.value = m_enemies[enemyIndex];
+                            if (enemyIndex < 0) { enemyIndex = mEnemies.Count - 1; }
+                            mLockOnTransform.value = mEnemies[enemyIndex];
                             lockOnBuffer = 0.5f;
                         }
                         else if (_lookRotation.x > 0.8f)
                         {
                             enemyIndex++;
-                            if (enemyIndex > m_enemies.Count - 1) { enemyIndex = 0; }
-                            m_lockOnTransform.value = m_enemies[enemyIndex];
+                            if (enemyIndex > mEnemies.Count - 1) { enemyIndex = 0; }
+                            mLockOnTransform.value = mEnemies[enemyIndex];
                             lockOnBuffer = 0.5f;
                         }
                     }
                 }
 
-                if (m_lockOnTransform.value == null)
+                if (mLockOnTransform.value == null)
                 {   //  Safety
                     isLockedOn = false;
-                    m_lockOnTransform.value = null;
+                    mLockOnTransform.value = null;
                 }
                 else
                 {   //  Distance check
-                    float distanceToTarget = Vector3.Distance(stateManager.myTransform.position, m_lockOnTransform.value.position);
-                    if (distanceToTarget > LockOnMaxDistance) m_lockOnTransform.value = null;
+                    var distanceToTarget = Vector3.Distance(stateManager.myTransform.position, mLockOnTransform.value.position);
+                    if (distanceToTarget > LockOnMaxDistance) mLockOnTransform.value = null;
                 }
             }
 
             //  Assign LockOn Target
-            if (stateManager.inputVar.lockOnTransform != m_lockOnTransform.value)
-                stateManager.inputVar.lockOnTransform = m_lockOnTransform.value;
+            if (stateManager.inputVar.lockOnTransform != mLockOnTransform.value)
+                stateManager.inputVar.lockOnTransform = mLockOnTransform.value;
         }
         
         private static bool GetButtonStatus(InputActionPhase phase)
@@ -276,18 +269,18 @@ namespace SA.Input
 
             if (isLockedOn)
             {
-                if (m_enemies.Count == 0)
+                if (mEnemies.Count == 0)
                 {
                     isLockedOn = false;
-                    m_lockOnTransform.value = null;
+                    mLockOnTransform.value = null;
                 }
                 else
                 {
                     enemyIndex = 0;
-                    m_lockOnTransform.value = m_enemies[enemyIndex];
+                    mLockOnTransform.value = mEnemies[enemyIndex];
                 }
             }
-            else { m_lockOnTransform.value = null; }
+            else { mLockOnTransform.value = null; }
         }
     }
 

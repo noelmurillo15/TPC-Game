@@ -1,6 +1,11 @@
-﻿using UnityEngine;
-using SA.Managers;
+﻿/*
+ * DamageColliders - 
+ * Created by : Allan N. Murillo
+ * Last Edited : 2/24/2020
+ */
 
+using UnityEngine;
+using SA.Managers;
 
 namespace SA.Utilities
 {
@@ -17,9 +22,9 @@ namespace SA.Utilities
 
         private void OnTriggerEnter(Collider other)
         {
-            StateManager m_StateManager = other.transform.GetComponentInChildren<StateManager>();
-            if (m_StateManager == null) return;
-            onHit?.Invoke(m_StateManager);
+            var stateManager = other.transform.GetComponentInChildren<StateManager>();
+            if (stateManager == null) return;
+            onHit?.Invoke(stateManager);
         }
     }
 }

@@ -1,4 +1,10 @@
-﻿using UnityEngine;
+﻿/*
+ * Inventory SO - 
+ * Created by : Allan N. Murillo
+ * Last Edited : 2/24/2020
+ */
+
+using UnityEngine;
 #if UNITY_EDITOR
 using SA.Utilities.Editor;
 #endif
@@ -10,7 +16,7 @@ namespace SA.Inventory
     public class Inventory : ScriptableObject
     {
         public List<Item> allItems = new List<Item>();
-        private Dictionary<string, int> dict = new Dictionary<string, int>();
+        private readonly Dictionary<string, int> _itemsDictionary = new Dictionary<string, int>();
 
 
         public void Initialize()
@@ -21,25 +27,19 @@ namespace SA.Inventory
 
             for (var i = 0; i < allItems.Count; i++)
             {
-                if (dict.ContainsKey(allItems[i].name)) return;
-                dict.Add(allItems[i].name, i);
+                if (_itemsDictionary.ContainsKey(allItems[i].name)) return;
+                _itemsDictionary.Add(allItems[i].name, i);
             }
         }
 
-        public Item GetItem(string _id)
+        public Item GetItem(string id)
         {
             Item temp = null;
-            int index = -1;
 
-            if (dict.TryGetValue(_id, out index))
-            {
+            if (_itemsDictionary.TryGetValue(id, out var index))
                 temp = allItems[index];
-            }
-
-            if (index == -1)
-            {
-                Debug.LogError("No Item with " + _id + " found");
-            }
+            else
+                Debug.LogError("No Item with " + id + " found");
 
             return temp;
         }

@@ -1,12 +1,18 @@
-﻿using UnityEngine;
+﻿/*
+ * RuntimeWeapon - 
+ * Created by : Allan N. Murillo
+ * Last Edited : 2/24/2020
+ */
+
+using UnityEngine;
 using SA.Utilities;
 
 namespace SA.Inventory
 {
     public class RuntimeWeapon
     {
-        public GameObject WeaponInstance;
-        public WeaponHook WeaponHook;
-        public Weapon WeaponData;
+        public GameObject weaponInstance;
+        public WeaponHook weaponHook;
+        public Weapon weaponData;
     }
 }

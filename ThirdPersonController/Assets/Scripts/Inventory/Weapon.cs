@@ -1,5 +1,11 @@
-﻿using SA.Input;
+﻿/*
+ * Weapon SO - 
+ * Created by : Allan N. Murillo
+ * Last Edited : 2/24/2020
+ */
+
 using System.Linq;
+using ANM.Input;
 using UnityEngine;
 using SA.Scriptable;
 using SA.Scriptable.Variables;
@@ -16,14 +22,14 @@ namespace SA.Inventory
         public LeftHandPosition leftHandPosition;
 
 
-        private ActionHolder GetActionHolder(InputType _input)
+        private ActionHolder GetActionHolder(InputType input)
         {
-            return actions.FirstOrDefault(t => t.input == _input);
+            return actions.FirstOrDefault(t => t.input == input);
         }
 
-        public Action GetAction(InputType _input)
+        public Action GetAction(InputType input)
         {
-            var ah = GetActionHolder(_input);
+            var ah = GetActionHolder(input);
             return ah?.action;
         }
     }

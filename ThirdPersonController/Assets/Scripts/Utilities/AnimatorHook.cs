@@ -1,4 +1,10 @@
-﻿using UnityEngine;
+﻿/*
+ * AnimatorHook - 
+ * Created by : Allan N. Murillo
+ * Last Edited : 2/24/2020
+ */
+
+using UnityEngine;
 using SA.Managers;
 
 namespace SA
@@ -11,12 +17,12 @@ namespace SA
         public bool isEnemy = false;    //  TODO : remove this later
 
 
-        public void Init(StateManager _state, bool _isEnemy)
+        public void Init(StateManager state, bool isEnemy)
         {
             rm_mult = 1f;
-            stateManager = _state;
+            stateManager = state;
             m_animator = stateManager.myAnimator;
-            isEnemy = _isEnemy;
+            this.isEnemy = isEnemy;
         }
 
         #region Animation Callback Events

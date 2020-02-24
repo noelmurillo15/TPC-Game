@@ -1,6 +1,11 @@
-﻿using UnityEngine;
-using SA.Inventory;
+﻿/*
+ * ResourcesManager SO - 
+ * Created by : Allan N. Murillo
+ * Last Edited : 2/24/2020
+ */
 
+using UnityEngine;
+using SA.Inventory;
 
 namespace SA.Managers
 {
@@ -17,21 +22,21 @@ namespace SA.Managers
             inventory.Initialize();
         }
 
-        public Inventory.Item GetItem(string _id)
+        public Item GetItem(string id)
         {
-            return inventory.GetItem(_id);
+            return inventory.GetItem(id);
         }
 
-        public Inventory.Weapon GetWeapon(string _id)
+        public Weapon GetWeapon(string id)
         {
-            Inventory.Item item = GetItem(_id);
-            return (Inventory.Weapon)item.obj;
+            Item item = GetItem(id);
+            return (Weapon)item.obj;
         }
 
-        public Inventory.Armor GetArmor(string _id)
+        public Armor GetArmor(string id)
         {
-            Inventory.Item item = GetItem(_id);
-            return (Inventory.Armor)item.obj;
+            Item item = GetItem(id);
+            return (Armor)item.obj;
         }
     }
 }

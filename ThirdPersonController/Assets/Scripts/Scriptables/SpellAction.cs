@@ -1,6 +1,11 @@
-﻿using UnityEngine;
-using SA.Scriptable.Variables;
+﻿/*
+ * SpellAction SO - 
+ * Created by : Allan N. Murillo
+ * Last Edited : 2/24/2020
+ */
 
+using UnityEngine;
+using SA.Scriptable.Variables;
 
 namespace SA.Scriptable
 {

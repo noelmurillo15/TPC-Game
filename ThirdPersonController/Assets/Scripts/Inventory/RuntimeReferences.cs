@@ -1,4 +1,10 @@
-﻿using UnityEngine;
+﻿/*
+ * RuntimeReferences SO - 
+ * Created by : Allan N. Murillo
+ * Last Edited : 2/24/2020
+ */
+
+using UnityEngine;
 using System.Collections.Generic;
 
 namespace SA.Inventory
@@ -13,17 +19,17 @@ namespace SA.Inventory
             runtimeWeapons.Clear();
         }
 
-        public void RegisterRuntimeWeapons(RuntimeWeapon _runtimeWeapon)
+        public void RegisterRuntimeWeapons(RuntimeWeapon runtimeWeapon)
         {
-            runtimeWeapons.Add(_runtimeWeapon);
+            runtimeWeapons.Add(runtimeWeapon);
         }
 
-        public void UnregisterRuntimeWeapons(RuntimeWeapon _runtimeWeapon)
+        public void UnregisterRuntimeWeapons(RuntimeWeapon runtimeWeapon)
         {
-            if (!runtimeWeapons.Contains(_runtimeWeapon)) return;
-            if (_runtimeWeapon.WeaponInstance)
-                Destroy(_runtimeWeapon.WeaponInstance);
-            runtimeWeapons.Remove(_runtimeWeapon);
+            if (!runtimeWeapons.Contains(runtimeWeapon)) return;
+            if (runtimeWeapon.weaponInstance)
+                Destroy(runtimeWeapon.weaponInstance);
+            runtimeWeapons.Remove(runtimeWeapon);
         }
     }
 }
