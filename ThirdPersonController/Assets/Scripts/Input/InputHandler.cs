@@ -6,8 +6,8 @@
 
 using System.Collections.Generic;
 using ANM.Framework.Managers;
+using ANM.Framework.Variables;
 using SA.Managers;
-using SA.Scriptable.Variables;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

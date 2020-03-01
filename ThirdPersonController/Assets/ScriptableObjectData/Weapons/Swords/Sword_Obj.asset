@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c4b1dd57ef276d4daa77fc717ced066, type: 3}
   m_Name: Sword_Obj
   m_EditorClassIdentifier: 
-  oh_idle: {fileID: 11400000, guid: a533bb3f199055242b50278a701db5fd, type: 2}
-  th_idle: {fileID: 11400000, guid: 401da02221f76ec4db242bd03da393a2, type: 2}
+  oneHandIdle: {fileID: 11400000, guid: a533bb3f199055242b50278a701db5fd, type: 2}
+  twoHandIdle: {fileID: 11400000, guid: 401da02221f76ec4db242bd03da393a2, type: 2}
   modelPrefab: {fileID: 2390084025570577617, guid: 62158cd82aa74e7499fdfbcd0960f059,
     type: 3}
   actions:

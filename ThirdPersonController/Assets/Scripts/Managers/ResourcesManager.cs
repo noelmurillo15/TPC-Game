@@ -29,13 +29,13 @@ namespace SA.Managers
 
         public Weapon GetWeapon(string id)
         {
-            Item item = GetItem(id);
+            var item = GetItem(id);
             return (Weapon)item.obj;
         }
 
         public Armor GetArmor(string id)
         {
-            Item item = GetItem(id);
+            var item = GetItem(id);
             return (Armor)item.obj;
         }
     }

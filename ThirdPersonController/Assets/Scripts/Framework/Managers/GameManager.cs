@@ -25,22 +25,20 @@ namespace ANM.Framework.Managers
         [Space] [Header("Local Game Info")]
         [SerializeField] private bool displayFps = false;
         [SerializeField] private bool isGamePaused = false;
-        [SerializeField] private bool isMainMenuActive = false;
         [SerializeField] private bool isSceneTransitioning = false;
-
-        private SaveSettings _save;
+        
         private float _deltaTime;
+        private SaveSettings _save;
 
 
         private void Awake()
         {
             if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+            SaveSettings.SettingsLoadedIni = false;
             DontDestroyOnLoad(gameObject);
-            Instance = this;
-            
-            SaveSettings.settingsLoadedIni = false;
             _save = new SaveSettings();
             _save.LoadGameSettings();
+            Instance = this;
             Reset();
         }
 
@@ -54,7 +52,7 @@ namespace ANM.Framework.Managers
         private void Initialize()
         {
             if (SceneExtension.IsThisSceneActive(SceneExtension.SplashSceneName))
-                StartCoroutine(SceneExtension.ForceMenuSceneSequence(true));
+                StartCoroutine(SceneExtension.ForceMenuSceneSequence());
         }
 
         private void Update()
@@ -87,9 +85,23 @@ namespace ANM.Framework.Managers
             GC.Collect();
         }
         
-        public void SetIsGamePaused(bool b)
+        public void TogglePause()
         {
-            Debug.Log("GM::SetIsGamePaused : " + b);
+            SetPause(!GetIsGamePaused());
+        }
+        
+        private void RaisePause() { onGamePause.Raise(); }
+
+        private void RaiseResume() { onGameResume.Raise(); }
+        
+        private void RaiseAppQuit() { onApplicationQuit.Raise(); }
+
+        private void OnStartLoadSceneEvent(bool b) { isSceneTransitioning = true; }
+
+        private void OnFinishLoadSceneEvent(bool b) { isSceneTransitioning = false; }
+
+        public void SetPause(bool b)
+        {
             isGamePaused = b;
             if(isGamePaused) RaisePause();
             else RaiseResume();
@@ -100,70 +112,32 @@ namespace ANM.Framework.Managers
         {
             StartCoroutine(SceneExtension.ReloadCurrentSceneSequence());
         }
+        
+        public void LoadCredits()
+        {
+            HardReset();
+            StartCoroutine(SceneExtension.LoadSingleSceneSequence(
+                SceneExtension.CreditsSceneName, true));
+        }
 
         public void Reset()
         {
-            Debug.Log("GM::Reset");
             Time.timeScale = 1;
             isGamePaused = false;
         }
         
         public void HardReset()
         {
-            Debug.Log("GM::HardReset");
             RaiseAppQuit();
             Reset();
         }
 
-        public void LoadCredits()
-        {
-            HardReset();
-            StartCoroutine(SceneExtension.LoadSingleSceneSequence(SceneExtension.CreditsSceneName, true));
-        }
-
+        public void SaveGameEngineSettings()  {  _save.SaveGameSettings();  }
+        
         public void SetDisplayFps(bool b)  {  displayFps = b;  }
 
-        public void SaveGameSettings()  {  _save.SaveGameSettings();  }
-        
-        public void SetIsMainMenuActive(bool b)  {  isMainMenuActive = b;  }
-        
-        public bool GetIsMainMenuActive()  {  return isMainMenuActive;  }
+        public bool GetIsSceneTransitioning()  {  return isSceneTransitioning;  }
         
         public bool GetIsGamePaused()  {  return isGamePaused;  }
-
-        public bool GetIsSceneTransitioning()  {  return isSceneTransitioning;  }
-
-        public void TogglePause()
-        {
-            if (GetIsMainMenuActive()) return;
-            SetIsGamePaused(!GetIsGamePaused());
-        }
-        
-        private void RaisePause()
-        {
-            onGamePause.Raise();
-        }
-
-        private void RaiseResume()
-        {
-            onGameResume.Raise();
-        }
-        
-        private void RaiseAppQuit()
-        {
-            onApplicationQuit.Raise();
-        }
-
-        private void OnStartLoadSceneEvent(bool b)
-        {
-            Debug.Log("GM::OnStartLoadSceneEvent");
-            isSceneTransitioning = true;
-        }
-
-        private void OnFinishLoadSceneEvent(bool b)
-        {
-            Debug.Log("GM::OnFinishLoadSceneEvent");
-            isSceneTransitioning = false;
-        }
     }
 }

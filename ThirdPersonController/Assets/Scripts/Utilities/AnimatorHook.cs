@@ -10,9 +10,9 @@ using SA.Managers;
 namespace SA
 {
     public class AnimatorHook : MonoBehaviour
-    {   //  Used to help with Root Motion and Animaton callback events
-        private StateManager stateManager;
-        private Animator m_animator;
+    {   //  Used to help with Root Motion and Animation callback events
+        private StateManager _stateManager;
+        private Animator _animator;
         public float rm_mult;
         public bool isEnemy = false;    //  TODO : remove this later
 
@@ -20,8 +20,8 @@ namespace SA
         public void Init(StateManager state, bool isEnemy)
         {
             rm_mult = 1f;
-            stateManager = state;
-            m_animator = stateManager.myAnimator;
+            _stateManager = state;
+            _animator = _stateManager.myAnimator;
             this.isEnemy = isEnemy;
         }
 
@@ -29,17 +29,17 @@ namespace SA
 
         private void OnAnimatorMove()
         {
-            stateManager.inputVar.animationDelta = m_animator.deltaPosition;
-            stateManager.inputVar.animationDelta.y = 0f;
+            _stateManager.inputVar.animationDelta = _animator.deltaPosition;
+            _stateManager.inputVar.animationDelta.y = 0f;
             transform.localPosition = Vector3.zero;
 
             if (rm_mult == 0) rm_mult = 1;
 
             if (isEnemy) return;
-            Vector3 v = (stateManager.inputVar.animationDelta * rm_mult) / stateManager.deltaTime;
+            Vector3 v = (_stateManager.inputVar.animationDelta * rm_mult) / _stateManager.deltaTime;
             if (!float.IsNaN(v.x) && !float.IsNaN(v.y))
             {
-                stateManager.myRigidbody.velocity = v;
+                _stateManager.myRigidbody.velocity = v;
             }
         }
 
@@ -50,17 +50,17 @@ namespace SA
 
         public void InitiateThrowForProjectile()
         {
-            stateManager.CastSpellActual();
+            _stateManager.CastSpellActual();
         }
 
         public void OpenDamageColliders()
         {
-            stateManager.SetDamageColliderStatus(true);
+            _stateManager.SetDamageColliderStatus(true);
         }
 
         public void CloseDamageColliders()
         {
-            stateManager.SetDamageColliderStatus(false);
+            _stateManager.SetDamageColliderStatus(false);
         }
         #endregion
     }

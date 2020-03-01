@@ -26,21 +26,19 @@ namespace ANM.Framework.Settings
         public int anisotropicFilteringLevel;
         public int shadowCascade;
         public bool displayFps;
-        public bool vsync;
 
-        internal static float masterVolumeIni;
-        internal static float effectVolumeIni;
-        internal static float backgroundVolumeIni;
-        internal static int currentQualityLevelIni;
-        internal static int msaaIni;
-        internal static float renderDistIni;
-        internal static float shadowDistIni;
-        internal static int textureLimitIni;
-        internal static int anisotropicFilteringLevelIni;
-        internal static int shadowCascadeIni;
-        internal static bool displayFpsIni;
-        internal static bool vsyncIni;
-        internal static bool settingsLoadedIni;
+        internal static float MasterVolumeIni;
+        internal static float EffectVolumeIni;
+        internal static float BackgroundVolumeIni;
+        internal static int CurrentQualityLevelIni;
+        internal static int MsaaIni;
+        internal static float RenderDistIni;
+        internal static float ShadowDistIni;
+        internal static int TextureLimitIni;
+        internal static int AnisotropicFilteringLevelIni;
+        internal static int ShadowCascadeIni;
+        internal static bool DisplayFpsIni;
+        internal static bool SettingsLoadedIni;
 
 
         private static object CreateJsonObj(string jsonString)
@@ -61,18 +59,17 @@ namespace ANM.Framework.Settings
             var filePath = Application.persistentDataPath + _fileName;
             if (VerifyDirectory(filePath)) { File.Delete(filePath); }
             
-            masterVolume = masterVolumeIni;
-            effectVolume = effectVolumeIni;
-            backgroundVolume = backgroundVolumeIni;
-            renderDist = renderDistIni;
-            shadowDist = shadowDistIni;
-            msaa = msaaIni;
-            textureLimit = textureLimitIni;
-            currentQualityLevel = currentQualityLevelIni;
-            shadowCascade = shadowCascadeIni;
-            anisotropicFilteringLevel = anisotropicFilteringLevelIni;
-            displayFps = displayFpsIni;
-            vsync = vsyncIni;
+            masterVolume = MasterVolumeIni;
+            effectVolume = EffectVolumeIni;
+            backgroundVolume = BackgroundVolumeIni;
+            renderDist = RenderDistIni;
+            shadowDist = ShadowDistIni;
+            msaa = MsaaIni;
+            textureLimit = TextureLimitIni;
+            currentQualityLevel = CurrentQualityLevelIni;
+            shadowCascade = ShadowCascadeIni;
+            anisotropicFilteringLevel = AnisotropicFilteringLevelIni;
+            displayFps = DisplayFpsIni;
             
             _jsonString = JsonUtility.ToJson(this);
             File.WriteAllText(filePath, _jsonString);
@@ -82,35 +79,33 @@ namespace ANM.Framework.Settings
         {
             var jsonObj = (SaveSettings) CreateJsonObj(jsonString);
             DefaultSettings();
-            vsyncIni = jsonObj.vsync;
-            masterVolumeIni = jsonObj.masterVolume;
-            effectVolumeIni = jsonObj.effectVolume;
-            backgroundVolumeIni = jsonObj.backgroundVolume;
-            renderDistIni = jsonObj.renderDist;
-            shadowDistIni = jsonObj.shadowDist;
-            msaaIni = jsonObj.msaa;
-            textureLimitIni = jsonObj.textureLimit;
-            currentQualityLevelIni = jsonObj.currentQualityLevel;
-            shadowCascadeIni = jsonObj.shadowCascade;
-            anisotropicFilteringLevelIni = jsonObj.anisotropicFilteringLevel;
-            displayFpsIni = jsonObj.displayFps;
+            MasterVolumeIni = jsonObj.masterVolume;
+            EffectVolumeIni = jsonObj.effectVolume;
+            BackgroundVolumeIni = jsonObj.backgroundVolume;
+            RenderDistIni = jsonObj.renderDist;
+            ShadowDistIni = jsonObj.shadowDist;
+            MsaaIni = jsonObj.msaa;
+            TextureLimitIni = jsonObj.textureLimit;
+            CurrentQualityLevelIni = jsonObj.currentQualityLevel;
+            ShadowCascadeIni = jsonObj.shadowCascade;
+            AnisotropicFilteringLevelIni = jsonObj.anisotropicFilteringLevel;
+            DisplayFpsIni = jsonObj.displayFps;
         }
         
         public static void DefaultSettings()
         {
-            masterVolumeIni = 0.8f;
-            effectVolumeIni = 0.8f;
-            backgroundVolumeIni = 0.8f;
-            currentQualityLevelIni = 3;
-            msaaIni = 2;
-            anisotropicFilteringLevelIni = 1;
-            renderDistIni = 800.0f;
-            shadowDistIni = 150;
-            shadowCascadeIni = 3;
-            textureLimitIni = 0;
-            displayFpsIni = true;
-            vsyncIni = true;
-            settingsLoadedIni = true;
+            MasterVolumeIni = 0.8f;
+            EffectVolumeIni = 0.8f;
+            BackgroundVolumeIni = 0.8f;
+            CurrentQualityLevelIni = 3;
+            MsaaIni = 2;
+            AnisotropicFilteringLevelIni = 1;
+            RenderDistIni = 800.0f;
+            ShadowDistIni = 150;
+            ShadowCascadeIni = 3;
+            TextureLimitIni = 0;
+            DisplayFpsIni = true;
+            SettingsLoadedIni = true;
         }
 
         private bool VerifyDirectory(string filePath)

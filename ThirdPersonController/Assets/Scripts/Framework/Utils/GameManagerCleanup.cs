@@ -1,7 +1,7 @@
 ﻿/*
  * GameManagerCleanup- Destroys the GameManager after a certain delay (In Credits Scene)
  * Created by : Allan N. Murillo
- * Last Edited : 2/24/2020
+ * Last Edited : 2/17/2020
  */
 
 using UnityEngine;

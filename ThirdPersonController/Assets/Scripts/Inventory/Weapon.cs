@@ -5,18 +5,18 @@
  */
 
 using System.Linq;
+using ANM.Framework.Variables;
 using ANM.Input;
 using UnityEngine;
 using SA.Scriptable;
-using SA.Scriptable.Variables;
 
 namespace SA.Inventory
 {
     [CreateAssetMenu(menuName = "Items/Weapon")]
     public class Weapon : ScriptableObject
     {
-        public StringVariable oh_idle;
-        public StringVariable th_idle;
+        public StringVariable oneHandIdle;
+        public StringVariable twoHandIdle;
         public GameObject modelPrefab;
         public ActionHolder[] actions;
         public LeftHandPosition leftHandPosition;

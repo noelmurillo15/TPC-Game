@@ -1,7 +1,7 @@
 ﻿/*
  * AudioSettings - Handles displaying / configuring audio settings
  * Created by : Allan N. Murillo
- * Last Edited : 2/17/2020
+ * Last Edited : 3/1/2020
  */
 
 using System;
@@ -15,11 +15,8 @@ using UnityEngine.EventSystems;
 
 namespace ANM.Framework.Settings
 {
-    public class AudioSettingsPanel : MonoBehaviour
+    public class AudioSettingsPanel : MonoBehaviour, IPanel
     {
-        [SerializeField] private GameObject audioPanel = null;
-        [SerializeField] private Animator audioPanelAnimator = null;
-        
         [SerializeField] private Slider audioMasterVolumeSlider = null;
         [SerializeField] private Slider effectsVolumeSlider = null;
         [SerializeField] private Slider backgroundVolumeSlider = null;
@@ -28,43 +25,52 @@ namespace ANM.Framework.Settings
         
         [SerializeField] private AudioSource bgMusic = null;
         [SerializeField] private AudioSource[] sfx = null;
+        
+        private GameObject _panel;
+        private Animator _audioPanelAnimator;
 
         
         private void Start()
         {
-            TurnOffPanel();
-        }
-
-        public void TurnOffPanel()
-        {
-            audioPanel.SetActive(false);
+            _audioPanelAnimator = GetComponent<Animator>();
+            _panel = _audioPanelAnimator.transform.GetChild(0).gameObject;
         }
         
+        public void TurnOnPanel()
+        {
+            if (!_panel.activeSelf)
+                _audioPanelAnimator.Play("Audio Panel In");
+        } 
+        
+        public void TurnOffPanel()
+        {
+            if (_panel.activeSelf)
+                _audioPanelAnimator.Play("Audio Panel Out");
+        }
+
         public void AudioPanelIn(EventSystem eventSystem)
         {
-            if (audioPanelAnimator == null) return;
-            audioPanelAnimator.enabled = true;
-            audioPanelAnimator.Play("Audio Panel In");
+            TurnOnPanel();
             eventSystem.SetSelectedGameObject(GetSelectObject());
             audioPanelSelectedObj.OnSelect(null);
         }
         
         public IEnumerator SaveAudioSettings()
         {
-            audioPanelAnimator.Play("Audio Panel Out");
-            SaveSettings.masterVolumeIni = audioMasterVolumeSlider.value;
-            SaveSettings.effectVolumeIni = effectsVolumeSlider.value;
-            SaveSettings.backgroundVolumeIni = backgroundVolumeSlider.value;
+            TurnOffPanel();
+            SaveSettings.MasterVolumeIni = audioMasterVolumeSlider.value;
+            SaveSettings.EffectVolumeIni = effectsVolumeSlider.value;
+            SaveSettings.BackgroundVolumeIni = backgroundVolumeSlider.value;
             yield return StartCoroutine(CoroutineUtilities.WaitForRealTime(0.5f));
-            GameManager.Instance.SaveGameSettings();
+            GameManager.Instance.SaveGameEngineSettings();
         }
 
         public IEnumerator RevertAudioSettings()
         {
-            audioPanelAnimator.Play("Audio Panel Out");
-            audioMasterVolumeSlider.value = SaveSettings.masterVolumeIni;
-            effectsVolumeSlider.value = SaveSettings.effectVolumeIni;
-            backgroundVolumeSlider.value = SaveSettings.backgroundVolumeIni;
+            TurnOffPanel();
+            audioMasterVolumeSlider.value = SaveSettings.MasterVolumeIni;
+            effectsVolumeSlider.value = SaveSettings.EffectVolumeIni;
+            backgroundVolumeSlider.value = SaveSettings.BackgroundVolumeIni;
             yield return StartCoroutine(CoroutineUtilities.WaitForRealTime(0.5f));
         }
 
@@ -96,35 +102,35 @@ namespace ANM.Framework.Settings
         
         private void OverrideMasterVolume()
         {
-            if (Math.Abs(AudioListener.volume - SaveSettings.masterVolumeIni) > 0f)
-                AudioListener.volume = SaveSettings.masterVolumeIni;            
+            if (Math.Abs(AudioListener.volume - SaveSettings.MasterVolumeIni) > 0f)
+                AudioListener.volume = SaveSettings.MasterVolumeIni;            
 
-            if (!(Math.Abs(audioMasterVolumeSlider.value - SaveSettings.masterVolumeIni) > 0f)) return;
+            if (!(Math.Abs(audioMasterVolumeSlider.value - SaveSettings.MasterVolumeIni) > 0f)) return;
             EventExtension.MuteEventListener(audioMasterVolumeSlider.onValueChanged);
-            audioMasterVolumeSlider.value = SaveSettings.masterVolumeIni;
+            audioMasterVolumeSlider.value = SaveSettings.MasterVolumeIni;
             EventExtension.UnMuteEventListener(audioMasterVolumeSlider.onValueChanged);
         }
         
         private void OverrideBackgroundVolume()
         {
-            if (bgMusic != null && Math.Abs(bgMusic.volume - SaveSettings.backgroundVolumeIni) > 0f)
-                bgMusic.volume = SaveSettings.backgroundVolumeIni;            
+            if (bgMusic != null && Math.Abs(bgMusic.volume - SaveSettings.BackgroundVolumeIni) > 0f)
+                bgMusic.volume = SaveSettings.BackgroundVolumeIni;            
 
-            if (!(Math.Abs(backgroundVolumeSlider.value - SaveSettings.backgroundVolumeIni) > 0f)) return;
+            if (!(Math.Abs(backgroundVolumeSlider.value - SaveSettings.BackgroundVolumeIni) > 0f)) return;
             EventExtension.MuteEventListener(backgroundVolumeSlider.onValueChanged);
-            backgroundVolumeSlider.value = SaveSettings.backgroundVolumeIni;
+            backgroundVolumeSlider.value = SaveSettings.BackgroundVolumeIni;
             EventExtension.UnMuteEventListener(backgroundVolumeSlider.onValueChanged);
         }
         
         private void OverrideEffectsVolume()
         {
-            if (sfx.Length > 0 && Math.Abs(sfx[0].volume - SaveSettings.effectVolumeIni) > 0f)
+            if (sfx.Length > 0 && Math.Abs(sfx[0].volume - SaveSettings.EffectVolumeIni) > 0f)
                 foreach (var effect in sfx)                
-                    effect.volume = SaveSettings.effectVolumeIni;
+                    effect.volume = SaveSettings.EffectVolumeIni;
             
-            if (!(Math.Abs(effectsVolumeSlider.value - SaveSettings.effectVolumeIni) > 0f)) return;
+            if (!(Math.Abs(effectsVolumeSlider.value - SaveSettings.EffectVolumeIni) > 0f)) return;
             EventExtension.MuteEventListener(effectsVolumeSlider.onValueChanged);
-            effectsVolumeSlider.value = SaveSettings.effectVolumeIni;
+            effectsVolumeSlider.value = SaveSettings.EffectVolumeIni;
             EventExtension.UnMuteEventListener(effectsVolumeSlider.onValueChanged);
         }
         

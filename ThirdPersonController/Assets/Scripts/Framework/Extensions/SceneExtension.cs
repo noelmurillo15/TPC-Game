@@ -2,7 +2,7 @@
  * SceneExtension - Static Class used for async scene transitions via Co-routines from anywhere
  * Classes can subscribe to SceneLoadEvents and be notified before and after a scene transition occured
  * Created by : Allan N. Murillo
- * Last Edited : 2/24/2020
+ * Last Edited : 2/22/2020
  */
 
 using System;
@@ -43,7 +43,7 @@ namespace ANM.Framework.Extensions
         public static IEnumerator LoadSingleSceneSequence(string sceneName, bool fade = false)
         {
             yield return OnStartLoadWithFade(fade);
-            LoadSingleSceneWithOnFinish(sceneName, fade);
+            LoadSingleSceneWithOnFinish(sceneName);
         }
         
         public static IEnumerator LoadMultiSceneSequence(string sceneName, bool fade = false)
@@ -82,10 +82,10 @@ namespace ANM.Framework.Extensions
                 SetThisSceneActive(menu);
                 if (!unloadAll) yield break;
                 UnloadAllScenesExcept(MenuUiSceneName);
-                CallOnFinishSceneLoadEvent();
+                CallOnFinishSceneLoadEvent(true);
                 yield break;
             }
-            LoadSingleSceneWithOnFinish(MenuUiSceneName, true);
+            LoadSingleSceneWithOnFinish(MenuUiSceneName);
         }
 
         public static void UnloadAllScenesExcept(string sceneName)
@@ -135,18 +135,18 @@ namespace ANM.Framework.Extensions
             SceneManager.UnloadSceneAsync(scene);
         }
         
-        private static void LoadSingleSceneWithOnFinish(string sceneName, bool fade = false)
+        private static void LoadSingleSceneWithOnFinish(string sceneName)
         {
             SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single).completed +=
-                callback => CallOnFinishSceneLoadEvent(fade);
+                callback => CallOnFinishSceneLoadEvent(true);
         }
-
-        private static void LoadMultiSceneWithOnFinish(string sceneName, bool fade = false)
+        
+        private static void LoadMultiSceneWithOnFinish(string sceneName)
         {
             SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive).completed += 
                 callback => {
                 SetThisSceneActive(GetLoadedScene(sceneName));
-                CallOnFinishSceneLoadEvent(fade);
+                CallOnFinishSceneLoadEvent(true);
             };
         }
         

@@ -5,7 +5,7 @@
  */
 
 using UnityEngine;
-using SA.Scriptable.Variables;
+using ANM.Framework.Variables;
 
 namespace SA.Managers
 {
@@ -31,7 +31,7 @@ namespace SA.Managers
         [HideInInspector] public Transform myPivot;
         [HideInInspector] public Transform myCameraTransform;
         
-        private float _turnSmoothing = 0.1f;
+        private readonly float _turnSmoothing = 0.1f;
         private float _smoothX, _smoothY;
         private float _smoothXVelocity, _smoothYVelocity;
         private float _curZ;
@@ -101,8 +101,6 @@ namespace SA.Managers
 
                 var tiltRot = Quaternion.LookRotation(tiltDir);
                 myPivot.rotation = Quaternion.Slerp(myPivot.rotation, tiltRot, d * followSpeed);
-                //Vector3 tiltEulers = Quaternion.Slerp(myPivot.rotation, tiltRot, d * followSpeed).eulerAngles;
-                //tiltEulers.y = 0f;
                 tiltAngle = myPivot.eulerAngles.x;
                 return;
             }

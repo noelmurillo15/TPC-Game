@@ -1,7 +1,7 @@
 ﻿/*
  * VideoSettings - Handles displaying / configuring video settings
  * Created by : Allan N. Murillo
- * Last Edited : 2/17/2020
+ * Last Edited : 3/1/2020
  */
 
 using TMPro;
@@ -16,12 +16,8 @@ using UnityEngine.EventSystems;
 
 namespace ANM.Framework.Settings
 {
-    public class VideoSettingsPanel : MonoBehaviour
+    public class VideoSettingsPanel : MonoBehaviour, IPanel
     {
-        [SerializeField] private GameObject videoPanel = null;
-        [SerializeField] private Animator videoPanelAnimator = null;
-        
-        [SerializeField] private Toggle vsyncToggle = null;
         [SerializeField] private TMP_Dropdown msaaDropdown = null;
         [SerializeField] private TMP_Dropdown anisotropicDropdown = null;
         [SerializeField] private Slider renderDistSlider = null;
@@ -34,67 +30,72 @@ namespace ANM.Framework.Settings
         
         [SerializeField] private Button videoPanelSelectedObj = null;
 
-        private Camera _mainCamera;
+        private Camera _myCamera;
         private string[] _presets;
+        private GameObject _panel;
+        private Animator _videoPanelAnimator;
 
 
         private void Awake()
         {
-            _mainCamera = Camera.main;
+            _myCamera = Camera.main;
             _presets = QualitySettings.names;
         }
 
         private void Start()
         {
-            TurnOffPanel();
+            _videoPanelAnimator = GetComponent<Animator>();
+            _panel = _videoPanelAnimator.transform.GetChild(0).gameObject;
         }
+
+        public void TurnOnPanel()
+        {
+            if (!_panel.activeSelf)
+                _videoPanelAnimator.Play("Video Panel In");
+        } 
         
         public void TurnOffPanel()
         {
-            videoPanel.SetActive(false);
+            if (_panel.activeSelf)
+                _videoPanelAnimator.Play("Video Panel Out");
         }
         
         public void VideoPanelIn(EventSystem eventSystem)
         {
-            if (videoPanelAnimator == null) return;
-            videoPanelAnimator.enabled = true;
-            videoPanelAnimator.Play("Video Panel In");
+            TurnOnPanel();
             eventSystem.SetSelectedGameObject(GetSelectObject());
             videoPanelSelectedObj.OnSelect(null);
         }
         
         public IEnumerator SaveVideoSettings()
         {
-            videoPanelAnimator.Play("Video Panel Out");
-            SaveSettings.currentQualityLevelIni = QualitySettings.GetQualityLevel();
-            SaveSettings.msaaIni = msaaDropdown.value;
-            SaveSettings.anisotropicFilteringLevelIni = anisotropicDropdown.value;
-            SaveSettings.renderDistIni = renderDistSlider.value;
-            SaveSettings.textureLimitIni = (int)masterTexSlider.value;
-            SaveSettings.shadowDistIni = shadowDistSlider.value;
-            SaveSettings.shadowCascadeIni = (int)shadowCascadesSlider.value;
-            SaveSettings.vsyncIni = vsyncToggle.isOn;
+            TurnOffPanel();
+            SaveSettings.CurrentQualityLevelIni = QualitySettings.GetQualityLevel();
+            SaveSettings.MsaaIni = msaaDropdown.value;
+            SaveSettings.AnisotropicFilteringLevelIni = anisotropicDropdown.value;
+            SaveSettings.RenderDistIni = renderDistSlider.value;
+            SaveSettings.TextureLimitIni = (int)masterTexSlider.value;
+            SaveSettings.ShadowDistIni = shadowDistSlider.value;
+            SaveSettings.ShadowCascadeIni = (int)shadowCascadesSlider.value;
             yield return StartCoroutine(CoroutineUtilities.WaitForRealTime(0.5f));
-            GameManager.Instance.SaveGameSettings();
+            GameManager.Instance.SaveGameEngineSettings();
         }
 
         public IEnumerator RevertVideoSettings()
         {
-            videoPanelAnimator.Play("Video Panel Out");
-            QualitySettings.SetQualityLevel(SaveSettings.currentQualityLevelIni);
-            msaaDropdown.value = SaveSettings.msaaIni;
-            anisotropicDropdown.value = SaveSettings.anisotropicFilteringLevelIni;
-            renderDistSlider.value = SaveSettings.renderDistIni;
-            masterTexSlider.value = SaveSettings.textureLimitIni;
-            shadowDistSlider.value = SaveSettings.shadowDistIni;
-            shadowCascadesSlider.value = SaveSettings.shadowCascadeIni;
-            vsyncToggle.isOn = SaveSettings.vsyncIni;
+            TurnOffPanel();
+            QualitySettings.SetQualityLevel(SaveSettings.CurrentQualityLevelIni);
+            msaaDropdown.value = SaveSettings.MsaaIni;
+            anisotropicDropdown.value = SaveSettings.AnisotropicFilteringLevelIni;
+            renderDistSlider.value = SaveSettings.RenderDistIni;
+            masterTexSlider.value = SaveSettings.TextureLimitIni;
+            shadowDistSlider.value = SaveSettings.ShadowDistIni;
+            shadowCascadesSlider.value = SaveSettings.ShadowCascadeIni;
             yield return StartCoroutine(CoroutineUtilities.WaitForRealTime(0.5f));
         }
         
         public void ApplyVideoSettings()
         {
-            OverrideVsync();
             OverrideGraphicsPreset();
             OverrideAnisotropicFiltering();
             OverrideMasterTextureQuality();
@@ -108,18 +109,13 @@ namespace ANM.Framework.Settings
         {
             try
             {
-                _mainCamera.farClipPlane = renderDistance;
+                _myCamera.farClipPlane = renderDistance;
             }
             catch
             {
-                _mainCamera = Camera.main;
-                _mainCamera.farClipPlane = renderDistance;
+                _myCamera = Camera.main;
+                _myCamera.farClipPlane = renderDistance;
             }
-        }
-
-        public void UpdateVsync(bool toggle)
-        {
-            QualitySettings.vSyncCount = toggle ? 1 : 0;
         }
 
         public void UpdateMasterTextureQuality(float textureQuality)
@@ -232,16 +228,16 @@ namespace ANM.Framework.Settings
         
         private void OverrideGraphicsPreset()
         {
-            if (QualitySettings.GetQualityLevel() != SaveSettings.currentQualityLevelIni)
-                QualitySettings.SetQualityLevel(SaveSettings.currentQualityLevelIni);
+            if (QualitySettings.GetQualityLevel() != SaveSettings.CurrentQualityLevelIni)
+                QualitySettings.SetQualityLevel(SaveSettings.CurrentQualityLevelIni);
             
-            if (!presetLabel.text.Contains(_presets[SaveSettings.currentQualityLevelIni]))
-                presetLabel.text = _presets[SaveSettings.currentQualityLevelIni];
+            if (!presetLabel.text.Contains(_presets[SaveSettings.CurrentQualityLevelIni]))
+                presetLabel.text = _presets[SaveSettings.CurrentQualityLevelIni];
         }
         
         private void OverrideMsaa()
         {
-            switch (SaveSettings.msaaIni)
+            switch (SaveSettings.MsaaIni)
             {
                 case 0 when QualitySettings.antiAliasing != 0:
                     DisableMsaa(); break;
@@ -253,74 +249,65 @@ namespace ANM.Framework.Settings
                     EightMsaa(); break;
             }
 
-            if (msaaDropdown.value == SaveSettings.msaaIni) return;
+            if (msaaDropdown.value == SaveSettings.MsaaIni) return;
             EventExtension.MuteEventListener(msaaDropdown.onValueChanged);
-            msaaDropdown.value = SaveSettings.msaaIni;
+            msaaDropdown.value = SaveSettings.MsaaIni;
             EventExtension.UnMuteEventListener(msaaDropdown.onValueChanged);
         }
         
         private void OverrideAnisotropicFiltering()
         {
-            if ((int)QualitySettings.anisotropicFiltering != SaveSettings.anisotropicFilteringLevelIni)
-                QualitySettings.anisotropicFiltering = (AnisotropicFiltering)SaveSettings.anisotropicFilteringLevelIni;
+            if ((int)QualitySettings.anisotropicFiltering != SaveSettings.AnisotropicFilteringLevelIni)
+                QualitySettings.anisotropicFiltering = (AnisotropicFiltering)SaveSettings.AnisotropicFilteringLevelIni;
 
-            if (anisotropicDropdown.value == SaveSettings.anisotropicFilteringLevelIni) return;
+            if (anisotropicDropdown.value == SaveSettings.AnisotropicFilteringLevelIni) return;
             EventExtension.MuteEventListener(anisotropicDropdown.onValueChanged);
-            anisotropicDropdown.value = SaveSettings.anisotropicFilteringLevelIni;
+            anisotropicDropdown.value = SaveSettings.AnisotropicFilteringLevelIni;
             EventExtension.UnMuteEventListener(anisotropicDropdown.onValueChanged);
         }
 
         private void OverrideRenderDistance()
         {
-            if (Math.Abs(_mainCamera.farClipPlane - SaveSettings.renderDistIni) > 0f)
-                _mainCamera.farClipPlane = SaveSettings.renderDistIni;
+            if (Math.Abs(_myCamera.farClipPlane - SaveSettings.RenderDistIni) > 0f)
+                _myCamera.farClipPlane = SaveSettings.RenderDistIni;
 
-            if (!(Math.Abs(renderDistSlider.value - SaveSettings.renderDistIni) > 0f)) return;
+            if (!(Math.Abs(renderDistSlider.value - SaveSettings.RenderDistIni) > 0f)) return;
             EventExtension.MuteEventListener(renderDistSlider.onValueChanged);
-            renderDistSlider.value = SaveSettings.renderDistIni;
+            renderDistSlider.value = SaveSettings.RenderDistIni;
             EventExtension.UnMuteEventListener(renderDistSlider.onValueChanged);
         }
         
         private void OverrideShadowDistance()
         {
-            if (Math.Abs(QualitySettings.shadowDistance - SaveSettings.shadowDistIni) > 0f)
-                QualitySettings.shadowDistance = SaveSettings.shadowDistIni;
+            if (Math.Abs(QualitySettings.shadowDistance - SaveSettings.ShadowDistIni) > 0f)
+                QualitySettings.shadowDistance = SaveSettings.ShadowDistIni;
 
-            if (!(Math.Abs(shadowDistSlider.value - SaveSettings.shadowDistIni) > 0f)) return;
+            if (!(Math.Abs(shadowDistSlider.value - SaveSettings.ShadowDistIni) > 0f)) return;
             EventExtension.MuteEventListener(shadowDistSlider.onValueChanged);
-            shadowDistSlider.value = SaveSettings.shadowDistIni;
+            shadowDistSlider.value = SaveSettings.ShadowDistIni;
             EventExtension.UnMuteEventListener(shadowDistSlider.onValueChanged);
         }
         
         private void OverrideShadowCascade()
         {
-            if (QualitySettings.shadowCascades != SaveSettings.shadowCascadeIni)
-                QualitySettings.shadowCascades = SaveSettings.shadowCascadeIni;
+            if (QualitySettings.shadowCascades != SaveSettings.ShadowCascadeIni)
+                QualitySettings.shadowCascades = SaveSettings.ShadowCascadeIni;
 
-            if (!(Math.Abs(shadowCascadesSlider.value - SaveSettings.shadowCascadeIni) > 0f)) return;
+            if (!(Math.Abs(shadowCascadesSlider.value - SaveSettings.ShadowCascadeIni) > 0f)) return;
             EventExtension.MuteEventListener(shadowCascadesSlider.onValueChanged);
-            shadowCascadesSlider.value = SaveSettings.shadowCascadeIni;
+            shadowCascadesSlider.value = SaveSettings.ShadowCascadeIni;
             EventExtension.UnMuteEventListener(shadowCascadesSlider.onValueChanged);
         }
 
         private void OverrideMasterTextureQuality()
         {
-            if (QualitySettings.masterTextureLimit != SaveSettings.textureLimitIni)
-                QualitySettings.masterTextureLimit = SaveSettings.textureLimitIni;
+            if (QualitySettings.masterTextureLimit != SaveSettings.TextureLimitIni)
+                QualitySettings.masterTextureLimit = SaveSettings.TextureLimitIni;
 
-            if (!(Math.Abs(masterTexSlider.value - SaveSettings.textureLimitIni) > 0f)) return;
+            if (!(Math.Abs(masterTexSlider.value - SaveSettings.TextureLimitIni) > 0f)) return;
             EventExtension.MuteEventListener(masterTexSlider.onValueChanged);
-            masterTexSlider.value = SaveSettings.textureLimitIni;
+            masterTexSlider.value = SaveSettings.TextureLimitIni;
             EventExtension.UnMuteEventListener(masterTexSlider.onValueChanged);
-        }
-
-        private void OverrideVsync()
-        {
-            var intendedVsync = SaveSettings.vsyncIni;
-            EventExtension.MuteEventListener(vsyncToggle.onValueChanged);
-            vsyncToggle.isOn = intendedVsync;
-            EventExtension.UnMuteEventListener(vsyncToggle.onValueChanged);
-            QualitySettings.vSyncCount = intendedVsync ? 1 : 0;
         }
 
         private void PresetOverride(int currentValue)

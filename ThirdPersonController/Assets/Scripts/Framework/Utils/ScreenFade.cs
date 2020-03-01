@@ -23,8 +23,8 @@ namespace ANM.Framework.Utils
         private void Start()
         {
             if (gameObject.GetComponentInParent<GameManager>() != GameManager.Instance) return;
-            SceneExtension.StartSceneLoadEvent += StartLoadScene;
             SceneExtension.FinishSceneLoadEvent += FinishLoadScene;
+            SceneExtension.StartSceneLoadEvent += StartLoadScene;
             canvasGroup = GetComponent<CanvasGroup>();
             FadeInImmediate();
         }
@@ -32,17 +32,13 @@ namespace ANM.Framework.Utils
         private void OnDestroy()
         {
             if (gameObject.GetComponentInParent<GameManager>() != GameManager.Instance) return;
-            SceneExtension.StartSceneLoadEvent -= StartLoadScene;
             SceneExtension.FinishSceneLoadEvent -= FinishLoadScene;
+            SceneExtension.StartSceneLoadEvent -= StartLoadScene;
         }
-
-        private void FadeOutImmediate() { canvasGroup.alpha = 1f; }
-        private void FadeInImmediate() { canvasGroup.alpha = 0f; }
         
         private void StartLoadScene(bool wait)
         {
-            if(!wait)
-                FadeOutImmediate();
+            if(!wait) FadeOutImmediate();
             else
             {
                 FadeInImmediate();
@@ -52,8 +48,7 @@ namespace ANM.Framework.Utils
         
         private void FinishLoadScene(bool wait)
         {
-            if(!wait)
-                FadeInImmediate();
+            if(!wait) FadeInImmediate();
             else
             {
                 FadeOutImmediate();
@@ -61,8 +56,13 @@ namespace ANM.Framework.Utils
             }
         }
 
-        private Coroutine FadeOut()  {  return Fade(1f, fadeOutDelay);  }
-        private Coroutine FadeIn()  {  return Fade(0f, fadeInDelay);  }
+        private Coroutine FadeOut() { return Fade(1f, fadeOutDelay); }
+
+        private Coroutine FadeIn() { return Fade(0f, fadeInDelay); }
+        
+        private void FadeOutImmediate() { canvasGroup.alpha = 1f; }
+
+        private void FadeInImmediate() { canvasGroup.alpha = 0f; }
 
         private Coroutine Fade(float target, float time)
         {
@@ -75,7 +75,8 @@ namespace ANM.Framework.Utils
         {
             while (!Mathf.Approximately(canvasGroup.alpha, target))
             {
-                canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, target, Time.deltaTime / time);
+                canvasGroup.alpha = Mathf.MoveTowards(
+                    canvasGroup.alpha, target, Time.deltaTime / time);
                 yield return null;
             }
         }

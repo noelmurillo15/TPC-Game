@@ -50,9 +50,9 @@ namespace SA.Managers
         [HideInInspector] public LayerMask ignoreLayers;
         [HideInInspector] public LayerMask ignoreForGroundCheck;
         
-        private static readonly int _IsInteracting = Animator.StringToHash("isInteracting");
-        private static readonly int _Lockon = Animator.StringToHash("lockon");
-        private static readonly int _Speed = Animator.StringToHash("speed");
+        private static readonly int IsInteracting = Animator.StringToHash("isInteracting");
+        private static readonly int Lockon = Animator.StringToHash("lockon");
+        private static readonly int Speed = Animator.StringToHash("speed");
         
         
         private void Start()
@@ -261,7 +261,7 @@ namespace SA.Managers
                     HandleMovementAnimations();
                     break;
                 case CharacterState.OVERRIDE_INTERACTING:
-                    states.animIsInteracting = myAnimator.GetBool(_IsInteracting);
+                    states.animIsInteracting = myAnimator.GetBool(IsInteracting);
                     if (states.animIsInteracting == false)
                     {
                         if (states.isInteracting)
@@ -274,7 +274,7 @@ namespace SA.Managers
                 case CharacterState.ON_AIR:
                     break;
                 case CharacterState.ROLL:
-                    states.animIsInteracting = myAnimator.GetBool(_IsInteracting);
+                    states.animIsInteracting = myAnimator.GetBool(IsInteracting);
                     if (states.animIsInteracting == false)
                     {
                         if (states.isInteracting)
@@ -319,9 +319,9 @@ namespace SA.Managers
         {    //    If character falls through the ground while lockon, check Animator->LocomotionLockedOn->BlendState
             Vector3 origin = myTransform.position;
             origin.y += 0.7f;
-            Vector3 dir = -Vector3.up;
+            var dir = -Vector3.up;
 
-            float distance = 1.4f;
+            const float distance = 1.4f;
             if (!Physics.Raycast(origin, dir, out var hit, distance, ignoreForGroundCheck)) return false;
 
             var targetPosition = hit.point;
@@ -385,7 +385,7 @@ namespace SA.Managers
 
         private void HandleMovementAnimations()
         {
-            myAnimator.SetBool(_Lockon, states.isLockedOn);
+            myAnimator.SetBool(Lockon, states.isLockedOn);
 
             if (!states.isLockedOn)
             {
@@ -430,7 +430,7 @@ namespace SA.Managers
 
             //  Change the anim speed if necessary            
             if (attackAction.changeSpeed)
-            { myAnimator.SetFloat(_Speed, attackAction.animSpeed); }
+            { myAnimator.SetFloat(Speed, attackAction.animSpeed); }
 
             //  Switch State
             ChangeState(CharacterState.OVERRIDE_INTERACTING);
@@ -438,7 +438,7 @@ namespace SA.Managers
 
         private void PlaySpellAction(WeaponManager.ActionContainer actionContainer, SpellAction spellAction)
         {
-            string targetAnimation = spellAction.start_animation.value;
+            string targetAnimation = spellAction.startAnimation.value;
             targetAnimation += (actionContainer.isMirrored) ? "_l" : "_r";
 
             //  Is the action a right-handed action or left?
@@ -454,7 +454,7 @@ namespace SA.Managers
 
             //  Change the anim speed if necessary            
             if (spellAction.changeSpeed)
-            { myAnimator.SetFloat(_Speed, spellAction.animSpeed); }
+            { myAnimator.SetFloat(Speed, spellAction.animSpeed); }
 
             //  Switch State
             ChangeState(CharacterState.INTERACTING);
@@ -465,7 +465,7 @@ namespace SA.Managers
         private void PlaySavedSpellAction()
         {
             myAnimator.SetBool(StaticStrings.spellCasting, states.isSpellCasting);
-            PlayActionAnimation(_currentSpellAction.cast_animation.value);
+            PlayActionAnimation(_currentSpellAction.castAnimation.value);
             ChangeState(CharacterState.OVERRIDE_INTERACTING);
             states.animIsInteracting = false;
         }
@@ -477,18 +477,19 @@ namespace SA.Managers
             var go = Instantiate(projectile.projectile);
 
             Vector3 tp = myTransform.position;
-            tp += myTransform.forward;
+            var forward = myTransform.forward;
+            tp += forward;
             tp.y += 1.5f;
 
             go.transform.position = tp;
             go.transform.rotation = transform.rotation;
 
             var rb = go.GetComponent<Rigidbody>();
-            rb.AddForce(myTransform.forward * 10f, ForceMode.Impulse);
+            rb.AddForce(forward * 10f, ForceMode.Impulse);
         }
 
         private void PlayActionAnimation(string animationName)
-        {   //  The layer parameter is refering to Animator Controller Layer 
+        {   //  The layer parameter is referring to Animator Controller Layer 
             // m_animator.PlayInFixedTime(_animationName, 5, 0.2f);    //  Pass in the Override Layer where attacks take place
             // Debug.Log("Playing Animation : " + _animationName);
             myAnimator.CrossFade(animationName, 0.2f);
@@ -511,7 +512,7 @@ namespace SA.Managers
                 case CharacterState.OVERRIDE_INTERACTING:
                     animatorHook.rm_mult = 1;
                     myAnimator.applyRootMotion = true;
-                    myAnimator.SetBool(_IsInteracting, true);
+                    myAnimator.SetBool(IsInteracting, true);
                     states.isInteracting = true;
                     break;
                 case CharacterState.ON_AIR:
@@ -520,7 +521,7 @@ namespace SA.Managers
                     break;
                 case CharacterState.ROLL:
                     myAnimator.applyRootMotion = true;
-                    myAnimator.SetBool(_IsInteracting, true);
+                    myAnimator.SetBool(IsInteracting, true);
                     states.isInteracting = true;
                     break;
             }
@@ -597,8 +598,7 @@ namespace SA.Managers
     public class WeaponManager
     {   //  Control what actions to do based on button input
         public ActionContainer[] actions;
-
-
+        
         public ActionContainer GetAction(InputType inputType)
         {
             return actions.FirstOrDefault(t => t.inputType == inputType);

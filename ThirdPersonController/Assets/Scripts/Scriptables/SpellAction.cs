@@ -4,15 +4,15 @@
  * Last Edited : 2/24/2020
  */
 
+using ANM.Framework.Variables;
 using UnityEngine;
-using SA.Scriptable.Variables;
 
 namespace SA.Scriptable
 {
     public class SpellAction : ScriptableObject
     {
-        public StringVariable start_animation;
-        public StringVariable cast_animation;
+        public StringVariable startAnimation;
+        public StringVariable castAnimation;
         public float animSpeed = 1f;
         public bool changeSpeed = false;
     }

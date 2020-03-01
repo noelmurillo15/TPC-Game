@@ -289,11 +289,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2425672935377233848, guid: 30b387ed5ee969c479fb61284ebafffe,
+        type: 3}
+      propertyPath: response.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 4697971514548472162}
     - target: {fileID: 2467878494100681796, guid: 30b387ed5ee969c479fb61284ebafffe,
         type: 3}
       propertyPath: m_Name
       value: CameraHolder
       objectReference: {fileID: 0}
+    - target: {fileID: 9173560910411685929, guid: 30b387ed5ee969c479fb61284ebafffe,
+        type: 3}
+      propertyPath: response.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 4697971514548472162}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30b387ed5ee969c479fb61284ebafffe, type: 3}
 --- !u!1001 &1478853882277974362
@@ -434,6 +444,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2dc40ffe40cdba64eb3accda812ae8fc, type: 3}
+--- !u!1 &4697971514548472162 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1983486917, guid: 2dc40ffe40cdba64eb3accda812ae8fc,
+    type: 3}
+  m_PrefabInstance: {fileID: 4697971514548472161}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6134495573640859931
 PrefabInstance:
   m_ObjectHideFlags: 0
