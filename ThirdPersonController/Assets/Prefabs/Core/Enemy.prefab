@@ -7,6 +7,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1538039527606183944, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: inventoryData
+      value: 
+      objectReference: {fileID: 11400000, guid: b18640671474510478076d7beb0ffc05,
+        type: 2}
     - target: {fileID: 3993623613908424454, guid: 3a48b3449cf16214b8d1402b80f80d76,
         type: 3}
       propertyPath: m_CullingMode

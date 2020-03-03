@@ -1,19 +1,19 @@
-﻿/*
+﻿﻿/*
  * StateManager - 
  * Created by : Allan N. Murillo
- * Last Edited : 2/24/2020
+ * Last Edited : 3/2/2020
  */
 
 using System;
+using ANM.Input;
 using UnityEngine;
 using System.Linq;
-using ANM.Input;
-using SA.Utilities;
-using SA.Scriptable;
-using Action = SA.Scriptable.Action;
-using Object = UnityEngine.Object;
+using ANM.Inventory;
+using ANM.Scriptable;
+using ANM.Utilities;
+using JetBrains.Annotations;
 
-namespace SA.Managers
+namespace ANM.Managers
 {
     public class StateManager : MonoBehaviour
     {
@@ -119,13 +119,30 @@ namespace SA.Managers
         {
             if (inventoryManager.rightItem != null)
             {
-                WeaponToRuntime(inventoryManager.rightItem.obj, ref inventoryManager.rightSlot);
+                WeaponToRuntime(inventoryManager.rightItem, ref inventoryManager.rightSlot);
                 EquipWeapon(inventoryManager.rightSlot, false);
             }
 
             if (inventoryManager.leftItem == null) return;
-            WeaponToRuntime(inventoryManager.leftItem.obj, ref inventoryManager.leftSlot);
+            WeaponToRuntime(inventoryManager.leftItem, ref inventoryManager.leftSlot);
             EquipWeapon(inventoryManager.leftSlot, true);
+        }
+        
+        private void WeaponToRuntime(Item obj, ref RuntimeWeapon slot)
+        {
+            var weaponData = (Weapon)obj;
+            var weaponInstance = Instantiate(weaponData.modelPrefab);
+            var wHook = weaponInstance.AddComponent<WeaponHook>();
+            wHook.Initialize(this);
+            weaponInstance.SetActive(false);
+
+            var rw = new RuntimeWeapon
+            {
+                weaponInstance = weaponInstance, weaponData = weaponData, weaponHook = wHook
+            };
+
+            slot = rw;
+            resourcesManager.runtime.RegisterRuntimeWeapons(rw);
         }
 
         private void SetupWeaponManager()
@@ -177,24 +194,9 @@ namespace SA.Managers
             }
         }
 
-        private void WeaponToRuntime(Object obj, ref Inventory.RuntimeWeapon slot)
-        {
-            var weaponData = (Inventory.Weapon)obj;
-            var weaponInstance = Instantiate(weaponData.modelPrefab);
-            var wHook = weaponInstance.AddComponent<WeaponHook>();
-            wHook.Initialize(this);
-            weaponInstance.SetActive(false);
+        
 
-            var rw = new Inventory.RuntimeWeapon
-            {
-                weaponInstance = weaponInstance, weaponData = weaponData, weaponHook = wHook
-            };
-
-            slot = rw;
-            resourcesManager.runtime.RegisterRuntimeWeapons(rw);
-        }
-
-        private void EquipWeapon(Inventory.RuntimeWeapon rw, bool isMirrored)
+        private void EquipWeapon(RuntimeWeapon rw, bool isMirrored)
         {
             var position = Vector3.zero;
             var eulers = Vector3.zero;
@@ -618,7 +620,7 @@ namespace SA.Managers
         public class ActionContainer
         {
             public InputType inputType;
-            public Action action;
+            public Scriptable.Action action;
             public bool isMirrored;
         }
     }
@@ -633,10 +635,10 @@ namespace SA.Managers
         public Inventory.RuntimeWeapon leftSlot;
 
         //  Attached Item Data
-        public Inventory.Item rightItem;
-        public Inventory.Item leftItem;
-        public Inventory.Item consumableHandSlot;
-        public Inventory.Item spellHandSlot;
+        public Item rightItem;
+        public Item leftItem;
+        public Item consumableHandSlot;
+        public Item spellHandSlot;
 
 
         public void SetLastInput(InputType type) { _lastInput = type; }

@@ -4,10 +4,10 @@
  * Last Edited : 2/24/2020
  */
 
+using ANM.Managers;
 using UnityEngine;
-using SA.Managers;
 
-namespace SA
+namespace ANM
 {
     public class AnimatorHook : MonoBehaviour
     {   //  Used to help with Root Motion and Animation callback events

@@ -4,10 +4,10 @@
  * Last Edited : 2/24/2020
  */
 
+using ANM.Managers;
 using UnityEngine;
-using SA.Managers;
 
-namespace SA.Utilities
+namespace ANM.Utilities
 {
     public class DamageColliders : MonoBehaviour
     {

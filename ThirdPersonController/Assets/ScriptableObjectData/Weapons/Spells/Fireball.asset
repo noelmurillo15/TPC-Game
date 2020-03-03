@@ -10,10 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c4b1dd57ef276d4daa77fc717ced066, type: 3}
-  m_Name: Fireball_Obj
+  m_Name: Fireball
   m_EditorClassIdentifier: 
+  type: 0
+  uiInfo:
+    itemName: 
+    itemDescription: 
+    skillDescription: 
+    itemIcon: {fileID: 0}
   oneHandIdle: {fileID: 11400000, guid: a533bb3f199055242b50278a701db5fd, type: 2}
-  twoHandIdle: {fileID: 11400000, guid: a533bb3f199055242b50278a701db5fd, type: 2}
+  twoHandIdle: {fileID: 11400000, guid: 401da02221f76ec4db242bd03da393a2, type: 2}
   modelPrefab: {fileID: 1819081214966656, guid: 8320dcb0e5c298b4a987fdf6866ca01c,
     type: 3}
   actions:
@@ -22,7 +28,7 @@ MonoBehaviour:
       actionType: 2
       animationAction: {fileID: 11400000, guid: f10bcfc5057638d4ab3d4142f5e778e0,
         type: 2}
-  - input: 2
+  - input: 0
     action:
       actionType: 2
       animationAction: {fileID: 11400000, guid: f10bcfc5057638d4ab3d4142f5e778e0,

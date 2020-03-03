@@ -10,11 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 27ad2d5c01b9ea74caa56c18047ca803, type: 3}
-  m_Name: Helmet_Obj
+  m_Name: NpcChest_Obj
   m_EditorClassIdentifier: 
-  armorType: 3
-  armorMesh: {fileID: 6986836958077651477, guid: df32e04b20967934dafead5b4a890030,
+  type: 1
+  uiInfo:
+    itemName: Beginner Chest
+    itemDescription: Used by war people
+    skillDescription: + 15 Armor
+    itemIcon: {fileID: 0}
+  armorType: 0
+  armorMesh: {fileID: -2172298435045820941, guid: 8e9bc542c2a033444aa90ee34b1eb2ed,
     type: 3}
   materials:
-  - {fileID: 2100000, guid: e9b48528c48d72944812438f6a9c71d0, type: 2}
+  - {fileID: 2100000, guid: f325dc2ba3cf44e4da6f7038eee6c431, type: 2}
   baseBodyEnabled: 1

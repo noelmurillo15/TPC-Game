@@ -1,19 +1,19 @@
 ﻿/*
  * Weapon SO - 
  * Created by : Allan N. Murillo
- * Last Edited : 2/24/2020
+ * Last Edited : 3/2/2020
  */
 
-using System.Linq;
-using ANM.Framework.Variables;
 using ANM.Input;
+using System.Linq;
 using UnityEngine;
-using SA.Scriptable;
+using ANM.Scriptable;
+using ANM.Framework.Variables;
 
-namespace SA.Inventory
+namespace ANM.Inventory
 {
     [CreateAssetMenu(menuName = "Items/Weapon")]
-    public class Weapon : ScriptableObject
+    public class Weapon : Item
     {
         public StringVariable oneHandIdle;
         public StringVariable twoHandIdle;
@@ -21,7 +21,12 @@ namespace SA.Inventory
         public ActionHolder[] actions;
         public LeftHandPosition leftHandPosition;
 
-
+        
+        public Weapon()
+        {
+            type = ItemType.WEAPON;
+        }
+        
         private ActionHolder GetActionHolder(InputType input)
         {
             return actions.FirstOrDefault(t => t.input == input);

@@ -4,7 +4,7 @@
  * Last Edited : 2/24/2020
  */
 
-namespace SA.Utilities
+namespace ANM.Utilities
 {
     public static class StaticStrings
     {

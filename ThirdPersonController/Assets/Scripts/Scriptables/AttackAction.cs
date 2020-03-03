@@ -7,7 +7,7 @@
 using ANM.Framework.Variables;
 using UnityEngine;
 
-namespace SA.Scriptable
+namespace ANM.Scriptable
 {
     [CreateAssetMenu(menuName = "Actions/AttackAction")]
     public class AttackAction : ScriptableObject

@@ -1,24 +1,29 @@
 ﻿/*
- * Armor - 
+ * Armor SO - 
  * Created by : Allan N. Murillo
- * Last Edited : 2/24/2020
+ * Last Edited : 3/2/2020
  */
 
 using UnityEngine;
 
-namespace SA.Inventory
+namespace ANM.Inventory
 {
     [CreateAssetMenu(menuName = "Items/Armor")]
-    public class Armor : ScriptableObject
+    public class Armor : Item
     {
         public ArmorType armorType;
         public Mesh armorMesh;
         public Material[] materials;
         public bool baseBodyEnabled;
+
+        public Armor()
+        {
+            type = ItemType.ARMOR;
+        }
     }
 }
 
 public enum ArmorType
 {
-    CHEST, LEGS, HANDS, HEAD
+    CHEST, LEGS, ARMS, HEAD
 }

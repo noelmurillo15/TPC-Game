@@ -6,7 +6,7 @@
 
 using UnityEngine;
 
-namespace SA.Scriptable
+namespace ANM.Scriptable
 {
     [System.Serializable]
     public class Action

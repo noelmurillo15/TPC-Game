@@ -1,15 +1,19 @@
 ﻿/*
- * Consumable - 
+ * Consumable SO - 
  * Created by : Allan N. Murillo
- * Last Edited : 2/24/2020
+ * Last Edited : 3/2/2020
  */
 
 using UnityEngine;
 
-namespace SA.Inventory
+namespace ANM.Inventory
 {
-    public class Consumable : MonoBehaviour
+    [CreateAssetMenu(menuName = "Items/Consumable")]
+    public class Consumable : Item
     {
-
+        public Consumable()
+        {
+            type = ItemType.CONSUMABLE;
+        }
     }
 }

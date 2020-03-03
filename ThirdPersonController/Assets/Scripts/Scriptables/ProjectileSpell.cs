@@ -6,7 +6,7 @@
 
 using UnityEngine;
 
-namespace SA.Scriptable
+namespace ANM.Scriptable
 {
     [CreateAssetMenu(menuName = "Actions/ProjectileSpell")]
     public class ProjectileSpell : SpellAction

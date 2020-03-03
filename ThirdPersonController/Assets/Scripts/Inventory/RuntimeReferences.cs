@@ -7,7 +7,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace SA.Inventory
+namespace ANM.Inventory
 {
     [CreateAssetMenu(menuName = "Single Instances/Runtime References")]
     public class RuntimeReferences : ScriptableObject

@@ -7,7 +7,7 @@
 using UnityEngine;
 using ANM.Framework.Variables;
 
-namespace SA.Managers
+namespace ANM.Managers
 {
     public class CameraManager : MonoBehaviour
     {   //  Manages the Camera w/ Pivot

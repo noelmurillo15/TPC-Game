@@ -6,7 +6,7 @@
 
 using UnityEngine;
 
-namespace SA.Inventory
+namespace ANM.Inventory
 {    
     [CreateAssetMenu(menuName = "Weapons/Left Hand Position")]
     public class LeftHandPosition : ScriptableObject {

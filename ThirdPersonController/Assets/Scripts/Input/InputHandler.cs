@@ -4,12 +4,12 @@
  * Last Edited : 2/24/2020
  */
 
-using System.Collections.Generic;
+using ANM.Managers;
+using UnityEngine;
 using ANM.Framework.Managers;
 using ANM.Framework.Variables;
-using SA.Managers;
-using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 namespace ANM.Input
 {
@@ -179,7 +179,6 @@ namespace ANM.Input
         private void Initialize()
         {
             mLockOnTransform.value = null;
-
             stateManager.resourcesManager = Resources.Load("ResourcesManager") as ResourcesManager;
             stateManager.resourcesManager?.Initialize();
             stateManager.Initialize();

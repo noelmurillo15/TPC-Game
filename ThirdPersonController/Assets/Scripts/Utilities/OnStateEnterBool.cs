@@ -6,7 +6,7 @@
 
 using UnityEngine;
 
-namespace SA
+namespace ANM
 {
     public class OnStateEnterBool : StateMachineBehaviour
     {   //  Helps with Animation Transitions

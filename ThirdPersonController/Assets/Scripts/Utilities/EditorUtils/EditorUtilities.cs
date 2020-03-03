@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace SA.Utilities.Editor
+namespace ANM.Utilities.Editor
 {
     public static class EditorUtilities
     {
