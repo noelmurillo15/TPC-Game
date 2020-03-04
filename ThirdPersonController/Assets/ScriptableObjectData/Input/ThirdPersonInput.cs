@@ -1,4 +1,4 @@
-// GENERATED AUTOMATICALLY FROM 'Assets/Scripts/Input/ThirdPersonInput.inputactions'
+// GENERATED AUTOMATICALLY FROM 'Assets/ScriptableObjectData/Input/ThirdPersonInput.inputactions'
 
 using System;
 using System.Collections;
