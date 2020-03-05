@@ -1,12 +1,12 @@
 ﻿/*
  * SerializableVector3 - 
  * Created by : Allan N. Murillo
- * Last Edited : 3/4/2020
+ * Last Edited : 3/5/2020
  */
 
 using UnityEngine;
 
-namespace ANM
+namespace ANM.Saving
 {
     [System.Serializable]
     public class SerializableVector3

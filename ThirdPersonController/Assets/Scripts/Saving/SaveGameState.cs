@@ -1,14 +1,14 @@
 ﻿/*
  * SaveGameState -
  * Created by : Allan N. Murillo
- * Last Edited : 3/4/2020
+ * Last Edited : 3/5/2020
  */
 
 using System.IO;
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace ANM
+namespace ANM.Saving
 {
     public class SaveGameState : MonoBehaviour
     {

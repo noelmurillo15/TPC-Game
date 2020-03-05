@@ -1,13 +1,13 @@
 ﻿/*
  * UniqueId -
  * Created by : Allan N. Murillo
- * Last Edited : 3/4/2020
+ * Last Edited : 3/5/2020
  */
 
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace ANM
+namespace ANM.Saving
 {
     public class CollectibleItemSet : MonoBehaviour
     {
