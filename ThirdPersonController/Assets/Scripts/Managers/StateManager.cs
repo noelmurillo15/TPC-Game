@@ -1,7 +1,7 @@
 ﻿﻿/*
  * StateManager - 
  * Created by : Allan N. Murillo
- * Last Edited : 3/2/2020
+ * Last Edited : 3/4/2020
  */
 
 using System;
@@ -9,9 +9,8 @@ using ANM.Input;
 using UnityEngine;
 using System.Linq;
 using ANM.Inventory;
-using ANM.Scriptable;
 using ANM.Utilities;
-using JetBrains.Annotations;
+using ANM.Scriptable;
 
 namespace ANM.Managers
 {
@@ -37,6 +36,7 @@ namespace ANM.Managers
         //  Spell Action
         private float _savedTime;
         private SpellAction _currentSpellAction;
+        private SerializableVector3 _lastKnownLocation;
 
         //  If the game object is not the player - force init
         public bool forceInit = false;
@@ -193,9 +193,7 @@ namespace ANM.Managers
                 lt.action = inventoryManager.leftSlot.weaponData.GetAction(InputType.LT);
             }
         }
-
         
-
         private void EquipWeapon(RuntimeWeapon rw, bool isMirrored)
         {
             var position = Vector3.zero;
@@ -336,8 +334,8 @@ namespace ANM.Managers
             WeaponManager.ActionContainer a = null;
             if (inputVar.rb) { a = GetAction(InputType.RB); }
             else if (inputVar.lb) { a = GetAction(InputType.LB); }
-            else if (inputVar.rt) { a = GetAction(InputType.RT); }
-            else if (inputVar.lt) { a = GetAction(InputType.LT); }
+            else if (inputVar.rt) { a = GetAction(InputType.RT); Save(); }
+            else if (inputVar.lt) { a = GetAction(InputType.LT); Load(); }
 
             if (a?.action == null) { return false; }
             if (a.action.animationAction == null) return false;
@@ -593,6 +591,21 @@ namespace ANM.Managers
             states.isGettingHit = true;
             _timeSinceLastHit = Time.realtimeSinceStartup;
             ChangeState(CharacterState.OVERRIDE_INTERACTING);
+        }
+
+        private void Save()
+        {
+            Debug.Log("Saving");
+            _lastKnownLocation = new SerializableVector3(transform.position);
+            SaveGameState.Save(_lastKnownLocation, name + "WorldPosition");
+        }
+        
+        private void Load()
+        {
+            if (!SaveGameState.SaveExists(name + "WorldPosition")) return;
+            Debug.Log("Loading");
+            _lastKnownLocation = SaveGameState.Load<SerializableVector3>(name + "WorldPosition");
+            transform.position = _lastKnownLocation.ToVector();
         }
     }
 

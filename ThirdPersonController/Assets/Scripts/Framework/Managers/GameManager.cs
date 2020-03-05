@@ -35,6 +35,7 @@ namespace ANM.Framework.Managers
         {
             if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             SaveSettings.SettingsLoadedIni = false;
+            Application.targetFrameRate = -1;
             DontDestroyOnLoad(gameObject);
             _save = new SaveSettings();
             _save.LoadGameSettings();
@@ -44,9 +45,9 @@ namespace ANM.Framework.Managers
 
         private void Start()
         {
-            SceneExtension.StartSceneLoadEvent += OnStartLoadSceneEvent;
-            SceneExtension.FinishSceneLoadEvent += OnFinishLoadSceneEvent;
-            Invoke(nameof(Initialize), 1f);
+            this.InvokeAfter(Initialize, 2f);
+            SceneExtension.StartSceneLoadEvent += OnStartLoadScene;
+            SceneExtension.FinishSceneLoadEvent += OnFinishLoadScene;
         }
 
         private void Initialize()
@@ -79,8 +80,8 @@ namespace ANM.Framework.Managers
         private void OnDestroy()
         {
             if (Instance != this) return;
-            SceneExtension.StartSceneLoadEvent -= OnStartLoadSceneEvent;
-            SceneExtension.FinishSceneLoadEvent -= OnFinishLoadSceneEvent;
+            SceneExtension.StartSceneLoadEvent -= OnStartLoadScene;
+            SceneExtension.FinishSceneLoadEvent -= OnFinishLoadScene;
             Resources.UnloadUnusedAssets();
             GC.Collect();
         }
@@ -96,9 +97,9 @@ namespace ANM.Framework.Managers
         
         private void RaiseAppQuit() { onApplicationQuit.Raise(); }
 
-        private void OnStartLoadSceneEvent(bool b) { isSceneTransitioning = true; }
+        private void OnStartLoadScene(bool b) { isSceneTransitioning = true; }
 
-        private void OnFinishLoadSceneEvent(bool b) { isSceneTransitioning = false; }
+        private void OnFinishLoadScene(bool b) { isSceneTransitioning = false; }
 
         public void SetPause(bool b)
         {
