@@ -1,17 +1,20 @@
 ﻿/*
  * TransitionNode SO -
  * Created by : Allan N. Murillo
- * Last Edited : 3/5/2020
+ * Last Edited : 3/6/2020
  */
 
-using UnityEditor;
 using UnityEngine;
 
 namespace ANM.Editor.Nodes
 {
-    public class TransitionNode : BaseNode
+    public class TransitionNode : ScriptableObject
     {
-        public Transition targetTransition;
+        /*public bool isDuplicate;
+        public Condition targetConditionRef;
+        public Condition previousCondition;
+        public Transition transitionRef;
+
         public StateNode enterState;
         public StateNode targetState;
 
@@ -19,25 +22,37 @@ namespace ANM.Editor.Nodes
         public void Init(StateNode stateToEnter, Transition transition)
         {
             enterState = stateToEnter;
-            targetTransition = transition;
         }
 
-        public override void DrawWindow()
+        public void DrawWindow()
         {
-            if (targetTransition == null) return;
-
             EditorGUILayout.LabelField("");
-            targetTransition.condition =
+            targetConditionRef =
                 (Condition) EditorGUILayout.ObjectField(
-                    targetTransition.condition, typeof(Condition), false);
+                    targetConditionRef, typeof(Condition), false);
 
-            if (targetTransition.condition == null)
+            if (targetConditionRef == null)
             {
                 EditorGUILayout.LabelField("No Condition!");
             }
             else
             {
-                targetTransition.disable = EditorGUILayout.Toggle("Disable", targetTransition.disable);
+                if (isDuplicate)
+                {
+                    EditorGUILayout.LabelField("Duplicate Condition!");
+                }
+                else
+                {
+                    /*if(transitionRef != null)
+                        transitionRef.disable = EditorGUILayout.Toggle("Disable", transitionRef.disable);#1#
+                }
+            }
+
+            if (previousCondition != targetConditionRef)
+            {
+                previousCondition = targetConditionRef;
+                isDuplicate = BehaviourEditor.CurrentGraph.IsTransitionDuplicate(this);
+                if (!isDuplicate) BehaviourEditor.CurrentGraph.SetNode(this);
             }
         }
 
@@ -49,6 +64,6 @@ namespace ANM.Editor.Nodes
             rect.width = 1;
             rect.height = 1;
             BehaviourEditor.DrawNodeCurve(enterState.windowRect, rect, true, Color.green);
-        }
+        }*/
     }
 }

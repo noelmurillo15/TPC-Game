@@ -8,14 +8,14 @@ using UnityEngine;
 
 namespace ANM.Editor.Nodes
 {
-    public class CommentNode : BaseNode
+    public class CommentNode : ScriptableObject
     {
-        private string _comment = "This is a comment";
+        /*private string _comment = "This is a comment";
 
 
-        public override void DrawWindow()
+        public void DrawWindow()
         {
             _comment = GUILayout.TextArea(_comment, 200);
-        }
+        }*/
     }
 }
