@@ -26,7 +26,7 @@ namespace ANM.Editor.Nodes
 
         public override void DrawWindow()
         {
-            var standardHeight = 250f;
+            var standardHeight = 300f;
 
             if (currentState == null)
             {
@@ -45,12 +45,11 @@ namespace ANM.Editor.Nodes
             {
                 _serializedState = null;
                 _previousState = currentState;
-                ClearReferences();
+                BehaviourEditor.CurrentGraph.SetStateNode(this);
 
-                for (var i = 0; i < currentState.transitions.Count; i++)
+                for (int i = 0; i < currentState.transitions.Count; i++)
                 {
-                    dependencies.Add(BehaviourEditor.AddTransitionNode(i,
-                        currentState.transitions[i], this));
+                    
                 }
             }
 
@@ -80,7 +79,9 @@ namespace ANM.Editor.Nodes
             _onExitList.DoLayoutList();
             _serializedState.ApplyModifiedProperties();
 
-            standardHeight += (_onEnterList.count + _onStateList.count + _onExitList.count) * 20f;
+            var listCount = _onEnterList.count + _onStateList.count + _onExitList.count;
+            if (listCount < 4) return;
+            standardHeight += (listCount - 3) * 20f;
             windowRect.height = standardHeight;
         }
 
@@ -96,11 +97,6 @@ namespace ANM.Editor.Nodes
                 EditorGUI.ObjectField(new Rect(rect.x, rect.y, rect.width,
                     EditorGUIUtility.singleLineHeight), element, GUIContent.none);
             };
-        }
-
-        public override void DrawCurve()
-        {
-
         }
 
         public Transition AddTransition()

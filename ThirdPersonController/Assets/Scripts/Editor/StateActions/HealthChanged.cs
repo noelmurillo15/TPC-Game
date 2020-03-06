@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace ANM.Editor.StateActions
 {
-    [CreateAssetMenu(menuName = "StateAction/Test/Add Health")]
+    [CreateAssetMenu(menuName = "BehaviourEditor/StateAction/Test/Add Health")]
     public class HealthChanged : StateAction
     {
         public override void Execute(BehaviourStateManager stateManager)

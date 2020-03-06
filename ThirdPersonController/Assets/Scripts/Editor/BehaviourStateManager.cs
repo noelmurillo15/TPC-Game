@@ -18,7 +18,7 @@ namespace ANM.Editor
 
         private void Start()
         {
-            myTransform = this.transform;
+            myTransform = transform;
         }
 
         private void Update()

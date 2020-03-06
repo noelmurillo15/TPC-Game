@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace ANM.Editor.Conditions
 {
-    [CreateAssetMenu(menuName = "Conditions/IsDead")]
+    [CreateAssetMenu(menuName = "BehaviourEditor/Conditions/IsDead")]
     public class IsDead : Condition
     {
         public override bool CheckCondition(BehaviourStateManager stateManager)

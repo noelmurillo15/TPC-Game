@@ -30,6 +30,9 @@ namespace ANM.Editor
         private bool _makeTransition;
         private int _selectedIndex;
 
+        private static GraphNode _graphNode;
+        public static BehaviourGraph CurrentGraph;
+
 
         [MenuItem("Behaviour Editor/Editor")]
         private static void ShowEditor()
@@ -40,8 +43,19 @@ namespace ANM.Editor
 
         private void OnEnable()
         {
-            //_windows.Clear();
+            if (_graphNode == null)
+            {
+                _graphNode = CreateInstance<GraphNode>();
+                _graphNode.windowRect = new Rect(10, position.height * 0.7f, 200, 100);
+                _graphNode.windowTitle = "Graph";
+            }
+
+            _windows.Clear();
+            _windows.Add(_graphNode);
+            LoadGraph();
         }
+
+        #region GUI Methods
 
         private void OnGUI()
         {
@@ -126,10 +140,19 @@ namespace ANM.Editor
         {
             var menu = new GenericMenu();
             menu.AddSeparator("");
-            menu.AddItem(new GUIContent("Add State"), false,
-                ContextCallback, UserActions.ADD_STATE);
-            menu.AddItem(new GUIContent("Add Comment"),
-                false, ContextCallback, UserActions.COMMENT_NODE);
+            if (CurrentGraph != null)
+            {
+                menu.AddItem(new GUIContent("Add State"),
+                    false, ContextCallback, UserActions.ADD_STATE);
+                menu.AddItem(new GUIContent("Add Comment"),
+                    false, ContextCallback, UserActions.COMMENT_NODE);
+            }
+            else
+            {
+                menu.AddDisabledItem(new GUIContent("Add State"));
+                menu.AddDisabledItem(new GUIContent("Add Comment"));
+            }
+
             menu.ShowAsContext();
             e.Use();
         }
@@ -180,18 +203,10 @@ namespace ANM.Editor
             switch (ua)
             {
                 case UserActions.ADD_STATE:
-                    var newStateNode = CreateInstance<StateNode>();
-                    newStateNode.windowRect = new Rect(
-                        _mousePosition.x, _mousePosition.y, 200, 300);
-                    newStateNode.windowTitle = "State";
-                    _windows.Add(newStateNode);
+                    AddStateNode(_mousePosition);
                     break;
                 case UserActions.COMMENT_NODE:
-                    var newComment = CreateInstance<CommentNode>();
-                    newComment.windowRect = new Rect(
-                        _mousePosition.x, _mousePosition.y, 200, 100);
-                    newComment.windowTitle = "Comment Node";
-                    _windows.Add(newComment);
+                    AddCommentNode(_mousePosition);
                     break;
                 case UserActions.ADD_TRANSITION:
                     if (_selectedNode is StateNode st)
@@ -223,26 +238,54 @@ namespace ANM.Editor
             }
         }
 
+        #endregion
+
+        #region Helper Methods
+
         public static TransitionNode AddTransitionNode(int index, Transition transition, StateNode from)
         {
             Rect fromRect = from.windowRect;
             fromRect.x += 50;
             float targetY = fromRect.y - fromRect.height;
+
             if (from.currentState != null)
             {
                 targetY += (index * 100);
             }
 
             fromRect.y = targetY;
+            var pos = new Vector2(fromRect.x, fromRect.y);
+            return AddTransitionNode(pos, transition, from);
+        }
 
+        public static TransitionNode AddTransitionNode(Vector2 pos, Transition transition, StateNode from)
+        {
             var transitionNode = CreateInstance<TransitionNode>();
             transitionNode.Init(from, transition);
-            transitionNode.windowRect = new Rect(
-                fromRect.x + 300, fromRect.y + (fromRect.height * 0.7f), 200, 80);
+            transitionNode.windowRect = new Rect(pos.x, pos.y, 200, 80);
             transitionNode.windowTitle = "Condition Check";
             _windows.Add(transitionNode);
             from.dependencies.Add(transitionNode);
             return transitionNode;
+        }
+
+        public static StateNode AddStateNode(Vector2 pos)
+        {
+            var newStateNode = CreateInstance<StateNode>();
+            newStateNode.windowRect = new Rect(pos.x, pos.y, 200, 300);
+            newStateNode.windowTitle = "State";
+            _windows.Add(newStateNode);
+            CurrentGraph.SetStateNode(newStateNode);
+            return newStateNode;
+        }
+
+        public static CommentNode AddCommentNode(Vector2 pos)
+        {
+            var newCommentNode = CreateInstance<CommentNode>();
+            newCommentNode.windowRect = new Rect(pos.x, pos.y, 180, 80);
+            newCommentNode.windowTitle = "Comment Node";
+            _windows.Add(newCommentNode);
+            return newCommentNode;
         }
 
         public static void DrawNodeCurve(Rect start, Rect end, bool left, Color curveColor)
@@ -269,16 +312,29 @@ namespace ANM.Editor
 
         public static void ClearWindowsFromList(List<BaseNode> dependencyNodes)
         {
-            if (dependencyNodes == null)
-            {
-                Debug.Log("Node Dependencies is NULL");
-                return;
-            }
-
             foreach (var bNode in dependencyNodes.Where(bNode => _windows.Contains(bNode)))
             {
                 _windows.Remove(bNode);
             }
         }
+
+        public static void LoadGraph()
+        {
+            CurrentGraph.Init();
+            List<SavedStateNode> l = new List<SavedStateNode>();
+            l.AddRange(CurrentGraph.savedStateNodes);
+            CurrentGraph.savedStateNodes.Clear();
+
+            for (int i = l.Count - 1; i >= 0; i--)
+            {
+                StateNode node = AddStateNode(l[i].position);
+                node.currentState = l[i].state;
+                CurrentGraph.SetStateNode(node);
+
+                //    TODO : Load our Transitions
+            }
+        }
+
+        #endregion
     }
 }

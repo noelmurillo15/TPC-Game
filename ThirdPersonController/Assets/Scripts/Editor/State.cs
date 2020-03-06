@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace ANM.Editor
 {
-    [CreateAssetMenu]
+    [CreateAssetMenu(menuName = "BehaviourEditor/State")]
     public class State : ScriptableObject
     {
         public List<Transition> transitions = new List<Transition>();
