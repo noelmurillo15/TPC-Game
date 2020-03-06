@@ -10,11 +10,12 @@ using UnityEngine;
 namespace ANM
 {
     public class AnimatorHook : MonoBehaviour
-    {   //  Used to help with Root Motion and Animation callback events
+    {
+        //  Used to help with Root Motion and Animation callback events
         private StateManager _stateManager;
         private Animator _animator;
         public float rm_mult;
-        public bool isEnemy = false;    //  TODO : remove this later
+        public bool isEnemy = false; //  TODO : remove this later
 
 
         public void Init(StateManager state, bool isEnemy)
@@ -62,6 +63,7 @@ namespace ANM
         {
             _stateManager.SetDamageColliderStatus(false);
         }
+
         #endregion
     }
 }

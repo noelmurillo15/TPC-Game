@@ -12,4 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7aa7cb0b6e34b2a9f0dfe6272803613, type: 3}
   m_Name: Moving
   m_EditorClassIdentifier: 
-  transitions: []
+  transitions:
+  - condition: {fileID: 11400000, guid: 546854cba3e3022439354f814b7438c5, type: 2}
+    targetState: {fileID: 0}
+    disable: 0
+  onEnter:
+  - {fileID: 11400000, guid: 67e69fc797b6cbf47b9e6da67aedf10d, type: 2}
+  onState:
+  - {fileID: 11400000, guid: 67e69fc797b6cbf47b9e6da67aedf10d, type: 2}
+  onExit:
+  - {fileID: 11400000, guid: 67e69fc797b6cbf47b9e6da67aedf10d, type: 2}

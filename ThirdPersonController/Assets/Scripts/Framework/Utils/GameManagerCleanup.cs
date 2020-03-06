@@ -12,7 +12,7 @@ namespace ANM.Framework.Utils
     public class GameManagerCleanup : MonoBehaviour
     {
         [SerializeField] private float quitDelay = 3f;
-        
+
         private void Start()
         {
             Invoke($"ApplicationQuit", quitDelay);

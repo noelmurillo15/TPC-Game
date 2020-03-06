@@ -17,6 +17,9 @@ namespace ANM.Scriptable
 
     public enum ActionType
     {
-        ATTACK, BLOCK, SPELL, PARRY
+        ATTACK,
+        BLOCK,
+        SPELL,
+        PARRY
     }
 }

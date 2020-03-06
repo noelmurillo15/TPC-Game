@@ -1,7 +1,7 @@
 ﻿/*
  * ScreenFade - Fades the screen in-between loading scenes
  * Created by : Allan N. Murillo
- * Last Edited : 2/24/2020
+ * Last Edited : 3/3/2020
  */
 
 using UnityEngine;
@@ -18,8 +18,8 @@ namespace ANM.Framework.Utils
         [SerializeField] private float fadeOutDelay = 1f;
         [SerializeField] private float fadeInDelay = 1f;
         private Coroutine _currentFade;
-        
-        
+
+
         private void Start()
         {
             if (gameObject.GetComponentInParent<GameManager>() != GameManager.Instance) return;
@@ -28,27 +28,27 @@ namespace ANM.Framework.Utils
             canvasGroup = GetComponent<CanvasGroup>();
             FadeInImmediate();
         }
-        
+
         private void OnDestroy()
         {
             if (gameObject.GetComponentInParent<GameManager>() != GameManager.Instance) return;
             SceneExtension.FinishSceneLoadEvent -= FinishLoadScene;
             SceneExtension.StartSceneLoadEvent -= StartLoadScene;
         }
-        
-        private void StartLoadScene(bool wait)
+
+        private void StartLoadScene(bool fade, bool save)
         {
-            if(!wait) FadeOutImmediate();
+            if (!fade) FadeOutImmediate();
             else
             {
                 FadeInImmediate();
                 FadeOut();
             }
         }
-        
-        private void FinishLoadScene(bool wait)
+
+        private void FinishLoadScene(bool fade, bool save)
         {
-            if(!wait) FadeInImmediate();
+            if (!fade) FadeInImmediate();
             else
             {
                 FadeOutImmediate();
@@ -56,17 +56,33 @@ namespace ANM.Framework.Utils
             }
         }
 
-        private Coroutine FadeOut() { return Fade(1f, fadeOutDelay); }
+        private void FadeInImmediate()
+        {
+            canvasGroup.alpha = 0f;
+        }
 
-        private Coroutine FadeIn() { return Fade(0f, fadeInDelay); }
-        
-        private void FadeOutImmediate() { canvasGroup.alpha = 1f; }
+        private void FadeOutImmediate()
+        {
+            canvasGroup.alpha = 1f;
+        }
 
-        private void FadeInImmediate() { canvasGroup.alpha = 0f; }
+        private void FadeOut()
+        {
+            Fade(1f, fadeOutDelay);
+        }
+
+        private void FadeIn()
+        {
+            Fade(0f, fadeInDelay);
+        }
 
         private Coroutine Fade(float target, float time)
         {
-            if (_currentFade != null) { StopCoroutine(_currentFade); }
+            if (_currentFade != null)
+            {
+                StopCoroutine(_currentFade);
+            }
+
             _currentFade = StartCoroutine(FadeRoutine(target, time));
             return _currentFade;
         }
@@ -75,8 +91,8 @@ namespace ANM.Framework.Utils
         {
             while (!Mathf.Approximately(canvasGroup.alpha, target))
             {
-                canvasGroup.alpha = Mathf.MoveTowards(
-                    canvasGroup.alpha, target, Time.deltaTime / time);
+                canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha,
+                    target, Time.deltaTime / time);
                 yield return null;
             }
         }

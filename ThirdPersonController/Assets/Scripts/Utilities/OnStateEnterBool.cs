@@ -9,7 +9,8 @@ using UnityEngine;
 namespace ANM
 {
     public class OnStateEnterBool : StateMachineBehaviour
-    {   //  Helps with Animation Transitions
+    {
+        //  Helps with Animation Transitions
         public string boolName;
         public bool status;
         public bool resetOnExit;

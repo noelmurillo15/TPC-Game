@@ -10,7 +10,8 @@ using ANM.Framework.Variables;
 namespace ANM.Managers
 {
     public class CameraManager : MonoBehaviour
-    {   //  Manages the Camera w/ Pivot
+    {
+        //  Manages the Camera w/ Pivot
         public bool lockOn;
         public float followSpeed = 9f;
         public float mouseSpeed = 2f;
@@ -19,7 +20,7 @@ namespace ANM.Managers
         public Transform myTarget;
         public Transform myTransform;
         public TransformVariable lockOnTransformVar;
-        
+
         public float minAngle = -45f;
         public float maxAngle = 45f;
 
@@ -27,10 +28,10 @@ namespace ANM.Managers
         public float zSpeed;
         public float lookAngle;
         public float tiltAngle;
-        
+
         [HideInInspector] public Transform myPivot;
         [HideInInspector] public Transform myCameraTransform;
-        
+
         private readonly float _turnSmoothing = 0.1f;
         private float _smoothX, _smoothY;
         private float _smoothXVelocity, _smoothYVelocity;
@@ -60,7 +61,7 @@ namespace ANM.Managers
             HandlePivotPosition();
         }
 
-        
+
         private void FollowTarget(float d)
         {
             myTransform.position = Vector3.Lerp(myTransform.position, myTarget.position, d);
@@ -69,20 +70,23 @@ namespace ANM.Managers
         private void HandleRotation(float d, float vertical, float horizontal, float speed)
         {
             if (_turnSmoothing > 0)
-            {   //    Apply Input Smoothing
+            {
+                //    Apply Input Smoothing
                 _smoothX = Mathf.SmoothDamp(
                     _smoothX, horizontal, ref _smoothXVelocity, _turnSmoothing);
                 _smoothY = Mathf.SmoothDamp(
                     _smoothY, vertical, ref _smoothYVelocity, _turnSmoothing);
             }
             else
-            {   //    Apply Raw Input
+            {
+                //    Apply Raw Input
                 _smoothX = horizontal;
                 _smoothY = vertical;
             }
 
             if (lockOnTransformVar.value != null)
-            {    //    Override Tilt & Look Input when LockedOn
+            {
+                //    Override Tilt & Look Input when LockedOn
                 Vector3 targetDir = lockOnTransformVar.value.position - myTransform.position;
                 targetDir.Normalize();
                 targetDir.y = 0f;
@@ -128,15 +132,21 @@ namespace ANM.Managers
         }
 
         private static void CameraCollision(float targetZ, ref float actualZ)
-        {   //  TODO : Implement
+        {
+            //  TODO : Implement
 
         }
 
 
         public static CameraManager instance;
+
         private void Awake()
         {
-            if(instance != null && instance != this) { Destroy(gameObject); }
+            if (instance != null && instance != this)
+            {
+                Destroy(gameObject);
+            }
+
             instance = this;
         }
     }

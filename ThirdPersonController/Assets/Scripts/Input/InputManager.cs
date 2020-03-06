@@ -8,12 +8,12 @@ namespace ANM.Input
     public class InputManager : StrategyPatternAction
     {
         public MouseInputAxis cameraViewInput;
-        
+
         public float moveAmount;
         public Vector3 moveDirection;
         public TransformVariable cameraTransform;
-        
-        
+
+
         public override void Execute()
         {
             cameraViewInput.Execute();

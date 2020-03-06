@@ -10,7 +10,8 @@ namespace ANM.Scriptable
 {
     [CreateAssetMenu(menuName = "Single Instances/ControllerStats")]
     public class ControllerStats : ScriptableObject
-    {   //  Holds Movement Data for Player
+    {
+        //  Holds Movement Data for Player
         public float moveSpeed;
         public float rollSpeed;
         public float backStepSpeed;

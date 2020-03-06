@@ -48,6 +48,7 @@ namespace ANM.Framework.Events
                 Debug.Log(listener.gameObject.name + " has already been removed from " + eventName);
             }
         }
+
         private void UnregisterAllListeners()
         {
             if (_listeners.Count <= 0) return;

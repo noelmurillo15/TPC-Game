@@ -6,7 +6,7 @@
 
 namespace ANM.Framework.Extensions
 {
-    public static class EventExtension 
+    public static class EventExtension
     {
         public static void MuteEventListener(UnityEngine.Events.UnityEventBase eventBase)
         {

@@ -11,7 +11,8 @@ namespace ANM.Scriptable
 {
     [CreateAssetMenu(menuName = "Actions/AttackAction")]
     public class AttackAction : ScriptableObject
-    {   //  Holds Static String Animation Name and other info
+    {
+        //  Holds Static String Animation Name and other info
         public StringVariable attackAnimation;
         public bool canBeParried = true;
         public bool changeSpeed = false;

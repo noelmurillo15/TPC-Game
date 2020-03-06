@@ -14,7 +14,7 @@ namespace ANM.Controller
     {
         public CharacterBody body;
         public InventoryData inventoryData;
-        
+
         [Serializable]
         public class CharacterBody
         {
@@ -22,7 +22,7 @@ namespace ANM.Controller
             public SkinnedMeshRenderer legsRenderer;
             public SkinnedMeshRenderer torsoRenderer;
             public SkinnedMeshRenderer headRenderer;
-            
+
             public SkinnedMeshRenderer armorArmsRenderer;
             public SkinnedMeshRenderer armorLegsRenderer;
             public SkinnedMeshRenderer armorChestRenderer;
@@ -38,8 +38,8 @@ namespace ANM.Controller
         {
             for (var i = 0; i < 4; i++)
             {
-                var armorRenderer = GetArmorPart((ArmorType)i);
-                var bodyRenderer = GetBodyPart((ArmorType)i);
+                var armorRenderer = GetArmorPart((ArmorType) i);
+                var bodyRenderer = GetBodyPart((ArmorType) i);
                 armorRenderer.enabled = false;
                 bodyRenderer.enabled = true;
             }
@@ -58,7 +58,7 @@ namespace ANM.Controller
         private void WearItem(Item item)
         {
             if (item.type != ItemType.ARMOR) return;
-            
+
             var armor = (Armor) item;
             var meshRenderer = GetArmorPart(armor.armorType);
             var bodyPartRenderer = GetBodyPart(armor.armorType);
@@ -76,7 +76,7 @@ namespace ANM.Controller
             armorPart.enabled = false;
             bodyPart.enabled = true;
         }
-        
+
         private SkinnedMeshRenderer GetBodyPart(ArmorType type)
         {
             switch (type)

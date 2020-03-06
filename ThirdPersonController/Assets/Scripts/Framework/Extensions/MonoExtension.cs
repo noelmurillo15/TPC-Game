@@ -9,8 +9,8 @@ using System.Collections;
 using UnityEngine;
 
 namespace ANM.Framework.Extensions
-{ 
-    public static class MonoExtension 
+{
+    public static class MonoExtension
     {
         public static void InvokeAfter(this MonoBehaviour mono, Action method, float delay)
         {

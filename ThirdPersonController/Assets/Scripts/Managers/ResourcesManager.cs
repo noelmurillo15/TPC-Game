@@ -22,10 +22,10 @@ namespace ANM.Managers
         {
             runtime = Resources.Load("RuntimeReferences") as RuntimeReferences;
             runtime?.Initialize();
-            
+
             _inventory = Resources.Load("Inventory") as Inventory.Inventory;
             _inventory?.Initialize();
-            
+
             _inventoryData = Resources.Load("PlayerInventory") as InventoryData;
         }
 
@@ -55,13 +55,13 @@ namespace ANM.Managers
         public Weapon GetWeapon(string id)
         {
             var item = GetItem(id);
-            return (Weapon)item;
+            return (Weapon) item;
         }
-        
+
         public Armor GetArmor(string id)
         {
             var item = GetItem(id);
-            return (Armor)item;
+            return (Armor) item;
         }
 
         public List<Item> GetAllItemsOfType(ItemType itemType)
@@ -74,6 +74,7 @@ namespace ANM.Managers
                     itemsOfType.Add(_inventory.allItems[x]);
                 }
             }
+
             return itemsOfType;
         }
     }

@@ -12,6 +12,7 @@ namespace ANM.Utilities
     public class DamageColliders : MonoBehaviour
     {
         public delegate void OnHit(StateManager stateManager);
+
         public OnHit onHit;
 
 
