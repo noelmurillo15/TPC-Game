@@ -16,3 +16,6 @@ MonoBehaviour:
   stateNode: {fileID: 11400000, guid: 388631ea7e06a6943a600228334ee98d, type: 2}
   transitionNode: {fileID: 11400000, guid: 9be3036c93b55524b818cdc6ce92fb63, type: 2}
   commentNode: {fileID: 11400000, guid: 81058f33b7229a748ba8c980a8ff7f31, type: 2}
+  portalNode: {fileID: 11400000, guid: 61601ede79353a042b45c9f13968dc90, type: 2}
+  makeTransition: 0
+  activeSkin: {fileID: 11400000, guid: 0ae262fc0787f8048a69900aafc6c2f9, type: 2}

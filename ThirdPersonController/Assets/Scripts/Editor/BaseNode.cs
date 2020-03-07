@@ -1,11 +1,15 @@
 ﻿/*
- * BaseNode SO -
+ * BaseNode -
  * Created by : Allan N. Murillo
- * Last Edited : 3/6/2020
+ * Last Edited : 3/7/2020
  */
 
 using UnityEngine;
+using UnityEditor;
 using ANM.Editor.Nodes;
+using UnityEditorInternal;
+using ANM.Behaviour.Conditions;
+using State = ANM.Behaviour.State;
 
 namespace ANM.Editor
 {
@@ -21,6 +25,7 @@ namespace ANM.Editor
         public int enterNode;
         public int targetNode;
         public bool isDuplicate;
+        public bool isAssigned;
         public string comment;
 
         public bool collapse;
@@ -50,8 +55,12 @@ namespace ANM.Editor
     [System.Serializable]
     public class StateNodeReferences
     {
-        [HideInInspector] public State currentState;
+        public State currentState;
         [HideInInspector] public State previousState;
+        public SerializedObject serializedState;
+        public ReorderableList onEnterList;
+        public ReorderableList onStateList;
+        public ReorderableList onExitList;
     }
 
     [System.Serializable]

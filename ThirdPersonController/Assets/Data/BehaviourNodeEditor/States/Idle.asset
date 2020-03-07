@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7aa7cb0b6e34b2a9f0dfe6272803613, type: 3}
   m_Name: Idle
   m_EditorClassIdentifier: 
-  transitions: []
-  onEnter:
-  - {fileID: 11400000, guid: 67e69fc797b6cbf47b9e6da67aedf10d, type: 2}
-  onState:
-  - {fileID: 11400000, guid: 67e69fc797b6cbf47b9e6da67aedf10d, type: 2}
-  onExit:
-  - {fileID: 11400000, guid: 67e69fc797b6cbf47b9e6da67aedf10d, type: 2}
-  idCount: 3
+  transitions:
+  - id: 0
+    condition: {fileID: 11400000, guid: a52b4bdfd4f198440b2cd0fc52293f89, type: 2}
+    targetState: {fileID: 11400000, guid: 1ae05750309dc004aada6fcfda692ce4, type: 2}
+    disable: 0
+  onEnter: []
+  onState: []
+  onExit: []
+  idCount: 1

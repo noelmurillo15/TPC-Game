@@ -10,7 +10,7 @@ namespace ANM.Editor.Nodes
 {
     public abstract class DrawNode : ScriptableObject
     {
-        public abstract void DrawWindow(BaseNode b);
+        public abstract void DrawWindow(BaseNode node);
         public abstract void DrawCurve(BaseNode node);
     }
 }

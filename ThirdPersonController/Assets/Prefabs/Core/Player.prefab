@@ -396,6 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d03e37443e2bef641bd1263f3b018f41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentState: {fileID: 11400000, guid: 5062069eb3e4774469f9b01af5a824fd, type: 2}
   characterState: 0
   controlStats: {fileID: 11400000, guid: 4211322a3dba51344992ff160fc3998b, type: 2}
   states:

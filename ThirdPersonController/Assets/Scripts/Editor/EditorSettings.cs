@@ -1,7 +1,7 @@
 ﻿/*
  * EditorSettings - 
  * Created by : Allan N. Murillo
- * Last Edited : 3/6/2020
+ * Last Edited : 3/7/2020
  */
 
 using UnityEngine;
@@ -16,6 +16,9 @@ namespace ANM.Editor
         public StateNode stateNode;
         public TransitionNode transitionNode;
         public CommentNode commentNode;
+        public PortalNode portalNode;
+        public bool makeTransition;
+        public GUISkin activeSkin;
 
         public BaseNode AddNodeOnGraph(DrawNode type, float width, float height, string title, Vector3 pos)
         {

@@ -1,83 +1,118 @@
 ﻿/*
  * StateNode SO -
  * Created by : Allan N. Murillo
- * Last Edited : 3/6/2020
+ * Last Edited : 3/7/2020
  */
 
 using UnityEditor;
 using UnityEngine;
 using UnityEditorInternal;
+using State = ANM.Behaviour.State;
+using Transition = ANM.Behaviour.Transition;
 
 namespace ANM.Editor.Nodes
 {
     [CreateAssetMenu(menuName = "BehaviourEditor/Nodes/State Node")]
     public class StateNode : DrawNode
     {
-        public override void DrawWindow(BaseNode b)
-        {
-            var standardHeight = 300f;
+        private const float CollapseHeight = 80f;
 
-            if (b.stateRefs.currentState == null)
+
+        public override void DrawWindow(BaseNode node)
+        {
+            var expandHeight = 300f;
+
+            if (node.stateRefs.currentState == null)
             {
-                EditorGUILayout.LabelField("Add State to Modify:");
+                EditorGUILayout.LabelField("\tAdd State to Modify:");
             }
             else
             {
-                b.windowRect.height = b.collapse ? 100 : standardHeight;
-                b.collapse = EditorGUILayout.Toggle("Collapse Window: ", b.collapse);
+                node.windowRect.height = node.collapse ? CollapseHeight : expandHeight;
+                node.collapse = EditorGUILayout.Toggle("\tCollapse Window: ", node.collapse);
             }
 
-            b.stateRefs.currentState = (State) EditorGUILayout.ObjectField(
-                b.stateRefs.currentState, typeof(State), false);
+            node.stateRefs.currentState = (State) EditorGUILayout.ObjectField(
+                node.stateRefs.currentState, typeof(State), false);
 
-            if (b.previousCollapse != b.collapse)
+            if (node.previousCollapse != node.collapse)
             {
-                b.previousCollapse = b.collapse;
+                node.previousCollapse = node.collapse;
             }
 
-            if (b.stateRefs.previousState != b.stateRefs.currentState)
+            if (node.stateRefs.previousState != node.stateRefs.currentState)
             {
-                b.isDuplicate = BehaviourEditor.EditorSettings.currentGraph.IsStateDuplicate(b);
+                node.isDuplicate = BehaviourEditor.EditorSettings.currentGraph.IsStateDuplicate(node);
+                node.stateRefs.previousState = node.stateRefs.currentState;
+                if (!node.isDuplicate)
+                {
+                    var pos = new Vector3(node.windowRect.x, node.windowRect.y, 0);
+                    pos.x += node.windowRect.width * 2f;
+                    SetupReorderableLists(node);
+
+                    for (var i = 0; i < node.stateRefs.currentState.transitions.Count; i++)
+                    {
+                        pos.y += i * 100;
+                        BehaviourEditor.AddTransitionNodeFromTransition(
+                            node.stateRefs.currentState.transitions[i], node, pos);
+                    }
+                }
             }
 
-            if (b.isDuplicate)
+            if (node.isDuplicate)
             {
-                EditorGUILayout.LabelField("State is a duplicate!");
-                b.windowRect.height = 80;
+                EditorGUILayout.LabelField("\tState is a duplicate!");
+                node.windowRect.height = 80;
                 return;
             }
 
-            if (b.stateRefs.currentState == null) return;
+            node.isAssigned = false;
 
-            var serializedState = new SerializedObject(b.stateRefs.currentState);
+            if (node.stateRefs.currentState == null) return;
 
-            var onEnterList = new ReorderableList(serializedState, serializedState.FindProperty("onEnter"),
-                true, true, true, true);
+            node.isAssigned = true;
 
-            var onStateList = new ReorderableList(serializedState, serializedState.FindProperty("onState"),
-                true, true, true, true);
+            if (node.collapse) return;
 
-            var onExitList = new ReorderableList(serializedState, serializedState.FindProperty("onExit"),
-                true, true, true, true);
+            if (node.stateRefs.serializedState == null)
+                SetupReorderableLists(node);
 
-            if (b.collapse) return;
-            serializedState.Update();
+            node.stateRefs.serializedState?.Update();
 
-            HandleReorderableList(onEnterList, "On Enter");
-            HandleReorderableList(onStateList, "On State");
-            HandleReorderableList(onExitList, "On Exit");
+            EditorGUILayout.LabelField(" ");
+            node.stateRefs.onEnterList.DoLayoutList();
+            node.stateRefs.onStateList.DoLayoutList();
+            node.stateRefs.onExitList.DoLayoutList();
 
-            EditorGUILayout.LabelField("");
-            onEnterList.DoLayoutList();
-            onStateList.DoLayoutList();
-            onExitList.DoLayoutList();
-
-            serializedState.ApplyModifiedProperties();
-            var listCount = onEnterList.count + onStateList.count + onExitList.count;
+            node.stateRefs.serializedState?.ApplyModifiedProperties();
+            var listCount = node.stateRefs.onEnterList.count
+                            + node.stateRefs.onStateList.count
+                            + node.stateRefs.onExitList.count;
 
             if (listCount < 4) return;
-            standardHeight += (listCount - 3) * 20f;
-            b.windowRect.height = standardHeight;
+            expandHeight += (listCount - 3) * 20f;
+            node.windowRect.height = expandHeight;
+        }
+
+        private static void SetupReorderableLists(BaseNode node)
+        {
+            node.stateRefs.serializedState = new SerializedObject(node.stateRefs.currentState);
+
+            node.stateRefs.onEnterList = new ReorderableList(node.stateRefs.serializedState,
+                node.stateRefs.serializedState.FindProperty("onEnter"),
+                true, true, true, true);
+
+            node.stateRefs.onStateList = new ReorderableList(node.stateRefs.serializedState,
+                node.stateRefs.serializedState.FindProperty("onState"),
+                true, true, true, true);
+
+            node.stateRefs.onExitList = new ReorderableList(node.stateRefs.serializedState,
+                node.stateRefs.serializedState.FindProperty("onExit"),
+                true, true, true, true);
+
+            HandleReorderableList(node.stateRefs.onEnterList, "On Enter");
+            HandleReorderableList(node.stateRefs.onStateList, "On State");
+            HandleReorderableList(node.stateRefs.onExitList, "On Exit");
         }
 
         private static void HandleReorderableList(ReorderableList list, string targetName)

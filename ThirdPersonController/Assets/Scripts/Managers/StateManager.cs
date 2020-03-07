@@ -9,6 +9,7 @@ using ANM.Input;
 using ANM.Saving;
 using UnityEngine;
 using System.Linq;
+using ANM.Behaviour;
 using ANM.Inventory;
 using ANM.Utilities;
 using ANM.Scriptable;
@@ -26,6 +27,7 @@ using ANM.Scriptable;
              ROLL
          }
 
+         public State currentState;
          public CharacterState characterState; //  Current State 
          public ControllerStats controlStats; //  Movement Info
 

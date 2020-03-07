@@ -13,10 +13,14 @@ namespace ANM.Editor.Nodes
     {
         private string _comment = "This is a comment";
 
-        
-        public override void DrawWindow(BaseNode b)
+
+        public override void DrawWindow(BaseNode node)
         {
+            if (node.comment != null) 
+                _comment = node.comment;
+            
             _comment = GUILayout.TextArea(_comment, 200);
+            node.comment = _comment;
         }
 
         public override void DrawCurve(BaseNode node)

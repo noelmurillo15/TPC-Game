@@ -94,6 +94,12 @@ PrefabInstance:
       propertyPath: inventoryManager.leftItem
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
+        type: 3}
+      propertyPath: currentState
+      value: 
+      objectReference: {fileID: 11400000, guid: 1ae05750309dc004aada6fcfda692ce4,
+        type: 2}
     - target: {fileID: 5384227096225598490, guid: 3a48b3449cf16214b8d1402b80f80d76,
         type: 3}
       propertyPath: m_LocalPosition.x

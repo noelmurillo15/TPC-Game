@@ -1,12 +1,12 @@
 ﻿/*
  * BehaviourStateManager - StateManager Being used for testing the Behaviour Node Editor
  * Created by : Allan N. Murillo
- * Last Edited : 3/5/2020
+ * Last Edited : 3/7/2020
  */
 
 using UnityEngine;
 
-namespace ANM.Editor
+namespace ANM.Behaviour
 {
     public class BehaviourStateManager : MonoBehaviour
     {

@@ -1,12 +1,12 @@
 ﻿/*
  * IsDead SO -
  * Created by : Allan N. Murillo
- * Last Edited : 3/5/2020
+ * Last Edited : 3/7/2020
  */
 
 using UnityEngine;
 
-namespace ANM.Editor.Conditions
+namespace ANM.Behaviour.Conditions
 {
     [CreateAssetMenu(menuName = "BehaviourEditor/Conditions/IsDead")]
     public class IsDead : Condition

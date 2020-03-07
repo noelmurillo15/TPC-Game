@@ -1,13 +1,15 @@
 ﻿/*
  * State SO -
  * Created by : Allan N. Murillo
- * Last Edited : 3/6/2020
+ * Last Edited : 3/7/2020
  */
 
 using UnityEngine;
+using System.Linq;
+using ANM.Behaviour.StateActions;
 using System.Collections.Generic;
 
-namespace ANM.Editor
+namespace ANM.Behaviour
 {
     [CreateAssetMenu(menuName = "BehaviourEditor/State")]
     public class State : ScriptableObject
@@ -48,12 +50,11 @@ namespace ANM.Editor
 
         private void CheckTransitions(BehaviourStateManager states)
         {
-            foreach (var t in transitions)
+            foreach (var transition in from t in transitions 
+                where !t.disable where t.targetState != null 
+                where t.condition.CheckCondition(states) select t)
             {
-                if (t.disable) continue;
-                if (t.targetState == null) continue;
-                if (!t.condition.CheckCondition(states)) continue;
-                states.currentState = t.targetState;
+                states.currentState = transition.targetState;
                 OnExit(states);
                 states.currentState.OnEnter(states);
                 return;
@@ -62,13 +63,7 @@ namespace ANM.Editor
 
         public Transition GetTransition(int id)
         {
-            for (int i = 0; i < transitions.Count; i++)
-            {
-                if (transitions[i].id == id)
-                    return transitions[i];
-            }
-
-            return null;
+            return transitions.FirstOrDefault(t => t.id == id);
         }
 
         public Transition AddTransition()
@@ -78,6 +73,15 @@ namespace ANM.Editor
             retVal.id = idCount;
             idCount++;
             return retVal;
+        }
+
+        public void RemoveTransition(int transitionId)
+        {
+            for (var i = 0; i < transitions.Count; i++)
+            {
+                if (transitions[i].id == transitionId)
+                    transitions.Remove(transitions[i]);
+            }
         }
     }
 }

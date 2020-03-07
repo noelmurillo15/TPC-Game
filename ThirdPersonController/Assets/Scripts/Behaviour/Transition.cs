@@ -4,7 +4,9 @@
  * Last Edited : 3/6/2020
  */
 
-namespace ANM.Editor
+using ANM.Behaviour.Conditions;
+
+namespace ANM.Behaviour
 {
     [System.Serializable]
     public class Transition
