@@ -1,25 +1,33 @@
 ﻿/*
  * BaseNode SO -
  * Created by : Allan N. Murillo
- * Last Edited : 3/5/2020
+ * Last Edited : 3/6/2020
  */
 
-using UnityEditor;
 using UnityEngine;
 using ANM.Editor.Nodes;
-using UnityEditorInternal;
-using System.Collections.Generic;
 
 namespace ANM.Editor
 {
     [System.Serializable]
     public class BaseNode
     {
+        public int id;
         public DrawNode drawNode;
-        public StateNodeReferences stateNodeRefs;
 
         public Rect windowRect;
         public string windowTitle;
+
+        public int enterNode;
+        public int targetNode;
+        public bool isDuplicate;
+        public string comment;
+
+        public bool collapse;
+        [HideInInspector] public bool previousCollapse;
+
+        [SerializeField] public StateNodeReferences stateRefs;
+        [SerializeField] public TransitionNodeReferences transRefs;
 
 
         public void DrawWindow()
@@ -42,15 +50,14 @@ namespace ANM.Editor
     [System.Serializable]
     public class StateNodeReferences
     {
-        [HideInInspector] public bool collapse;
-        [HideInInspector] public bool isDuplicate;
-        [HideInInspector] public bool previousCollapse;
         [HideInInspector] public State currentState;
         [HideInInspector] public State previousState;
-        [HideInInspector] public ReorderableList onEnterList;
-        [HideInInspector] public ReorderableList onStateList;
-        [HideInInspector] public ReorderableList onExitList;
-        [HideInInspector] public SerializedObject serializedState;
-        [HideInInspector] public List<BaseNode> dependencies = new List<BaseNode>();
+    }
+
+    [System.Serializable]
+    public class TransitionNodeReferences
+    {
+        [HideInInspector] public Condition previousCondition;
+        public int transitionId;
     }
 }

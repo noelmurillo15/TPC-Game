@@ -7,6 +7,7 @@
 using UnityEditor;
 using UnityEngine;
 using System.Linq;
+using ANM.Editor.Nodes;
 
 namespace ANM.Editor
 {
@@ -17,7 +18,7 @@ namespace ANM.Editor
         private enum UserActions
         {
             ADD_STATE,
-            ADD_TRANSITION,
+            ADD_CONDITION,
             DELETE_NODE,
             ADD_COMMENT
         }
@@ -49,6 +50,10 @@ namespace ANM.Editor
             _mousePosition = e.mousePosition;
             UserInput(e);
             DrawWindows();
+
+            if (e.type != EventType.MouseDrag) return;
+            EditorSettings.currentGraph.DeleteWindowsThatNeedTo();
+            Repaint();
         }
 
         private void DrawWindows()
@@ -58,22 +63,22 @@ namespace ANM.Editor
             EditorGUILayout.LabelField(" ", GUILayout.Width(100));
             EditorGUILayout.LabelField("Assign Graph :", GUILayout.Width(100));
 
-            EditorSettings.CurrentGraph = (BehaviourGraph) EditorGUILayout.ObjectField(
-                EditorSettings.CurrentGraph, typeof(BehaviourGraph),
+            EditorSettings.currentGraph = (BehaviourGraph) EditorGUILayout.ObjectField(
+                EditorSettings.currentGraph, typeof(BehaviourGraph),
                 false, GUILayout.Width(200));
 
-            if (EditorSettings.CurrentGraph != null)
+            if (EditorSettings.currentGraph != null)
             {
-                foreach (var node in EditorSettings.CurrentGraph.windows)
+                foreach (var node in EditorSettings.currentGraph.windows)
                 {
                     node.DrawCurve();
                 }
 
-                for (var i = 0; i < EditorSettings.CurrentGraph.windows.Count; i++)
+                for (var i = 0; i < EditorSettings.currentGraph.windows.Count; i++)
                 {
-                    EditorSettings.CurrentGraph.windows[i].windowRect = GUI.Window(i,
-                        EditorSettings.CurrentGraph.windows[i].windowRect, DrawNodeWindow,
-                        EditorSettings.CurrentGraph.windows[i].windowTitle);
+                    EditorSettings.currentGraph.windows[i].windowRect = GUI.Window(i,
+                        EditorSettings.currentGraph.windows[i].windowRect, DrawNodeWindow,
+                        EditorSettings.currentGraph.windows[i].windowTitle);
                 }
             }
 
@@ -82,13 +87,13 @@ namespace ANM.Editor
 
         private static void DrawNodeWindow(int id)
         {
-            EditorSettings.CurrentGraph.windows[id].DrawWindow();
+            EditorSettings.currentGraph.windows[id].DrawWindow();
             GUI.DragWindow();
         }
 
         private void UserInput(Event e)
         {
-            if (EditorSettings.CurrentGraph == null) return;
+            if (EditorSettings.currentGraph == null) return;
 
             switch (e.button)
             {
@@ -103,7 +108,7 @@ namespace ANM.Editor
 
         private static void LeftDrag(Event e)
         {
-            foreach (var node in EditorSettings.CurrentGraph.windows.Where(node =>
+            foreach (var node in EditorSettings.currentGraph.windows.Where(node =>
                 node.windowRect.Contains(e.mousePosition)))
             {
                 // if (CurrentGraph == null) continue;
@@ -122,12 +127,12 @@ namespace ANM.Editor
             _selectedIndex = -1;
             _clickedOnWindow = false;
 
-            for (var i = 0; i < EditorSettings.CurrentGraph.windows.Count; i++)
+            for (var i = 0; i < EditorSettings.currentGraph.windows.Count; i++)
             {
-                if (!EditorSettings.CurrentGraph.windows[i].windowRect.Contains(e.mousePosition)) continue;
+                if (!EditorSettings.currentGraph.windows[i].windowRect.Contains(e.mousePosition)) continue;
                 _selectedIndex = i;
                 _clickedOnWindow = true;
-                _selectedNode = EditorSettings.CurrentGraph.windows[i];
+                _selectedNode = EditorSettings.currentGraph.windows[i];
                 break;
             }
 
@@ -145,7 +150,7 @@ namespace ANM.Editor
         {
             var menu = new GenericMenu();
             menu.AddSeparator("");
-            if (EditorSettings.CurrentGraph != null)
+            if (EditorSettings.currentGraph != null)
             {
                 menu.AddItem(new GUIContent("Add State"),
                     false, ContextCallback, UserActions.ADD_STATE);
@@ -165,37 +170,38 @@ namespace ANM.Editor
         private void ModifyNode(Event e)
         {
             var menu = new GenericMenu();
-
-            /*if (_selectedNode is StateNode stateNode)
+            if (_selectedNode.drawNode is StateNode stateNode)
             {
-                if (stateNode.currentState != null)
+                if (_selectedNode.stateRefs.currentState != null)
                 {
                     menu.AddSeparator("");
-                    menu.AddItem(new GUIContent("Add Transition"), false,
-                        ContextCallback, UserActions.ADD_TRANSITION);
+                    menu.AddItem(new GUIContent("Add Condition"), false,
+                        ContextCallback, UserActions.ADD_CONDITION);
                 }
                 else
                 {
                     menu.AddSeparator("");
-                    menu.AddDisabledItem(new GUIContent("Add Transition"));
+                    menu.AddDisabledItem(new GUIContent("Add Condition"));
                 }
 
                 menu.AddSeparator("");
                 menu.AddItem(new GUIContent("Delete"), false,
                     ContextCallback, UserActions.DELETE_NODE);
             }
-            if (_selectedNode is TransitionNode)
+
+            if (_selectedNode.drawNode is TransitionNode)
             {
                 menu.AddSeparator("");
                 menu.AddItem(new GUIContent("Delete"), false,
                     ContextCallback, UserActions.DELETE_NODE);
             }
-            if (_selectedNode is CommentNode)
+
+            if (_selectedNode.drawNode is CommentNode)
             {
                 menu.AddSeparator("");
                 menu.AddItem(new GUIContent("Delete"), false,
                     ContextCallback, UserActions.DELETE_NODE);
-            }*/
+            }
 
             menu.ShowAsContext();
             e.Use();
@@ -207,18 +213,23 @@ namespace ANM.Editor
             switch (ua)
             {
                 case UserActions.ADD_STATE:
-                    var baseNode = new BaseNode();
-                    baseNode.windowRect.width = 200f;
-                    baseNode.windowRect.height = 100f;
-                    baseNode.windowTitle = "State Node";
-                    baseNode.drawNode = EditorSettings.stateNode;
-                    EditorSettings.CurrentGraph.windows.Add(baseNode);
+                    EditorSettings.AddNodeOnGraph(EditorSettings.stateNode,
+                        200f, 100f, "State", _mousePosition);
+                    break;
+                case UserActions.ADD_CONDITION:
+                    var transitionNode = EditorSettings.AddNodeOnGraph(EditorSettings.transitionNode,
+                        200f, 100f, "Condition", _mousePosition);
+                    transitionNode.enterNode = _selectedNode.id;
+                    var transition = EditorSettings.stateNode.AddTransition(_selectedNode);
+                    transitionNode.transRefs.transitionId = transition.id;
                     break;
                 case UserActions.ADD_COMMENT:
-                    break;
-                case UserActions.ADD_TRANSITION:
+                    var commentNode = EditorSettings.AddNodeOnGraph(EditorSettings.commentNode,
+                        180f, 60f, "Comment", _mousePosition);
+                    commentNode.comment = "This is a Comment!";
                     break;
                 case UserActions.DELETE_NODE:
+                    EditorSettings.currentGraph.DeleteNode(_selectedNode.id);
                     break;
             }
 

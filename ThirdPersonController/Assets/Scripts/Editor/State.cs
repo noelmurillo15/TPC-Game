@@ -17,6 +17,7 @@ namespace ANM.Editor
         public StateAction[] onState;
         public StateAction[] onExit;
 
+        public int idCount;
 
         public void OnEnter(BehaviourStateManager states)
         {
@@ -59,10 +60,23 @@ namespace ANM.Editor
             }
         }
 
+        public Transition GetTransition(int id)
+        {
+            for (int i = 0; i < transitions.Count; i++)
+            {
+                if (transitions[i].id == id)
+                    return transitions[i];
+            }
+
+            return null;
+        }
+
         public Transition AddTransition()
         {
             var retVal = new Transition();
             transitions.Add(retVal);
+            retVal.id = idCount;
+            idCount++;
             return retVal;
         }
     }

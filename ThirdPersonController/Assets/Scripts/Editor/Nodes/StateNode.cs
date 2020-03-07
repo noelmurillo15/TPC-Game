@@ -13,98 +13,72 @@ namespace ANM.Editor.Nodes
     [CreateAssetMenu(menuName = "BehaviourEditor/Nodes/State Node")]
     public class StateNode : DrawNode
     {
-
-        public override void DrawWindow(BaseNode node)
+        public override void DrawWindow(BaseNode b)
         {
             var standardHeight = 300f;
 
-            if (node.stateNodeRefs.currentState == null)
+            if (b.stateRefs.currentState == null)
             {
                 EditorGUILayout.LabelField("Add State to Modify:");
             }
             else
             {
-                node.windowRect.height = !node.stateNodeRefs.collapse ? standardHeight : 100;
-                node.stateNodeRefs.collapse = EditorGUILayout.Toggle(" ", node.stateNodeRefs.collapse);
+                b.windowRect.height = b.collapse ? 100 : standardHeight;
+                b.collapse = EditorGUILayout.Toggle("Collapse Window: ", b.collapse);
             }
 
-            node.stateNodeRefs.currentState = (State) EditorGUILayout.ObjectField(
-                node.stateNodeRefs.currentState, typeof(State), false);
+            b.stateRefs.currentState = (State) EditorGUILayout.ObjectField(
+                b.stateRefs.currentState, typeof(State), false);
 
-            if (node.stateNodeRefs.previousCollapse != node.stateNodeRefs.collapse)
+            if (b.previousCollapse != b.collapse)
             {
-                node.stateNodeRefs.previousCollapse = node.stateNodeRefs.collapse;
-                //BehaviourEditor.CurrentGraph.SetStateNode(this);
+                b.previousCollapse = b.collapse;
             }
 
-            if (node.stateNodeRefs.previousState != node.stateNodeRefs.currentState)
+            if (b.stateRefs.previousState != b.stateRefs.currentState)
             {
-                node.stateNodeRefs.isDuplicate = BehaviourEditor.EditorSettings.CurrentGraph.IsStateNodeDuplicate(this);
-                node.stateNodeRefs.serializedState = null;
-                if (!node.stateNodeRefs.isDuplicate)
-                {
-                    //BehaviourEditor.CurrentGraph.SetNode(this);
-                    node.stateNodeRefs.previousState = node.stateNodeRefs.currentState;
-                    for (int i = 0; i < node.stateNodeRefs.currentState.transitions.Count; i++)
-                    {
-
-                    }
-                }
+                b.isDuplicate = BehaviourEditor.EditorSettings.currentGraph.IsStateDuplicate(b);
             }
 
-            if (node.stateNodeRefs.isDuplicate)
+            if (b.isDuplicate)
             {
                 EditorGUILayout.LabelField("State is a duplicate!");
-                node.windowRect.height = 100;
+                b.windowRect.height = 80;
                 return;
             }
 
-            if (node.stateNodeRefs.currentState == null) return;
+            if (b.stateRefs.currentState == null) return;
 
-            if (node.stateNodeRefs.serializedState == null)
-            {
-                node.stateNodeRefs.serializedState = new SerializedObject(node.stateNodeRefs.currentState);
+            var serializedState = new SerializedObject(b.stateRefs.currentState);
 
-                node.stateNodeRefs.onEnterList = new ReorderableList(node.stateNodeRefs.serializedState,
-                    node.stateNodeRefs.serializedState.FindProperty("onEnter"),
-                    true, true, true, true);
+            var onEnterList = new ReorderableList(serializedState, serializedState.FindProperty("onEnter"),
+                true, true, true, true);
 
-                node.stateNodeRefs.onStateList = new ReorderableList(node.stateNodeRefs.serializedState,
-                    node.stateNodeRefs.serializedState.FindProperty("onState"),
-                    true, true, true, true);
+            var onStateList = new ReorderableList(serializedState, serializedState.FindProperty("onState"),
+                true, true, true, true);
 
-                node.stateNodeRefs.onExitList = new ReorderableList(node.stateNodeRefs.serializedState,
-                    node.stateNodeRefs.serializedState.FindProperty("onExit"),
-                    true, true, true, true);
-            }
+            var onExitList = new ReorderableList(serializedState, serializedState.FindProperty("onExit"),
+                true, true, true, true);
 
-            if (node.stateNodeRefs.collapse) return;
-            node.stateNodeRefs.serializedState.Update();
+            if (b.collapse) return;
+            serializedState.Update();
 
-            HandleReorderableList(node.stateNodeRefs.onEnterList, "On Enter");
-            HandleReorderableList(node.stateNodeRefs.onStateList, "On State");
-            HandleReorderableList(node.stateNodeRefs.onExitList, "On Exit");
+            HandleReorderableList(onEnterList, "On Enter");
+            HandleReorderableList(onStateList, "On State");
+            HandleReorderableList(onExitList, "On Exit");
 
             EditorGUILayout.LabelField("");
-            node.stateNodeRefs.onEnterList.DoLayoutList();
-            node.stateNodeRefs.onStateList.DoLayoutList();
-            node.stateNodeRefs.onExitList.DoLayoutList();
-            node.stateNodeRefs.serializedState.ApplyModifiedProperties();
+            onEnterList.DoLayoutList();
+            onStateList.DoLayoutList();
+            onExitList.DoLayoutList();
 
-            var listCount = node.stateNodeRefs.onEnterList.count
-                            + node.stateNodeRefs.onStateList.count
-                            + node.stateNodeRefs.onExitList.count;
+            serializedState.ApplyModifiedProperties();
+            var listCount = onEnterList.count + onStateList.count + onExitList.count;
 
             if (listCount < 4) return;
             standardHeight += (listCount - 3) * 20f;
-            node.windowRect.height = standardHeight;
+            b.windowRect.height = standardHeight;
         }
-
-        public override void DrawCurve(BaseNode node)
-        {
-
-        }
-
 
         private static void HandleReorderableList(ReorderableList list, string targetName)
         {
@@ -117,9 +91,14 @@ namespace ANM.Editor.Nodes
             };
         }
 
-        public Transition AddTransition()
+        public override void DrawCurve(BaseNode node)
         {
-            return null; //node.currentState.AddTransition();
+
+        }
+
+        public Transition AddTransition(BaseNode node)
+        {
+            return node.stateRefs.currentState.AddTransition();
         }
 
         public void ClearReferences()

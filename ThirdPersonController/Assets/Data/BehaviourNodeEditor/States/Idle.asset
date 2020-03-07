@@ -19,3 +19,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 67e69fc797b6cbf47b9e6da67aedf10d, type: 2}
   onExit:
   - {fileID: 11400000, guid: 67e69fc797b6cbf47b9e6da67aedf10d, type: 2}
+  idCount: 3
