@@ -92,7 +92,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1727224133610770220}
+  - component: {fileID: 8921318528675508127}
   - component: {fileID: 2083339066045613658}
+  - component: {fileID: 4510988951190541083}
   - component: {fileID: 2425672935377233848}
   - component: {fileID: 9173560910411685929}
   m_Layer: 0
@@ -117,6 +119,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8921318528675508127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2467878494100681796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3845dd2208a95614ca4edb88d30baa8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  updateActions:
+  - {fileID: 11400000, guid: f486f63463101f54389a924e130451e8, type: 2}
 --- !u!114 &2083339066045613658
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,6 +160,19 @@ MonoBehaviour:
   tiltAngle: 0
   myPivot: {fileID: 0}
   myCameraTransform: {fileID: 0}
+--- !u!114 &4510988951190541083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2467878494100681796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 382be624fcd647ab9725dc73522cb0f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetVariable: {fileID: 11400000, guid: 62ee014dd734f5040a35986cd00787ce, type: 2}
 --- !u!114 &2425672935377233848
 MonoBehaviour:
   m_ObjectHideFlags: 0

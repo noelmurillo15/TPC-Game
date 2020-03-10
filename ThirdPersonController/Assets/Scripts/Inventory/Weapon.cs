@@ -7,8 +7,8 @@
 using ANM.Input;
 using System.Linq;
 using UnityEngine;
-using ANM.Scriptable;
-using ANM.Framework.Variables;
+using ANM.Scriptables.Variables;
+using Actions = ANM.Scriptables.Action;
 
 namespace ANM.Inventory
 {
@@ -32,7 +32,7 @@ namespace ANM.Inventory
             return actions.FirstOrDefault(t => t.input == input);
         }
 
-        public Action GetAction(InputType input)
+        public Actions GetAction(InputType input)
         {
             var ah = GetActionHolder(input);
             return ah?.action;
@@ -43,6 +43,6 @@ namespace ANM.Inventory
     public class ActionHolder
     {
         public InputType input;
-        public Action action;
+        public Actions action;
     }
 }

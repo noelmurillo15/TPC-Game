@@ -5,9 +5,9 @@
  */
 
 using UnityEngine;
-using ANM.Framework.Variables;
+using ANM.Scriptables.Variables;
 
-namespace ANM.Scriptable
+namespace ANM.Scriptables
 {
     public class SpellAction : ScriptableObject
     {

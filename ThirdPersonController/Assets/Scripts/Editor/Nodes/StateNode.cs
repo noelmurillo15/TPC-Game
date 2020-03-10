@@ -20,7 +20,7 @@ namespace ANM.Editor.Nodes
 
         public override void DrawWindow(BaseNode node)
         {
-            var expandHeight = 365f;
+            var expandHeight = 420f;
 
             if (node.stateRefs.currentState == null)
             {
@@ -93,8 +93,8 @@ namespace ANM.Editor.Nodes
                             + node.stateRefs.onFixedList.count
                             + node.stateRefs.onExitList.count;
 
-            if (listCount < 5) return;
-            expandHeight += (listCount - 4) * 20f;
+            if (listCount < 4) return;
+            expandHeight += (listCount - 3) * 20f;
             node.windowRect.height = expandHeight;
         }
 

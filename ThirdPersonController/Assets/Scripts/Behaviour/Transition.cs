@@ -1,10 +1,8 @@
 ﻿/*
  * Transition -
  * Created by : Allan N. Murillo
- * Last Edited : 3/6/2020
+ * Last Edited : 3/10/2020
  */
-
-using ANM.Behaviour.Conditions;
 
 namespace ANM.Behaviour
 {

@@ -8,9 +8,9 @@ using UnityEngine;
 using ANM.Managers;
 using ANM.Framework.Managers;
 using UnityEngine.InputSystem;
-using ANM.Framework.Variables;
 using ANM.Framework.Extensions;
 using System.Collections.Generic;
+using ANM.Scriptables.Variables;
 
 namespace ANM.Input
 {
@@ -75,8 +75,8 @@ namespace ANM.Input
             }
 
             _controls.Disable();
-            _controls.CharacterInput.Movement.performed += context =>
-                _moveDirection = context.ReadValue<Vector2>();
+            // _controls.CharacterInput.Movement.performed += context =>
+            //     _moveDirection = context.ReadValue<Vector2>();
 
             _controls.CharacterInput.CameraRotation.performed += context =>
                 _lookRotation = context.ReadValue<Vector2>();
@@ -105,7 +105,7 @@ namespace ANM.Input
             {
                 case GamePhase.IN_GAME:
                     ApplyInput();
-                    stateManager.Tick(_delta);
+                    //stateManager.Tick(_delta);
                     break;
                 case GamePhase.IN_INVENTORY:
                     break;
@@ -123,7 +123,7 @@ namespace ANM.Input
             {
                 case GamePhase.IN_GAME:
                     ApplyFixedInput();
-                    stateManager.Fixed_Tick(_delta);
+                    //stateManager.Fixed_Tick(_delta);
                     cameraManager.Fixed_Tick(_delta, _lookRotation.x, _lookRotation.y);
                     break;
                 case GamePhase.IN_INVENTORY:

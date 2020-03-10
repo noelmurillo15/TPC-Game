@@ -6,7 +6,7 @@
 
 using UnityEngine;
 
-namespace ANM.Scriptable
+namespace ANM.Scriptables
 {
     [CreateAssetMenu(menuName = "Single Instances/ControllerStats")]
     public class ControllerStats : ScriptableObject

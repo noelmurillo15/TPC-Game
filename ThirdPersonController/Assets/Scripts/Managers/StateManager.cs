@@ -1,7 +1,7 @@
 ﻿﻿/*
  * StateManager - 
  * Created by : Allan N. Murillo
- * Last Edited : 3/4/2020
+ * Last Edited : 3/10/2020
  */
 
 using System;
@@ -12,12 +12,15 @@ using System.Linq;
 using ANM.Behaviour;
 using ANM.Inventory;
 using ANM.Utilities;
-using ANM.Scriptable;
+using ANM.Scriptables;
+using Actions = ANM.Scriptables.Action;
 
  namespace ANM.Managers
  {
      public class StateManager : MonoBehaviour
      {
+         public State currentState;
+         
          public enum CharacterState
          {
              MOVING,
@@ -26,8 +29,7 @@ using ANM.Scriptable;
              OVERRIDE_INTERACTING,
              ROLL
          }
-
-         public State currentState;
+         
          public CharacterState characterState; //  Current State 
          public ControllerStats controlStats; //  Movement Info
 
@@ -66,7 +68,17 @@ using ANM.Scriptable;
 
          private void Start()
          {
-             //  TODO : remove this for enemy
+             myTransform = transform;
+             myRigidbody = GetComponent<Rigidbody>();//  This will fail if no animator is attached
+             if (activeModel == null)
+             {
+                 //  If designer forgets to attach the active Model ~ this will find the model via Animator
+                 myAnimator = GetComponentInChildren<Animator>();
+                 activeModel = myAnimator.gameObject;
+             }
+             if (myAnimator == null) //  If animator has not been found, find via ActiveModel
+                 myAnimator = activeModel.GetComponent<Animator>();
+             
              if (forceInit)
              {
                  Initialize();
@@ -82,8 +94,7 @@ using ANM.Scriptable;
 
              SetupAnimator();
              SetupRigidBody();
-
-             myTransform = transform;
+             
              myCollider = GetComponent<Collider>();
 
              //  Layer masks
@@ -97,31 +108,19 @@ using ANM.Scriptable;
 
          private void SetupAnimator()
          {
-             //  This will fail if no animator is attached
-             if (activeModel == null)
-             {
-                 //  If designer forgets to attach the active Model ~ this will find the model via Animator
-                 myAnimator = GetComponentInChildren<Animator>();
-                 activeModel = myAnimator.gameObject;
-             }
+             if (myAnimator == null) return;
+             //  If animator was Ultimately found
+             myAnimator.applyRootMotion = false;
+             myAnimator.GetBoneTransform(HumanBodyBones.LeftHand).localScale = Vector3.one;
+             myAnimator.GetBoneTransform(HumanBodyBones.RightHand).localScale = Vector3.one;
 
-             if (myAnimator == null) //  If animator has not been found, find via ActiveModel
-                 myAnimator = activeModel.GetComponent<Animator>();
-             else
-             {
-                 //  If animator was Ultimately found
-                 myAnimator.applyRootMotion = false;
-                 myAnimator.GetBoneTransform(HumanBodyBones.LeftHand).localScale = Vector3.one;
-                 myAnimator.GetBoneTransform(HumanBodyBones.RightHand).localScale = Vector3.one;
-
-                 animatorHook = activeModel.AddComponent<AnimatorHook>();
-                 animatorHook.Init(this, forceInit);
-             }
+             animatorHook = activeModel.AddComponent<AnimatorHook>();
+             animatorHook.Init(this, forceInit);
          }
 
          private void SetupRigidBody()
          {
-             myRigidbody = GetComponent<Rigidbody>();
+             
              myRigidbody.angularDrag = 999;
              myRigidbody.drag = 4;
              myRigidbody.constraints = RigidbodyConstraints.FreezeRotationX |
@@ -240,16 +239,27 @@ using ANM.Scriptable;
              rw.weaponInstance.SetActive(true); //  Activate Weapon
          }
 
-         private void Update()
-         {
-             if (forceInit)
+         private void FixedUpdate()
+         {    //    Fixed Update runs before Update
+             deltaTime = Time.deltaTime;
+             if (currentState != null)
              {
-                 //  TODO : enemies wont properly animate without this here
-                 Tick(Time.deltaTime);
+                 currentState.FixedTick(this);
              }
          }
+         
+         private void Update()
+         {
+             deltaTime = Time.deltaTime;
+             if (currentState != null)
+             {
+                 currentState.Tick(this);
+             }         
+         }
 
-         public void Tick(float d)
+         
+
+         /*public void Tick(float d)
          {
              deltaTime = d;
              states.onGround = OnGroundCheck();
@@ -335,7 +345,7 @@ using ANM.Scriptable;
                  case CharacterState.ON_AIR:
                      break;
              }
-         }
+         }*/
 
          private bool OnGroundCheck()
          {
@@ -698,7 +708,7 @@ using ANM.Scriptable;
          public class ActionContainer
          {
              public InputType inputType;
-             public Scriptable.Action action;
+             public Actions action;
              public bool isMirrored;
          }
      }

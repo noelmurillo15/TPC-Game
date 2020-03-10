@@ -51,11 +51,13 @@ namespace ANM.Editor
         {
             var editor = GetWindow<BehaviourEditor>();
             editor.minSize = new Vector2(960, 600);
+            editor.titleContent.text = "Behaviour Editor";
+            editor.titleContent.tooltip = "Used to visually script behaviour patterns using nodes";
         }
 
         private void OnEnable()
         {
-            EditorSettings = Resources.Load("EditorSettings") as EditorSettings;
+            EditorSettings = Resources.Load("BehaviourEditorSettings") as EditorSettings;
             _activeStyle = EditorSettings?.activeSkin.GetStyle("window");
             if (_activeStyle == null) return;
             _activeStyle.onNormal.textColor = Color.cyan;

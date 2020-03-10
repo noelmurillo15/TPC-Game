@@ -4,12 +4,12 @@
  * Last Edited : 2/24/2020
  */
 
-using ANM.Framework.Variables;
+using ANM.Scriptables.Variables;
 using UnityEngine;
 
-namespace ANM.Scriptable
+namespace ANM.Scriptables
 {
-    [CreateAssetMenu(menuName = "Actions/AttackAction")]
+    [CreateAssetMenu(menuName = "Attack Action/Attack")]
     public class AttackAction : ScriptableObject
     {
         //  Holds Static String Animation Name and other info

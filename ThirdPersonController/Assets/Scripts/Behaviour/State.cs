@@ -1,12 +1,12 @@
 ﻿/*
- * State SO -
+ * State -
  * Created by : Allan N. Murillo
  * Last Edited : 3/10/2020
  */
 
 using UnityEngine;
 using System.Linq;
-using ANM.Behaviour.StateActions;
+using ANM.Managers;
 using System.Collections.Generic;
 
 namespace ANM.Behaviour
@@ -21,28 +21,29 @@ namespace ANM.Behaviour
         public StateAction[] onExit;
         public int idCount;
 
-        public void OnEnter(BehaviourStateManager states)
+        public void OnEnter(StateManager states)
         {
             ExecuteActions(states, onEnter);
         }
+        
+        public void FixedTick(StateManager states)
+        {
+            ExecuteActions(states, onFixed);
+            CheckTransitions(states);
+        }
 
-        public void Tick(BehaviourStateManager states)
+        public void Tick(StateManager states)
         {
             ExecuteActions(states, onUpdate);
             CheckTransitions(states);
         }
 
-        public void FixedTick(BehaviourStateManager states)
-        {
-            ExecuteActions(states, onFixed);
-        }
-
-        public void OnExit(BehaviourStateManager states)
+        public void OnExit(StateManager states)
         {
             ExecuteActions(states, onExit);
         }
 
-        private static void ExecuteActions(BehaviourStateManager states, IEnumerable<StateAction> actions)
+        private static void ExecuteActions(StateManager states, IEnumerable<StateAction> actions)
         {
             foreach (var a in actions)
             {
@@ -53,7 +54,7 @@ namespace ANM.Behaviour
             }
         }
 
-        private void CheckTransitions(BehaviourStateManager states)
+        private void CheckTransitions(StateManager states)
         {
             foreach (var transition in from t in transitions
                 where !t.disable

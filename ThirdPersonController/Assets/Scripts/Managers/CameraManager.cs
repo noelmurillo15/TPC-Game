@@ -5,7 +5,7 @@
  */
 
 using UnityEngine;
-using ANM.Framework.Variables;
+using ANM.Scriptables.Variables;
 
 namespace ANM.Managers
 {

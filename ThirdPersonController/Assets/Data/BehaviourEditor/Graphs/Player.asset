@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad15ac94e37285d48bd860bafb2eba99, type: 3}
+  m_Name: Player
+  m_EditorClassIdentifier: 
+  windows:
+  - id: 0
+    drawNode: {fileID: 11400000, guid: 388631ea7e06a6943a600228334ee98d, type: 2}
+    windowRect:
+      serializedVersion: 2
+      x: 35
+      y: 94
+      width: 200
+      height: 460
+    windowTitle: State
+    enterNode: 0
+    targetNode: 0
+    isDuplicate: 0
+    isAssigned: 1
+    comment: 
+    collapse: 0
+    previousCollapse: 0
+    stateRefs:
+      currentState: {fileID: 11400000, guid: 5acccbc7dc6f75549b1bd1b80ec20ecf, type: 2}
+      previousState: {fileID: 11400000, guid: 5acccbc7dc6f75549b1bd1b80ec20ecf, type: 2}
+    transRefs:
+      previousCondition: {fileID: 0}
+      transitionId: 0
+  - id: 1
+    drawNode: {fileID: 11400000, guid: 388631ea7e06a6943a600228334ee98d, type: 2}
+    windowRect:
+      serializedVersion: 2
+      x: 445
+      y: 102
+      width: 200
+      height: 420
+    windowTitle: State
+    enterNode: 0
+    targetNode: 0
+    isDuplicate: 0
+    isAssigned: 1
+    comment: 
+    collapse: 0
+    previousCollapse: 0
+    stateRefs:
+      currentState: {fileID: 11400000, guid: 5062069eb3e4774469f9b01af5a824fd, type: 2}
+      previousState: {fileID: 11400000, guid: 5062069eb3e4774469f9b01af5a824fd, type: 2}
+    transRefs:
+      previousCondition: {fileID: 0}
+      transitionId: 0
+  idCount: 2
