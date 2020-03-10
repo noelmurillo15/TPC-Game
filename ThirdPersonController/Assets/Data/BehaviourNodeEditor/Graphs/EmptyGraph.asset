@@ -17,8 +17,8 @@ MonoBehaviour:
     drawNode: {fileID: 11400000, guid: 81058f33b7229a748ba8c980a8ff7f31, type: 2}
     windowRect:
       serializedVersion: 2
-      x: 415
-      y: 52
+      x: 345
+      y: 148
       width: 200
       height: 90
     windowTitle: Comment
@@ -26,7 +26,7 @@ MonoBehaviour:
     targetNode: 0
     isDuplicate: 0
     isAssigned: 0
-    comment: "\n       This is an Empty Graph !\n\n"
+    comment: "\n   This is an Empty Graph !\n\n"
     collapse: 0
     previousCollapse: 0
     stateRefs:

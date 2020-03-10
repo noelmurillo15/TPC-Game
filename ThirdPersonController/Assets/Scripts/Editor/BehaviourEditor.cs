@@ -1,7 +1,7 @@
 ﻿/*
  * BehaviourEditor - Custom Unity Editor Window for Behaviour Node Graph creation/editing
  * Created by : Allan N. Murillo
- * Last Edited : 3/7/2020
+ * Last Edited : 3/10/2020
  */
 
 using UnityEditor;
@@ -24,18 +24,24 @@ namespace ANM.Editor
             DELETE_NODE,
             ADD_COMMENT,
             MAKE_TRANSITION,
-            ADD_PORTAL
+            ADD_PORTAL,
+            RESET_PANNING
         }
 
         private BaseNode _selectedNode;
         private Vector3 _mousePosition;
+        private Vector2 _scrollPosition;
+        private Vector2 _scrollStartPosition;
         private bool _clickedOnWindow;
         private int _transitFromId;
         private Rect _mouseRect = new Rect(0, 0, 1, 1);
 
         private GUIStyle _activeStyle;
         private GUIStyle _defaultStyle;
-        
+
+        private static State _prevState;
+        public static bool ForceSetDirty;
+
         private static StateManager _stateManager;
         private static StateManager _prevStateManager;
 
@@ -64,7 +70,7 @@ namespace ANM.Editor
             {
                 padding = new RectOffset(8, 8, 24, 4),
             };
-            
+
             if (Selection.activeTransform != null)
             {
                 _stateManager = Selection.activeTransform.GetComponentInChildren<StateManager>();
@@ -89,12 +95,27 @@ namespace ANM.Editor
                 }
             }
 
-            if (!EditorSettings.makeTransition) return;
-            _mouseRect.x = _mousePosition.x;
-            _mouseRect.y = _mousePosition.y;
-            var from = EditorSettings.currentGraph.GetNodeWithIndex(_transitFromId).windowRect;
-            DrawNodeCurve(from, _mouseRect, true, Color.yellow);
-            Repaint();
+            if (EditorSettings.makeTransition)
+            {
+                _mouseRect.x = _mousePosition.x;
+                _mouseRect.y = _mousePosition.y;
+                var from = EditorSettings.currentGraph.GetNodeWithIndex(_transitFromId).windowRect;
+                DrawNodeCurve(from, _mouseRect, true, Color.yellow);
+                Repaint();
+            }
+
+            if (!ForceSetDirty) return;
+            EditorUtility.SetDirty(EditorSettings);
+            EditorUtility.SetDirty(EditorSettings.currentGraph);
+
+            for (var i = 0; i < EditorSettings.currentGraph.windows.Count; i++)
+            {
+                var node = EditorSettings.currentGraph.windows[i];
+                if (node.stateRefs.currentState != null)
+                    EditorUtility.SetDirty(node.stateRefs.currentState);
+            }
+
+            ForceSetDirty = false;
         }
 
         private void DrawWindows()
@@ -110,7 +131,10 @@ namespace ANM.Editor
 
             if (EditorSettings.currentGraph != null)
             {
-                foreach (var node in EditorSettings.currentGraph.windows) { node.DrawCurve(); }
+                foreach (var node in EditorSettings.currentGraph.windows)
+                {
+                    node.DrawCurve();
+                }
 
                 for (var i = 0; i < EditorSettings.currentGraph.windows.Count; i++)
                 {
@@ -146,26 +170,62 @@ namespace ANM.Editor
             switch (e.button)
             {
                 case 1 when !EditorSettings.makeTransition:
-                {
                     if (e.type == EventType.MouseDown) RightClick(e);
                     break;
-                }
+
                 case 0 when !EditorSettings.makeTransition:
-                {
                     if (e.type == EventType.MouseDown) LeftClick(e);
                     break;
-                }
+
                 case 0 when EditorSettings.makeTransition:
-                {
                     if (e.type == EventType.MouseDown) MakeTransition();
                     break;
-                }
+
+                case 2:
+                    MiddleClick(e);
+                    break;
             }
         }
 
         private void LeftClick(Event e)
         {
 
+        }
+
+        private void MiddleClick(Event e)
+        {
+            if (e.type == EventType.MouseDown)
+                _scrollStartPosition = e.mousePosition;
+            else if (e.type == EventType.MouseDrag)
+                HandlePanning(e);
+        }
+
+        private void HandlePanning(Event e)
+        {
+            Vector2 diff = e.mousePosition - _scrollStartPosition;
+            diff *= 0.6f;
+
+            _scrollStartPosition = e.mousePosition;
+            _scrollPosition += diff;
+
+            for (var i = 0; i < EditorSettings.currentGraph.windows.Count; i++)
+            {
+                BaseNode node = EditorSettings.currentGraph.windows[i];
+                node.windowRect.x += diff.x;
+                node.windowRect.y += diff.y;
+            }
+        }
+
+        private void ResetPanning()
+        {
+            for (var i = 0; i < EditorSettings.currentGraph.windows.Count; i++)
+            {
+                BaseNode node = EditorSettings.currentGraph.windows[i];
+                node.windowRect.x -= _scrollPosition.x;
+                node.windowRect.y -= _scrollPosition.y;
+            }
+
+            _scrollPosition = Vector2.zero;
         }
 
         private void RightClick(Event e)
@@ -227,6 +287,8 @@ namespace ANM.Editor
                     false, ContextCallback, UserActions.ADD_PORTAL);
                 menu.AddItem(new GUIContent("Add Comment"),
                     false, ContextCallback, UserActions.ADD_COMMENT);
+                menu.AddItem(new GUIContent("Reset Panning"),
+                    false, ContextCallback, UserActions.RESET_PANNING);
             }
             else
             {
@@ -305,17 +367,21 @@ namespace ANM.Editor
                     EditorSettings.AddNodeOnGraph(EditorSettings.stateNode,
                         200f, 80f, "State", _mousePosition);
                     break;
+
                 case UserActions.ADD_CONDITION:
                     AddTransition(_selectedNode, _mousePosition);
                     break;
+
                 case UserActions.ADD_PORTAL:
                     EditorSettings.AddNodeOnGraph(EditorSettings.portalNode,
                         200f, 50f, "Portal", _mousePosition);
                     break;
+
                 case UserActions.ADD_COMMENT:
                     EditorSettings.AddNodeOnGraph(EditorSettings.commentNode,
                         200f, 90f, "Comment", _mousePosition);
                     break;
+
                 case UserActions.MAKE_TRANSITION:
                     _transitFromId = _selectedNode.id;
                     EditorSettings.makeTransition = true;
@@ -330,9 +396,13 @@ namespace ANM.Editor
 
                     EditorSettings.currentGraph.DeleteNode(_selectedNode.id);
                     break;
+
+                case UserActions.RESET_PANNING:
+                    ResetPanning();
+                    break;
             }
 
-            EditorUtility.SetDirty(EditorSettings);
+            ForceSetDirty = true;
         }
 
         #endregion
@@ -364,7 +434,7 @@ namespace ANM.Editor
             var tNode = EditorSettings.AddNodeOnGraph(EditorSettings.transitionNode,
                 200, 86, "Condition", pos);
             tNode.enterNode = enterNode.id;
-            var transition = EditorSettings.stateNode.AddTransition(enterNode);
+            var transition = StateNode.AddTransition(enterNode);
             tNode.transRefs.transitionId = transition.id;
             return tNode;
         }
@@ -377,6 +447,7 @@ namespace ANM.Editor
             tNode.enterNode = enterNode.id;
             return tNode;
         }
+
         #endregion
     }
 }

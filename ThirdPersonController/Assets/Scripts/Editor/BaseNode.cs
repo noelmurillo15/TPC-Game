@@ -1,7 +1,7 @@
 ﻿/*
  * BaseNode -
  * Created by : Allan N. Murillo
- * Last Edited : 3/7/2020
+ * Last Edited : 3/10/2020
  */
 
 using UnityEngine;
@@ -59,7 +59,8 @@ namespace ANM.Editor
         [HideInInspector] public State previousState;
         public SerializedObject serializedState;
         public ReorderableList onEnterList;
-        public ReorderableList onStateList;
+        public ReorderableList onUpdateList;
+        public ReorderableList onFixedList;
         public ReorderableList onExitList;
     }
 

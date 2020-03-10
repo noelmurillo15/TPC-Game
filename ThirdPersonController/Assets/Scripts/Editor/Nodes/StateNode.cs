@@ -1,7 +1,7 @@
 ﻿/*
  * StateNode SO -
  * Created by : Allan N. Murillo
- * Last Edited : 3/7/2020
+ * Last Edited : 3/10/2020
  */
 
 using UnityEditor;
@@ -20,16 +20,16 @@ namespace ANM.Editor.Nodes
 
         public override void DrawWindow(BaseNode node)
         {
-            var expandHeight = 300f;
+            var expandHeight = 365f;
 
             if (node.stateRefs.currentState == null)
             {
-                EditorGUILayout.LabelField("\tAdd State to Modify:");
+                EditorGUILayout.LabelField("Add State to Modify:");
             }
             else
             {
                 node.windowRect.height = node.collapse ? CollapseHeight : expandHeight;
-                node.collapse = EditorGUILayout.Toggle("\tCollapse Window: ", node.collapse);
+                node.collapse = EditorGUILayout.Toggle("Collapse Window: ", node.collapse);
             }
 
             node.stateRefs.currentState = (State) EditorGUILayout.ObjectField(
@@ -57,11 +57,13 @@ namespace ANM.Editor.Nodes
                             node.stateRefs.currentState.transitions[i], node, pos);
                     }
                 }
+
+                BehaviourEditor.ForceSetDirty = true;
             }
 
             if (node.isDuplicate)
             {
-                EditorGUILayout.LabelField("\tState is a duplicate!");
+                EditorGUILayout.LabelField("State is a duplicate!");
                 node.windowRect.height = 80;
                 return;
             }
@@ -81,16 +83,18 @@ namespace ANM.Editor.Nodes
 
             EditorGUILayout.LabelField(" ");
             node.stateRefs.onEnterList.DoLayoutList();
-            node.stateRefs.onStateList.DoLayoutList();
+            node.stateRefs.onUpdateList.DoLayoutList();
+            node.stateRefs.onFixedList.DoLayoutList();
             node.stateRefs.onExitList.DoLayoutList();
 
             node.stateRefs.serializedState?.ApplyModifiedProperties();
             var listCount = node.stateRefs.onEnterList.count
-                            + node.stateRefs.onStateList.count
+                            + node.stateRefs.onUpdateList.count
+                            + node.stateRefs.onFixedList.count
                             + node.stateRefs.onExitList.count;
 
-            if (listCount < 4) return;
-            expandHeight += (listCount - 3) * 20f;
+            if (listCount < 5) return;
+            expandHeight += (listCount - 4) * 20f;
             node.windowRect.height = expandHeight;
         }
 
@@ -102,8 +106,12 @@ namespace ANM.Editor.Nodes
                 node.stateRefs.serializedState.FindProperty("onEnter"),
                 true, true, true, true);
 
-            node.stateRefs.onStateList = new ReorderableList(node.stateRefs.serializedState,
-                node.stateRefs.serializedState.FindProperty("onState"),
+            node.stateRefs.onUpdateList = new ReorderableList(node.stateRefs.serializedState,
+                node.stateRefs.serializedState.FindProperty("onUpdate"),
+                true, true, true, true);
+
+            node.stateRefs.onFixedList = new ReorderableList(node.stateRefs.serializedState,
+                node.stateRefs.serializedState.FindProperty("onFixed"),
                 true, true, true, true);
 
             node.stateRefs.onExitList = new ReorderableList(node.stateRefs.serializedState,
@@ -111,7 +119,8 @@ namespace ANM.Editor.Nodes
                 true, true, true, true);
 
             HandleReorderableList(node.stateRefs.onEnterList, "On Enter");
-            HandleReorderableList(node.stateRefs.onStateList, "On State");
+            HandleReorderableList(node.stateRefs.onUpdateList, "On Update");
+            HandleReorderableList(node.stateRefs.onFixedList, "On Fixed");
             HandleReorderableList(node.stateRefs.onExitList, "On Exit");
         }
 
@@ -131,15 +140,9 @@ namespace ANM.Editor.Nodes
 
         }
 
-        public Transition AddTransition(BaseNode node)
+        public static Transition AddTransition(BaseNode node)
         {
             return node.stateRefs.currentState.AddTransition();
-        }
-
-        public void ClearReferences()
-        {
-            //BehaviourEditor.ClearWindowsFromList(dependencies);
-            //dependencies?.Clear();
         }
     }
 }

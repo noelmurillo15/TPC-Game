@@ -18,6 +18,7 @@ MonoBehaviour:
     targetState: {fileID: 11400000, guid: 1ae05750309dc004aada6fcfda692ce4, type: 2}
     disable: 0
   onEnter: []
-  onState: []
+  onUpdate: []
+  onFixed: []
   onExit: []
   idCount: 1

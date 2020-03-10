@@ -1,7 +1,7 @@
 ﻿/*
  * State SO -
  * Created by : Allan N. Murillo
- * Last Edited : 3/7/2020
+ * Last Edited : 3/10/2020
  */
 
 using UnityEngine;
@@ -16,9 +16,9 @@ namespace ANM.Behaviour
     {
         public List<Transition> transitions = new List<Transition>();
         public StateAction[] onEnter;
-        public StateAction[] onState;
+        public StateAction[] onUpdate;
+        public StateAction[] onFixed;
         public StateAction[] onExit;
-
         public int idCount;
 
         public void OnEnter(BehaviourStateManager states)
@@ -28,8 +28,13 @@ namespace ANM.Behaviour
 
         public void Tick(BehaviourStateManager states)
         {
-            ExecuteActions(states, onState);
+            ExecuteActions(states, onUpdate);
             CheckTransitions(states);
+        }
+
+        public void FixedTick(BehaviourStateManager states)
+        {
+            ExecuteActions(states, onFixed);
         }
 
         public void OnExit(BehaviourStateManager states)
@@ -50,9 +55,11 @@ namespace ANM.Behaviour
 
         private void CheckTransitions(BehaviourStateManager states)
         {
-            foreach (var transition in from t in transitions 
-                where !t.disable where t.targetState != null 
-                where t.condition.CheckCondition(states) select t)
+            foreach (var transition in from t in transitions
+                where !t.disable
+                where t.targetState != null
+                where t.condition.CheckCondition(states)
+                select t)
             {
                 states.currentState = transition.targetState;
                 OnExit(states);

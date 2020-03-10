@@ -1,7 +1,7 @@
 ﻿/*
  * TransitionNode SO -
  * Created by : Allan N. Murillo
- * Last Edited : 3/7/2020
+ * Last Edited : 3/10/2020
  */
 
 using UnityEditor;
@@ -40,14 +40,14 @@ namespace ANM.Editor.Nodes
 
             if (transition.condition == null)
             {
-                EditorGUILayout.LabelField("\tNo Condition!");
+                EditorGUILayout.LabelField("No Condition!");
                 node.isAssigned = false;
             }
             else
             {
                 node.isAssigned = true;
                 if (node.isDuplicate)
-                    EditorGUILayout.LabelField("\tDuplicate Condition!");
+                    EditorGUILayout.LabelField("Duplicate Condition!");
                 else
                 {
                     var tNode = BehaviourEditor.EditorSettings.currentGraph.GetNodeWithIndex(node.targetNode);
@@ -61,15 +61,11 @@ namespace ANM.Editor.Nodes
                 }
             }
 
-            if (node.transRefs.previousCondition != transition.condition)
-            {
-                node.transRefs.previousCondition = transition.condition;
-                node.isDuplicate = BehaviourEditor.EditorSettings.currentGraph.IsTransitionDuplicate(node);
-                if (!node.isDuplicate)
-                {
-                    //BehaviourEditor.CurrentGraph.SetNode(this);
-                }
-            }
+            if (node.transRefs.previousCondition == transition.condition) return;
+            node.transRefs.previousCondition = transition.condition;
+            node.isDuplicate = BehaviourEditor.EditorSettings.currentGraph.IsTransitionDuplicate(node);
+            if (!node.isDuplicate)
+                BehaviourEditor.ForceSetDirty = true;
         }
 
         public override void DrawCurve(BaseNode node)
