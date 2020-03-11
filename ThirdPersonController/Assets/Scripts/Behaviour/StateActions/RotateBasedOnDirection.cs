@@ -1,12 +1,11 @@
 ﻿/*
 * RotateBasedOnDirection - 
 * Created by : Allan N. Murillo
-* Last Edited : 3/10/2020
+* Last Edited : 3/11/2020
 */
 
 using UnityEngine;
 using ANM.Managers;
-using ANM.Behaviour.Actions;
 using ANM.Scriptables.Variables;
 
 namespace ANM.Behaviour.StateActions
@@ -15,7 +14,6 @@ namespace ANM.Behaviour.StateActions
     public class RotateBasedOnDirection : StateAction
     {
         public TransformVariable cameraTransform;
-        public InputManager inputManager;
         public float speed = 8;
         
         
@@ -23,8 +21,8 @@ namespace ANM.Behaviour.StateActions
         {
             if (cameraTransform.value == null) return;
 
-            var valueX = inputManager.movementAxis.value.x;
-            var valueY = inputManager.movementAxis.value.y;
+            var valueX = stateManager.horizontal;
+            var valueY = stateManager.vertical;
 
             Vector3 targetDirection = cameraTransform.value.forward * valueY;
             targetDirection += cameraTransform.value.right * valueX;
@@ -36,7 +34,7 @@ namespace ANM.Behaviour.StateActions
 
             var tr = Quaternion.LookRotation(targetDirection);
             var targetRotation = Quaternion.Slerp(stateManager.transform.rotation,
-                tr, stateManager.deltaTime * inputManager.moveAmount * speed);
+                tr, stateManager.deltaTime * stateManager.moveAmount * speed);
 
             stateManager.transform.rotation = targetRotation;
         }

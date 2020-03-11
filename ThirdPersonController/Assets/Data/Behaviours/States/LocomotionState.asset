@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7aa7cb0b6e34b2a9f0dfe6272803613, type: 3}
   m_Name: LocomotionState
   m_EditorClassIdentifier: 
-  transitions: []
+  transitions:
+  - id: 0
+    condition: {fileID: 11400000, guid: b76405a7fc766474ab2215ffd222d959, type: 2}
+    targetState: {fileID: 11400000, guid: 5062069eb3e4774469f9b01af5a824fd, type: 2}
+    disable: 0
   onEnter: []
   onUpdate:
   - {fileID: 11400000, guid: f2538418f5e3ae74c810dc8da0f9d8ad, type: 2}
@@ -22,4 +26,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d6c90cfbf14772c44b46ca1fb24e1b9e, type: 2}
   - {fileID: 11400000, guid: a6d859bac4e30324e9cec4b0be9d5f93, type: 2}
   onExit: []
-  idCount: 0
+  idCount: 1

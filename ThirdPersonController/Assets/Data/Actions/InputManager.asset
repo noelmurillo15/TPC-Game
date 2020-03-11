@@ -15,5 +15,10 @@ MonoBehaviour:
   movementAxis: {fileID: 11400000, guid: a0b934b6578f46b47ba656a524861a82, type: 2}
   cameraAxis: {fileID: 11400000, guid: e2e86ca3008958c44bdf2e574b1876f4, type: 2}
   moveAmount: 0
-  moveDirection: {x: 0, y: 0, z: 0}
+  rotateDirection: {x: 0, y: 0, z: 0}
   cameraTransform: {fileID: 11400000, guid: 62ee014dd734f5040a35986cd00787ce, type: 2}
+  statesManagerVar: {fileID: 11400000, guid: e5f8ef9b78bffab40a9f9077c2bf8c4d, type: 2}
+  A: {fileID: 11400000, guid: de36e5c4e09913245b4d4d7c2b5d1781, type: 2}
+  B: {fileID: 11400000, guid: 61522ac5cbf82554ebaedc4ad6968018, type: 2}
+  X: {fileID: 11400000, guid: d1967dc1dae3ac342878a995222af6f1, type: 2}
+  Y: {fileID: 11400000, guid: 39f8c3fcfbf38d947bc2af090064ad3d, type: 2}

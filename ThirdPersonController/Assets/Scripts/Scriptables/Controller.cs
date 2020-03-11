@@ -1,5 +1,5 @@
 ﻿/*
- * Controller - 
+ * Controller - Holds a reference to ThirdPersonInput, used to setup various inputs from anywhere
  * Created by : Allan N. Murillo
  * Last Edited : 3/10/2020
  */
@@ -21,6 +21,8 @@ namespace ANM.Scriptables
                 input = new ThirdPersonInput();
             }
             input.Enable();
+            input.CharacterInput.Enable();
+            Debug.Log("Third Person Controller has been fully Enabled!");
         }
 
         private void OnDisable()

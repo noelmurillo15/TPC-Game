@@ -1,14 +1,12 @@
 ﻿/*
  * InputHandler - Detects Input and passes it along to StateManager & CameraManager
  * Created by : Allan N. Murillo
- * Last Edited : 3/5/2020
+ * Last Edited : 3/11/2020
  */
 
 using UnityEngine;
 using ANM.Managers;
-using ANM.Framework.Managers;
 using UnityEngine.InputSystem;
-using ANM.Framework.Extensions;
 using System.Collections.Generic;
 using ANM.Scriptables.Variables;
 
@@ -27,7 +25,9 @@ namespace ANM.Input
         [SerializeField] private int enemyIndex;
         private const float LockOnMaxDistance = 20f;
 
-        private ThirdPersonInput _controls;
+        //[Space] [Header("Controller")] [SerializeField]
+        //private Scriptables.Controller controls;
+
         private Transform _cameraTransform;
 
         private Vector2 _moveDirection;
@@ -67,32 +67,27 @@ namespace ANM.Input
 
         private void ControllerSetup()
         {
-            if (_controls == null)
-            {
-                _controls = SceneExtension.IsThisSceneActive(SceneExtension.MenuUiSceneName)
-                    ? FindObjectOfType<MenuManager>().GetControllerInput()
-                    : new ThirdPersonInput();
-            }
-
-            _controls.Disable();
-            // _controls.CharacterInput.Movement.performed += context =>
-            //     _moveDirection = context.ReadValue<Vector2>();
-
-            _controls.CharacterInput.CameraRotation.performed += context =>
-                _lookRotation = context.ReadValue<Vector2>();
-
-            // _controls.CharacterInput.RB.started += context => _rbInput = true;
-            // _controls.CharacterInput.RB.canceled += context => _rbInput = false; 
-
-            _controls.CharacterInput.LockOnToggle.performed += LockOnInputCallback;
-            _controls.Enable();
+            // if (controls == null) return;
+            //
+            // controls.input.Disable();
+            //
+            // controls.input.CharacterInput.Movement.performed += context =>
+            //    _moveDirection = context.ReadValue<Vector2>();
+            //
+            // controls.input.CharacterInput.CameraRotation.performed += context =>
+            //     _lookRotation = context.ReadValue<Vector2>();
+            //
+            // controls.input.CharacterInput.RB.started += context => _rbInput = true;
+            // controls.input.CharacterInput.RB.canceled += context => _rbInput = false; 
+            //
+            // controls.input.CharacterInput.LockOnToggle.performed += LockOnInputCallback;
+            // controls.input.Enable();
         }
 
         private void OnDisable()
         {
-            _controls.CharacterInput.LockOnToggle.performed -= LockOnInputCallback;
-            _controls.CharacterInput.LockOnToggle.Disable();
-            _controls.Disable();
+            // controls.input.CharacterInput.LockOnToggle.performed -= LockOnInputCallback;
+            // controls.input.CharacterInput.LockOnToggle.Disable();
         }
 
         private void Update()
@@ -135,15 +130,15 @@ namespace ANM.Input
 
         private void GetInput()
         {
-            _aInput = GetButtonStatus(_controls.CharacterInput.A.phase);
-            _bInput = GetButtonStatus(_controls.CharacterInput.Roll.phase);
-            _xInput = GetButtonStatus(_controls.CharacterInput.X.phase);
-            _yInput = GetButtonStatus(_controls.CharacterInput.Y.phase);
-
-            _rbInput = GetButtonStatus(_controls.CharacterInput.RB.phase);
-            _rtInput = GetButtonStatus(_controls.CharacterInput.RT.phase);
-            _lbInput = GetButtonStatus(_controls.CharacterInput.LB.phase);
-            _ltInput = GetButtonStatus(_controls.CharacterInput.LT.phase);
+            // _aInput = GetButtonStatus(controls.input.CharacterInput.A.phase);
+            // _bInput = GetButtonStatus(controls.input.CharacterInput.Roll.phase);
+            // _xInput = GetButtonStatus(controls.input.CharacterInput.X.phase);
+            // _yInput = GetButtonStatus(controls.input.CharacterInput.Y.phase);
+            //
+            // _rbInput = GetButtonStatus(controls.input.CharacterInput.RB.phase);
+            // _rtInput = GetButtonStatus(controls.input.CharacterInput.RT.phase);
+            // _lbInput = GetButtonStatus(controls.input.CharacterInput.LB.phase);
+            // _ltInput = GetButtonStatus(controls.input.CharacterInput.LT.phase);
 
             LockOnSafetyCheck();
 
@@ -289,11 +284,7 @@ namespace ANM.Input
             }
         }
 
-        private static bool GetButtonStatus(InputActionPhase phase)
-        {
-            return phase == InputActionPhase.Started;
-
-        }
+        
     }
 
     public enum GamePhase

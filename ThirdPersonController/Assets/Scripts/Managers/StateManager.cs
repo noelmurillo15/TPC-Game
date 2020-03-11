@@ -65,6 +65,13 @@ using Actions = ANM.Scriptables.Action;
          private static readonly int Lockon = Animator.StringToHash("lockon");
          private static readonly int Speed = Animator.StringToHash("speed");
 
+         [Header("New Inputs")] 
+         public float vertical;
+         public float horizontal;
+         public float moveAmount;
+         public Vector3 rotateDirection;
+         
+
 
          private void Start()
          {

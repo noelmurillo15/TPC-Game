@@ -1,7 +1,7 @@
 ﻿/*
  * MenuManager - Handles interactions with the Menu Ui
  * Created by : Allan N. Murillo
- * Last Edited : 3/4/2020
+ * Last Edited : 3/11/2020
  */
 
 using System.Linq;
@@ -27,9 +27,10 @@ namespace ANM.Framework.Managers
         [SerializeField] private Button pausePanelSelectedObj = null;
         [SerializeField] private Button quitPanelSelectedObj = null;
 
+        [SerializeField] private Scriptables.Controller controls;
+        
         [Space] [Header("Local Game Info")] [SerializeField]
         private bool isSceneTransitioning = false;
-
         [SerializeField] private bool isMainMenuActive = false;
         [SerializeField] private int lastSceneBuildIndex = 0;
 
@@ -38,7 +39,7 @@ namespace ANM.Framework.Managers
         private EventSystem _eventSystem;
         private GameManager _gameManager;
         private IPanel[] _menuPanels;
-        private ThirdPersonInput _controls;
+        
 
 
         private void Awake()
@@ -65,14 +66,10 @@ namespace ANM.Framework.Managers
 
         private void ControllerSetup()
         {
-            if (_controls == null) _controls = new ThirdPersonInput();
-            _controls.CharacterInput.Pause.performed += context => TogglePause();
-            _controls.Enable();
-        }
-
-        public ThirdPersonInput GetControllerInput()
-        {
-            return _controls;
+            if (controls == null) return;
+            controls.input.Disable();
+            controls.input.CharacterInput.Pause.performed += context => TogglePause();
+            controls.input.Enable();
         }
 
         private void OnGUI()
@@ -93,7 +90,6 @@ namespace ANM.Framework.Managers
 
         private void OnDestroy()
         {
-            _controls?.Disable();
             SceneExtension.StartSceneLoadEvent -= OnStartLoadScene;
             SceneExtension.FinishSceneLoadEvent -= OnFinishLoadScene;
         }

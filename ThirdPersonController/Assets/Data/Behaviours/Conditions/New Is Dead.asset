@@ -9,7 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c4172ec957e75247b8e3801f42adf51, type: 3}
-  m_Name: gs_oh_attack_2
+  m_Script: {fileID: 11500000, guid: c7a37e41f197400cb3552354871afb3c, type: 3}
+  m_Name: New Is Dead
   m_EditorClassIdentifier: 
-  value: 
