@@ -158,10 +158,10 @@ namespace ANM.Input
 
         private void ApplyInput()
         {
-            stateManager.inputVar.rb = _rbInput;
-            stateManager.inputVar.lb = _lbInput;
-            stateManager.inputVar.rt = _rtInput;
-            stateManager.inputVar.lt = _ltInput;
+            // stateManager.inputVar.rb = _rbInput;
+            // stateManager.inputVar.lb = _lbInput;
+            // stateManager.inputVar.rt = _rtInput;
+            // stateManager.inputVar.lt = _ltInput;
 
             if (_bInput)
             {
@@ -192,9 +192,9 @@ namespace ANM.Input
         {
             var vertical = _moveDirection.y;
             var horizontal = _moveDirection.x;
-            stateManager.inputVar.vertical = vertical;
-            stateManager.inputVar.horizontal = horizontal;
-            stateManager.inputVar.moveAmount = Mathf.Clamp01(Mathf.Abs(vertical) + Mathf.Abs(horizontal));
+            // stateManager.inputVar.vertical = vertical;
+            // stateManager.inputVar.horizontal = horizontal;
+            // stateManager.inputVar.moveAmount = Mathf.Clamp01(Mathf.Abs(vertical) + Mathf.Abs(horizontal));
 
             //  Moves player based on camera angle
             var moveDirection = _cameraTransform.forward * vertical;
@@ -202,8 +202,8 @@ namespace ANM.Input
             moveDirection.Normalize();
 
             //  Pass Move Direction to StateManager Input
-            if (stateManager.characterState != StateManager.CharacterState.ROLL)
-                stateManager.inputVar.moveDir = moveDirection;
+            // if (stateManager.characterState != StateManager.CharacterState.ROLL)
+            //     stateManager.inputVar.moveDir = moveDirection;
         }
 
         private void LockOnSafetyCheck()
@@ -261,9 +261,9 @@ namespace ANM.Input
                 }
             }
 
-            //  Assign LockOn Target
-            if (stateManager.inputVar.lockOnTransform != lockOnTransform.value)
-                stateManager.inputVar.lockOnTransform = lockOnTransform.value;
+            // //  Assign LockOn Target
+            // if (stateManager.inputVar.lockOnTransform != lockOnTransform.value)
+            //     stateManager.inputVar.lockOnTransform = lockOnTransform.value;
         }
 
         private void LockOnInputCallback(InputAction.CallbackContext context)

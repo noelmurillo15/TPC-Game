@@ -17,8 +17,8 @@ MonoBehaviour:
     drawNode: {fileID: 11400000, guid: 388631ea7e06a6943a600228334ee98d, type: 2}
     windowRect:
       serializedVersion: 2
-      x: 35
-      y: 94
+      x: 215.00002
+      y: 109.99998
       width: 200
       height: 460
     windowTitle: State
@@ -39,18 +39,18 @@ MonoBehaviour:
     drawNode: {fileID: 11400000, guid: 388631ea7e06a6943a600228334ee98d, type: 2}
     windowRect:
       serializedVersion: 2
-      x: 445
-      y: 102
+      x: 550.99963
+      y: 122.99998
       width: 200
-      height: 420
+      height: 80
     windowTitle: State
     enterNode: 0
     targetNode: 0
     isDuplicate: 0
     isAssigned: 1
     comment: 
-    collapse: 0
-    previousCollapse: 0
+    collapse: 1
+    previousCollapse: 1
     stateRefs:
       currentState: {fileID: 11400000, guid: 5062069eb3e4774469f9b01af5a824fd, type: 2}
       previousState: {fileID: 11400000, guid: 5062069eb3e4774469f9b01af5a824fd, type: 2}

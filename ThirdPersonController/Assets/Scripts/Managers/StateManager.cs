@@ -69,7 +69,7 @@ using Actions = ANM.Scriptables.Action;
          private void Start()
          {
              myTransform = transform;
-             myRigidbody = GetComponent<Rigidbody>();//  This will fail if no animator is attached
+             myRigidbody = GetComponent<Rigidbody>(); //  This will fail if no animator is attached
              if (activeModel == null)
              {
                  //  If designer forgets to attach the active Model ~ this will find the model via Animator
@@ -249,14 +249,13 @@ using Actions = ANM.Scriptables.Action;
          }
          
          private void Update()
-         {
+         {    //    Update runs After Fixed Update
              deltaTime = Time.deltaTime;
              if (currentState != null)
              {
                  currentState.Tick(this);
              }         
          }
-
          
 
          /*public void Tick(float d)
@@ -366,24 +365,24 @@ using Actions = ANM.Scriptables.Action;
          {
              //  Only happens during movement state
              WeaponManager.ActionContainer a = null;
-             if (inputVar.rb)
-             {
-                 a = GetAction(InputType.RB);
-             }
-             else if (inputVar.lb)
-             {
-                 a = GetAction(InputType.LB);
-             }
-             else if (inputVar.rt)
-             {
-                 a = GetAction(InputType.RT);
-                 Save();
-             }
-             else if (inputVar.lt)
-             {
-                 a = GetAction(InputType.LT);
-                 Load();
-             }
+             // if (inputVar.rb)
+             // {
+             //     a = GetAction(InputType.RB);
+             // }
+             // else if (inputVar.lb)
+             // {
+             //     a = GetAction(InputType.LB);
+             // }
+             // else if (inputVar.rt)
+             // {
+             //     a = GetAction(InputType.RT);
+             //     Save();
+             // }
+             // else if (inputVar.lt)
+             // {
+             //     a = GetAction(InputType.LT);
+             //     Load();
+             // }
 
              if (a?.action == null)
              {
@@ -400,63 +399,63 @@ using Actions = ANM.Scriptables.Action;
          {
              var v = myTransform.forward;
 
-             if (states.isLockedOn)
-                 v = inputVar.moveDir;
-
-             myRigidbody.drag = inputVar.moveAmount > 0 ? 0f : 4f;
-
-             if (states.animIsInteracting)
-             {
-                 states.isRunning = false;
-                 v *= inputVar.moveAmount * controlStats.walkSpeed;
-             }
-             else
-             {
-                 if (!states.isRunning)
-                     v *= inputVar.moveAmount * controlStats.moveSpeed;
-                 else
-                     v *= inputVar.moveAmount * controlStats.sprintSpeed;
-             }
+             // if (states.isLockedOn)
+             //     v = inputVar.moveDir;
+             //
+             // myRigidbody.drag = inputVar.moveAmount > 0 ? 0f : 4f;
+             //
+             // if (states.animIsInteracting)
+             // {
+             //     states.isRunning = false;
+             //     v *= inputVar.moveAmount * controlStats.walkSpeed;
+             // }
+             // else
+             // {
+             //     if (!states.isRunning)
+             //         v *= inputVar.moveAmount * controlStats.moveSpeed;
+             //     else
+             //         v *= inputVar.moveAmount * controlStats.sprintSpeed;
+             // }
 
              myRigidbody.velocity = v;
          }
 
          private void HandleRotation()
          {
-             var targetDir = (states.isLockedOn == false)
-                 ? inputVar.moveDir
-                 : inputVar.lockOnTransform.position - myTransform.position;
-
-             targetDir.y = 0f;
-             if (targetDir == Vector3.zero)
-                 targetDir = myTransform.forward;
-
-             var tr = Quaternion.LookRotation(targetDir);
-             var targetRotation = Quaternion.Slerp(
-                 myTransform.rotation, tr, deltaTime * controlStats.rotateSpeed * inputVar.moveAmount);
-             myTransform.rotation = targetRotation;
+             // var targetDir = (states.isLockedOn == false)
+             //     ? inputVar.moveDir
+             //     : inputVar.lockOnTransform.position - myTransform.position;
+             //
+             // targetDir.y = 0f;
+             // if (targetDir == Vector3.zero)
+             //     targetDir = myTransform.forward;
+             //
+             // var tr = Quaternion.LookRotation(targetDir);
+             // var targetRotation = Quaternion.Slerp(
+             //     myTransform.rotation, tr, deltaTime * controlStats.rotateSpeed * inputVar.moveAmount);
+             // myTransform.rotation = targetRotation;
          }
 
          private void HandleMovementAnimations()
          {
-             myAnimator.SetBool(Lockon, states.isLockedOn);
-
-             if (!states.isLockedOn)
-             {
-                 myAnimator.SetBool(StaticStrings.run, states.isRunning);
-                 float move = inputVar.moveAmount;
-                 if (states.animIsInteracting)
-                 {
-                     move = Mathf.Clamp(move, 0, 0.5f);
-                 }
-
-                 myAnimator.SetFloat(StaticStrings.vertical, move, 0.15f, deltaTime);
-             }
-             else
-             {
-                 myAnimator.SetFloat(StaticStrings.vertical, inputVar.vertical, 0.15f, deltaTime);
-                 myAnimator.SetFloat(StaticStrings.horizontal, inputVar.horizontal, 0.15f, deltaTime);
-             }
+             // myAnimator.SetBool(Lockon, states.isLockedOn);
+             //
+             // if (!states.isLockedOn)
+             // {
+             //     myAnimator.SetBool(StaticStrings.run, states.isRunning);
+             //     float move = inputVar.moveAmount;
+             //     if (states.animIsInteracting)
+             //     {
+             //         move = Mathf.Clamp(move, 0, 0.5f);
+             //     }
+             //
+             //     myAnimator.SetFloat(StaticStrings.vertical, move, 0.15f, deltaTime);
+             // }
+             // else
+             // {
+             //     myAnimator.SetFloat(StaticStrings.vertical, inputVar.vertical, 0.15f, deltaTime);
+             //     myAnimator.SetFloat(StaticStrings.horizontal, inputVar.horizontal, 0.15f, deltaTime);
+             // }
          }
 
          private void HandleAction(WeaponManager.ActionContainer actionContainer)
@@ -603,32 +602,32 @@ using Actions = ANM.Scriptables.Action;
 
          public void HandleRoll()
          {
-             Vector3 relativeDir = myTransform.InverseTransformDirection(inputVar.moveDir);
-             float v = relativeDir.z;
-             float h = relativeDir.x;
-
-             if (relativeDir == Vector3.zero)
-             {
-                 //  if no directional input, play step back animation
-                 inputVar.moveDir = -myTransform.forward;
-                 inputVar.targetRollSpeed = controlStats.backStepSpeed;
-             }
-             else
-             {
-                 //  else roll using directional input
-                 inputVar.targetRollSpeed = controlStats.rollSpeed;
-             }
-
-             //  Override root motion multiplier
-             animatorHook.rm_mult = inputVar.targetRollSpeed;
-
-             //  Set Animations floats using relative Direction
-             myAnimator.SetFloat(StaticStrings.vertical, v);
-             myAnimator.SetFloat(StaticStrings.horizontal, h);
-
-             //  Play Animation and change state
-             PlayActionAnimation(StaticStrings.rolls);
-             ChangeState(CharacterState.ROLL);
+             // Vector3 relativeDir = myTransform.InverseTransformDirection(inputVar.moveDir);
+             // float v = relativeDir.z;
+             // float h = relativeDir.x;
+             //
+             // if (relativeDir == Vector3.zero)
+             // {
+             //     //  if no directional input, play step back animation
+             //     inputVar.moveDir = -myTransform.forward;
+             //     inputVar.targetRollSpeed = controlStats.backStepSpeed;
+             // }
+             // else
+             // {
+             //     //  else roll using directional input
+             //     inputVar.targetRollSpeed = controlStats.rollSpeed;
+             // }
+             //
+             // //  Override root motion multiplier
+             // animatorHook.rm_mult = inputVar.targetRollSpeed;
+             //
+             // //  Set Animations floats using relative Direction
+             // myAnimator.SetFloat(StaticStrings.vertical, v);
+             // myAnimator.SetFloat(StaticStrings.horizontal, h);
+             //
+             // //  Play Animation and change state
+             // PlayActionAnimation(StaticStrings.rolls);
+             // ChangeState(CharacterState.ROLL);
          }
 
          public void SetDamageColliderStatus(bool status)

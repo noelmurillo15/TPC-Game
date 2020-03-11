@@ -7,7 +7,7 @@
 using UnityEngine;
 using ANM.Scriptables.Variables;
 
-namespace ANM.Scriptables
+namespace ANM.Utilities
 {
     public class OnEnableAssignTransformVariable : MonoBehaviour
     {
@@ -16,7 +16,7 @@ namespace ANM.Scriptables
 
         private void OnEnable()
         {
-            targetVariable.value = transform;
+            targetVariable.value = this.transform;
         }
     }
 }

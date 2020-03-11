@@ -9,7 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff60460c75ce8874fa1ccf3d9972b3b2, type: 3}
-  m_Name: LockOnTransform
+  m_Script: {fileID: 11500000, guid: 2cf788a442ef4fa4b80088b3c0f2e9f4, type: 3}
+  m_Name: PlayerController
   m_EditorClassIdentifier: 
-  value: {fileID: 0}

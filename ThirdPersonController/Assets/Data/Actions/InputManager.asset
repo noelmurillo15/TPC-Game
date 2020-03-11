@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 037d2ed8ab3340e8985b914687759fa6, type: 3}
   m_Name: InputManager
   m_EditorClassIdentifier: 
-  cameraViewInput: {fileID: 11400000, guid: d8d59efe217c1944cb8bd9d5b6f02417, type: 2}
+  movementAxis: {fileID: 11400000, guid: a0b934b6578f46b47ba656a524861a82, type: 2}
+  cameraAxis: {fileID: 11400000, guid: e2e86ca3008958c44bdf2e574b1876f4, type: 2}
   moveAmount: 0
   moveDirection: {x: 0, y: 0, z: 0}
   cameraTransform: {fileID: 11400000, guid: 62ee014dd734f5040a35986cd00787ce, type: 2}

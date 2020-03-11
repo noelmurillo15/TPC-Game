@@ -12,8 +12,8 @@ namespace ANM.Behaviour.Actions
     [CreateAssetMenu(menuName = "MonoActions/InputManager")]
     public class InputManager : Action
     {
-        public MouseInputAxis cameraViewInput;
-
+        public MovementInputAxis movementAxis;
+        public CameraInputAxis cameraAxis;
         public float moveAmount;
         public Vector3 moveDirection;
         public TransformVariable cameraTransform;
@@ -21,14 +21,15 @@ namespace ANM.Behaviour.Actions
 
         public override void Execute()
         {
-            cameraViewInput.Execute();
+            cameraAxis.Execute();
+            movementAxis.Execute();
 
             moveAmount = Mathf.Clamp01(
-                Mathf.Abs(cameraViewInput.value.x) + Mathf.Abs(cameraViewInput.value.y));
+                Mathf.Abs(movementAxis.value.x) + Mathf.Abs(movementAxis.value.y));
 
             if (cameraTransform.value == null) return;
-            moveDirection = cameraTransform.value.forward * cameraViewInput.value.y;
-            moveDirection += cameraTransform.value.right * cameraViewInput.value.x;
+            moveDirection = cameraTransform.value.forward * movementAxis.value.y;
+            moveDirection += cameraTransform.value.right * movementAxis.value.x;
         }
     }
 }

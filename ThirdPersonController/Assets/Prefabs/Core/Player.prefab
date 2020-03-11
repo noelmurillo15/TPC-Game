@@ -549,6 +549,11 @@ PrefabInstance:
       propertyPath: m_UpdateMode
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: -6057140222963153312, guid: 8e9bc542c2a033444aa90ee34b1eb2ed,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 8e9bc542c2a033444aa90ee34b1eb2ed,
         type: 3}
       propertyPath: m_LocalPosition.x

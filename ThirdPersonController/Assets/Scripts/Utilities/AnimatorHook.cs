@@ -30,18 +30,18 @@ namespace ANM
 
         private void OnAnimatorMove()
         {
-            _stateManager.inputVar.animationDelta = _animator.deltaPosition;
-            _stateManager.inputVar.animationDelta.y = 0f;
+            // _stateManager.inputVar.animationDelta = _animator.deltaPosition;
+            // _stateManager.inputVar.animationDelta.y = 0f;
             transform.localPosition = Vector3.zero;
 
             if (rm_mult == 0) rm_mult = 1;
 
             if (isEnemy) return;
-            Vector3 v = (_stateManager.inputVar.animationDelta * rm_mult) / _stateManager.deltaTime;
-            if (!float.IsNaN(v.x) && !float.IsNaN(v.y))
-            {
-                _stateManager.myRigidbody.velocity = v;
-            }
+            // Vector3 v = (_stateManager.inputVar.animationDelta * rm_mult) / _stateManager.deltaTime;
+            // if (!float.IsNaN(v.x) && !float.IsNaN(v.y))
+            // {
+            //     _stateManager.myRigidbody.velocity = v;
+            // }
         }
 
         public void CloseParticle()

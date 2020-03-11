@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: MoveForward
   m_EditorClassIdentifier: 
   inputManager: {fileID: 11400000, guid: ba0f69b7a575dee41842304ebad87467, type: 2}
-  moveSpeed: 2
+  moveSpeed: 4

@@ -23,8 +23,8 @@ namespace ANM.Behaviour.StateActions
         {
             if (cameraTransform.value == null) return;
 
-            var valueX = inputManager.cameraViewInput.value.x;
-            var valueY = inputManager.cameraViewInput.value.y;
+            var valueX = inputManager.movementAxis.value.x;
+            var valueY = inputManager.movementAxis.value.y;
 
             Vector3 targetDirection = cameraTransform.value.forward * valueY;
             targetDirection += cameraTransform.value.right * valueX;
@@ -32,10 +32,10 @@ namespace ANM.Behaviour.StateActions
 
             targetDirection.y = 0;
             if (targetDirection == Vector3.zero)
-                targetDirection = stateManager.myTransform.forward;
+                targetDirection = stateManager.transform.forward;
 
             var tr = Quaternion.LookRotation(targetDirection);
-            var targetRotation = Quaternion.Slerp(stateManager.myTransform.rotation,
+            var targetRotation = Quaternion.Slerp(stateManager.transform.rotation,
                 tr, stateManager.deltaTime * inputManager.moveAmount * speed);
 
             stateManager.transform.rotation = targetRotation;
