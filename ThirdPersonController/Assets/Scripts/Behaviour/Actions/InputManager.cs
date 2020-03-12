@@ -10,46 +10,66 @@ using ANM.Scriptables.Variables;
 
 namespace ANM.Behaviour.Actions
 {
-    [CreateAssetMenu(menuName = "MonoActions/InputManager")]
+    [CreateAssetMenu(menuName = "Behaviours/MonoActions/InputManager")]
     public class InputManager : Action
     {
-        public MovementInputAxis movementAxis;
-        public CameraInputAxis cameraAxis;
-        public float moveAmount;
-        public Vector3 rotateDirection;
-        public TransformVariable cameraTransform;
-        public StatesManagerVariable statesManagerVar;
-
+        [Header("Input Buttons")] 
         public InputButton A;
         public InputButton B;
         public InputButton X;
         public InputButton Y;
 
+        public InputButton Rt;
+        public InputButton Lt;
+        public InputButton Rb;
+        public InputButton Lb;
+
+        [Space] [Header("Input Axis")] 
+        public CameraInputAxis CameraAxis;
+        public MovementInputAxis MovementAxis;
+
+        [Space] [Header("Movement Variables")] 
+        public float moveAmount;
+        public Vector3 rotateDirection;
+        public TransformVariable cameraTransform;
+        public StatesManagerVariable playerStates;
+        
 
         public override void Execute()
         {
-            cameraAxis.Execute();
-            movementAxis.Execute();
-            
             A.Execute();
             X.Execute();
             Y.Execute();
             B.Execute();
 
+            Rt.Execute();
+            Lt.Execute();
+            Rb.Execute();
+            Lb.Execute();
+
+            CameraAxis.Execute();
+            MovementAxis.Execute();
+
             moveAmount = Mathf.Clamp01(
-                Mathf.Abs(movementAxis.value.x) + Mathf.Abs(movementAxis.value.y));
+                Mathf.Abs(MovementAxis.value.x) + Mathf.Abs(MovementAxis.value.y));
 
             if (cameraTransform.value != null)
             {
-                rotateDirection = cameraTransform.value.forward * movementAxis.value.y;
-                rotateDirection += cameraTransform.value.right * movementAxis.value.x;
+                rotateDirection = cameraTransform.value.forward * MovementAxis.value.y;
+                rotateDirection += cameraTransform.value.right * MovementAxis.value.x;
             }
 
-            if (statesManagerVar.value == null) return;
-            statesManagerVar.value.vertical = movementAxis.value.y;
-            statesManagerVar.value.horizontal = movementAxis.value.x;
-            statesManagerVar.value.moveAmount = moveAmount;
-            statesManagerVar.value.rotateDirection = rotateDirection;
+            if (playerStates.value == null) return;
+
+            playerStates.value.vertical = MovementAxis.value.y;
+            playerStates.value.horizontal = MovementAxis.value.x;
+            playerStates.value.moveAmount = moveAmount;
+            playerStates.value.rotateDirection = rotateDirection;
+            
+            playerStates.value.rb = Rb.isPressed;
+            playerStates.value.rt = Rt.isPressed;
+            playerStates.value.lb = Lb.isPressed;
+            playerStates.value.lt = Lt.isPressed;
         }
     }
 }

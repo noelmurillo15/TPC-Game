@@ -9,7 +9,7 @@ using ANM.Scriptables.Variables;
 
 namespace ANM.Behaviour.Actions
 {
-    [CreateAssetMenu(menuName = "MonoActions/Follow Transform")]
+    [CreateAssetMenu(menuName = "Behaviours/MonoActions/Follow Transform")]
     public class FollowTransform : Action
     {
         public TransformVariable targetTransform;

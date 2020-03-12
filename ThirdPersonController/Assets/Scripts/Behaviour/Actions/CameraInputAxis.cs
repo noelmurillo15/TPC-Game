@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace ANM.Behaviour.Actions
 {
-    [CreateAssetMenu(menuName = "MonoActions/Camera Axis")]
+    [CreateAssetMenu(menuName = "Behaviours/MonoActions/Camera Axis")]
     public class CameraInputAxis : Action
     {
         public Vector2 value;

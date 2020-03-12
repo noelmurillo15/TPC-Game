@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace ANM.Behaviour
 {
-    [CreateAssetMenu(menuName = "BehaviourEditor/State")]
+    [CreateAssetMenu(menuName = "Behaviours/State")]
     public class State : ScriptableObject
     {
         public List<Transition> transitions = new List<Transition>();

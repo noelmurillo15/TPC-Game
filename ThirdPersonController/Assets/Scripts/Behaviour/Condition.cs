@@ -11,6 +11,6 @@ namespace ANM.Behaviour
 {
     public abstract class Condition : ScriptableObject
     {
-        public abstract bool CheckCondition(StateManager stateManager);
+        public abstract bool CheckCondition(StateManager state);
     }
 }

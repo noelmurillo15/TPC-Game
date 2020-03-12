@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace ANM.Behaviour.Actions
 {
-    [CreateAssetMenu(menuName = "MonoActions/Movement Axis")]
+    [CreateAssetMenu(menuName = "Behaviours/MonoActions/Movement Axis")]
     public class MovementInputAxis : Action
     {
         public Vector2 value;

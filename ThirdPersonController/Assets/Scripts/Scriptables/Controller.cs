@@ -22,7 +22,6 @@ namespace ANM.Scriptables
             }
             input.Enable();
             input.CharacterInput.Enable();
-            Debug.Log("Third Person Controller has been fully Enabled!");
         }
 
         private void OnDisable()

@@ -3,16 +3,11 @@
  * Created by : Allan N. Murillo
  * Last Edited : 3/10/2020
  */
-
-using System;
-using ANM.Input;
+ 
 using ANM.Saving;
 using UnityEngine;
-using System.Linq;
 using ANM.Behaviour;
-using ANM.Inventory;
 using ANM.Utilities;
-using ANM.Scriptables;
 using Actions = ANM.Scriptables.Action;
 
  namespace ANM.Managers
@@ -20,38 +15,8 @@ using Actions = ANM.Scriptables.Action;
      public class StateManager : MonoBehaviour
      {
          public State currentState;
-         
-         public enum CharacterState
-         {
-             MOVING,
-             ON_AIR,
-             INTERACTING,
-             OVERRIDE_INTERACTING,
-             ROLL
-         }
-         
-         public CharacterState characterState; //  Current State 
-         public ControllerStats controlStats; //  Movement Info
 
-         public States states; //  State Info
-         public InputVariables inputVar; //  Input Info
-         public WeaponManager weaponManager; //  Weapon Info
-         public InventoryManager inventoryManager; // Inventory Info
-
-         [HideInInspector] public ResourcesManager resourcesManager;
-
-         public GameObject activeModel;
-         public float deltaTime;
-         private float _timeSinceLastHit;
-
-         //  Spell Action
-         private float _savedTime;
-         private SpellAction _currentSpellAction;
-         private SerializableVector3 _lastKnownLocation;
-
-         //  If the game object is not the player - force init
-         public bool forceInit = false;
-
+         [Header("References")] public GameObject activeModel;
          [HideInInspector] public Transform myTransform;
          [HideInInspector] public Animator myAnimator;
          [HideInInspector] public Rigidbody myRigidbody;
@@ -61,16 +26,25 @@ using Actions = ANM.Scriptables.Action;
          [HideInInspector] public LayerMask ignoreLayers;
          [HideInInspector] public LayerMask ignoreForGroundCheck;
 
-         private static readonly int IsInteracting = Animator.StringToHash("isInteracting");
-         private static readonly int Lockon = Animator.StringToHash("lockon");
-         private static readonly int Speed = Animator.StringToHash("speed");
-
-         [Header("New Inputs")] 
-         public float vertical;
+         [Space] [Header("Inputs")] public float vertical;
          public float horizontal;
          public float moveAmount;
          public Vector3 rotateDirection;
-         
+         public Vector3 rollDirection;
+         public float generalDelta;
+
+         public bool rb;
+         public bool rt;
+         public bool lb;
+         public bool lt;
+
+         [Space] [Header("Local Info")] public float deltaTime;
+
+         private SerializableVector3 _lastKnownLocation;
+
+         private static readonly int IsInteracting = Animator.StringToHash("isInteracting");
+         private static readonly int Lockon = Animator.StringToHash("lockon");
+         private static readonly int Speed = Animator.StringToHash("speed");
 
 
          private void Start()
@@ -83,579 +57,129 @@ using Actions = ANM.Scriptables.Action;
                  myAnimator = GetComponentInChildren<Animator>();
                  activeModel = myAnimator.gameObject;
              }
+
              if (myAnimator == null) //  If animator has not been found, find via ActiveModel
                  myAnimator = activeModel.GetComponent<Animator>();
-             
-             if (forceInit)
-             {
-                 Initialize();
-             }
+
+             Initialize();
          }
 
          public void Initialize()
          {
-             if (resourcesManager == null && !forceInit)
-             {
-                 resourcesManager = Resources.Load("ResourceManager") as ResourcesManager;
-             }
-
              SetupAnimator();
              SetupRigidBody();
-             
+
              myCollider = GetComponent<Collider>();
 
              //  Layer masks
              gameObject.layer = 8;
              ignoreLayers = ~(1 << 9);
              ignoreForGroundCheck = ~(1 << 9 | 1 << 10);
-
-             SetupInventoryManager();
-             SetupWeaponManager();
          }
 
          private void SetupAnimator()
          {
              if (myAnimator == null) return;
-             //  If animator was Ultimately found
+
              myAnimator.applyRootMotion = false;
              myAnimator.GetBoneTransform(HumanBodyBones.LeftHand).localScale = Vector3.one;
              myAnimator.GetBoneTransform(HumanBodyBones.RightHand).localScale = Vector3.one;
 
              animatorHook = activeModel.AddComponent<AnimatorHook>();
-             animatorHook.Init(this, forceInit);
+             animatorHook.Init(this);
          }
 
          private void SetupRigidBody()
          {
-             
              myRigidbody.angularDrag = 999;
              myRigidbody.drag = 4;
-             myRigidbody.constraints = RigidbodyConstraints.FreezeRotationX |
-                                       RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
-         }
-
-         private void SetupInventoryManager()
-         {
-             if (inventoryManager.rightItem != null)
-             {
-                 WeaponToRuntime(inventoryManager.rightItem, ref inventoryManager.rightSlot);
-                 EquipWeapon(inventoryManager.rightSlot, false);
-             }
-
-             if (inventoryManager.leftItem == null) return;
-             WeaponToRuntime(inventoryManager.leftItem, ref inventoryManager.leftSlot);
-             EquipWeapon(inventoryManager.leftSlot, true);
-         }
-
-         private void WeaponToRuntime(Item obj, ref RuntimeWeapon slot)
-         {
-             var weaponData = (Weapon) obj;
-             var weaponInstance = Instantiate(weaponData.modelPrefab);
-             var wHook = weaponInstance.AddComponent<WeaponHook>();
-             wHook.Initialize(this);
-             weaponInstance.SetActive(false);
-
-             var rw = new RuntimeWeapon
-             {
-                 weaponInstance = weaponInstance, weaponData = weaponData, weaponHook = wHook
-             };
-
-             slot = rw;
-             resourcesManager.runtime.RegisterRuntimeWeapons(rw);
-         }
-
-         private void SetupWeaponManager()
-         {
-             if (inventoryManager.leftSlot == null && inventoryManager.rightSlot == null)
-                 return;
-
-             if (inventoryManager.rightSlot != null)
-             {
-                 //  Right hand Take Priority ~?
-                 var rb = weaponManager.GetAction(InputType.RB);
-                 rb.action = inventoryManager.rightSlot.weaponData.GetAction(InputType.RB);
-
-                 var rt = weaponManager.GetAction(InputType.RT);
-                 rt.action = inventoryManager.rightSlot.weaponData.GetAction(InputType.RT);
-
-                 if (inventoryManager.leftSlot == null)
-                 {
-                     //  If not Dual Wielding, Get Left Trigger & Bumper Actions from Right Hand
-                     var lb = weaponManager.GetAction(InputType.LB);
-                     lb.action = inventoryManager.rightSlot.weaponData.GetAction(InputType.LB);
-
-                     var lt = weaponManager.GetAction(InputType.LT);
-                     lt.action = inventoryManager.rightSlot.weaponData.GetAction(InputType.LT);
-                 }
-                 else
-                 {
-                     //  If Dual Wielding, Get leftHand Actions
-                     var lb = weaponManager.GetAction(InputType.LB);
-                     lb.action = inventoryManager.leftSlot.weaponData.GetAction(InputType.LB);
-
-                     var lt = weaponManager.GetAction(InputType.LT);
-                     lt.action = inventoryManager.leftSlot.weaponData.GetAction(InputType.LT);
-                 }
-
-                 return;
-             }
-
-             if (inventoryManager.leftSlot == null) return;
-             {
-                 //  There is no right hand equipped so grab all actions from Left Hand
-                 var rb = weaponManager.GetAction(InputType.RB);
-                 rb.action = inventoryManager.leftSlot.weaponData.GetAction(InputType.RB);
-
-                 var rt = weaponManager.GetAction(InputType.RT);
-                 rt.action = inventoryManager.leftSlot.weaponData.GetAction(InputType.RT);
-
-                 var lb = weaponManager.GetAction(InputType.LB);
-                 lb.action = inventoryManager.leftSlot.weaponData.GetAction(InputType.LB);
-
-                 var lt = weaponManager.GetAction(InputType.LT);
-                 lt.action = inventoryManager.leftSlot.weaponData.GetAction(InputType.LT);
-             }
-         }
-
-         private void EquipWeapon(RuntimeWeapon rw, bool isMirrored)
-         {
-             var position = Vector3.zero;
-             var eulers = Vector3.zero;
-             var scale = Vector3.one;
-             Transform parent = null;
-
-             if (!isMirrored)
-             {
-                 //Debug.Log("Equipping Weapon to right hand : " + rw.weaponInstance.name + " of the " + gameObject.name);
-                 scale = rw.weaponData.leftHandPosition.scale;
-                 parent = myAnimator.GetBoneTransform(HumanBodyBones.RightHand);
-             }
-             else
-             {
-                 //Debug.Log("Equipping Weapon to left hand : " + rw.weaponInstance.name + " of the " + gameObject.name);
-                 position = rw.weaponData.leftHandPosition.position;
-                 eulers = rw.weaponData.leftHandPosition.eulersAngles;
-                 parent = myAnimator.GetBoneTransform(HumanBodyBones.LeftHand);
-             }
-
-             rw.weaponInstance.transform.parent =
-                 parent; //    local transform data depends on parent to be modified correctly             
-             rw.weaponInstance.transform.localPosition = position;
-             rw.weaponInstance.transform.localEulerAngles = eulers;
-             rw.weaponInstance.transform.localScale = scale;
-             rw.weaponInstance.SetActive(true); //  Activate Weapon
+             myRigidbody.constraints = RigidbodyConstraints.FreezeRotationX
+                                       | RigidbodyConstraints.FreezeRotationY
+                                       | RigidbodyConstraints.FreezeRotationZ;
          }
 
          private void FixedUpdate()
-         {    //    Fixed Update runs before Update
+         {
+             //    Fixed Update runs before Update
              deltaTime = Time.deltaTime;
              if (currentState != null)
              {
                  currentState.FixedTick(this);
              }
          }
-         
+
          private void Update()
-         {    //    Update runs After Fixed Update
+         {
+             //    Update runs After Fixed Update
              deltaTime = Time.deltaTime;
              if (currentState != null)
              {
                  currentState.Tick(this);
-             }         
-         }
-         
-
-         /*public void Tick(float d)
-         {
-             deltaTime = d;
-             states.onGround = OnGroundCheck();
-
-             if (states.isGettingHit)
-             {
-                 if (Time.realtimeSinceStartup - _timeSinceLastHit < 0.2f)
-                 {
-                     states.isGettingHit = false;
-                 }
              }
-
-             switch (characterState)
-             {
-                 case CharacterState.MOVING:
-                     var interact = InteractionInputCheck();
-                     if (!interact) HandleMovementAnimations();
-                     break;
-                 case CharacterState.INTERACTING:
-                     if (states.isSpellCasting)
-                     {
-                         if (Time.realtimeSinceStartup - _savedTime > 1)
-                         {
-                             states.isSpellCasting = false;
-                             PlaySavedSpellAction();
-                         }
-                     }
-
-                     HandleMovementAnimations();
-                     break;
-                 case CharacterState.OVERRIDE_INTERACTING:
-                     states.animIsInteracting = myAnimator.GetBool(IsInteracting);
-                     if (states.animIsInteracting == false)
-                     {
-                         if (states.isInteracting)
-                         {
-                             states.isInteracting = false;
-                             ChangeState(CharacterState.MOVING);
-                         }
-                     }
-
-                     break;
-                 case CharacterState.ON_AIR:
-                     break;
-                 case CharacterState.ROLL:
-                     states.animIsInteracting = myAnimator.GetBool(IsInteracting);
-                     if (states.animIsInteracting == false)
-                     {
-                         if (states.isInteracting)
-                         {
-                             states.isInteracting = false;
-                             ChangeState(CharacterState.MOVING);
-                         }
-                     }
-
-                     break;
-             }
-         }
-
-         public void Fixed_Tick(float d)
-         {
-             deltaTime = d;
-             states.onGround = OnGroundCheck();
-
-             switch (characterState)
-             {
-                 case CharacterState.MOVING:
-                     HandleRotation();
-                     HandleMovement();
-                     break;
-                 case CharacterState.INTERACTING:
-                     HandleRotation();
-                     HandleMovement();
-                     break;
-                 case CharacterState.OVERRIDE_INTERACTING:
-                     myRigidbody.drag = 0f;
-                     Vector3 v = myRigidbody.velocity;
-                     Vector3 tv = inputVar.animationDelta;
-                     tv *= 50f;
-                     tv.y = v.y;
-                     myRigidbody.velocity = tv;
-                     break;
-                 case CharacterState.ON_AIR:
-                     break;
-             }
-         }*/
-
-         private bool OnGroundCheck()
-         {
-             //    If character falls through the ground while lockon, check Animator->LocomotionLockedOn->BlendState
-             Vector3 origin = myTransform.position;
-             origin.y += 0.7f;
-             var dir = -Vector3.up;
-
-             const float distance = 1.4f;
-             if (!Physics.Raycast(origin, dir, out var hit, distance, ignoreForGroundCheck)) return false;
-
-             var targetPosition = hit.point;
-             myTransform.position = targetPosition;
-             return true;
-         }
-
-         private bool InteractionInputCheck()
-         {
-             //  Only happens during movement state
-             WeaponManager.ActionContainer a = null;
-             // if (inputVar.rb)
-             // {
-             //     a = GetAction(InputType.RB);
-             // }
-             // else if (inputVar.lb)
-             // {
-             //     a = GetAction(InputType.LB);
-             // }
-             // else if (inputVar.rt)
-             // {
-             //     a = GetAction(InputType.RT);
-             //     Save();
-             // }
-             // else if (inputVar.lt)
-             // {
-             //     a = GetAction(InputType.LT);
-             //     Load();
-             // }
-
-             if (a?.action == null)
-             {
-                 return false;
-             }
-
-             if (a.action.animationAction == null) return false;
-
-             HandleAction(a);
-             return true;
-         }
-
-         private void HandleMovement()
-         {
-             var v = myTransform.forward;
-
-             // if (states.isLockedOn)
-             //     v = inputVar.moveDir;
-             //
-             // myRigidbody.drag = inputVar.moveAmount > 0 ? 0f : 4f;
-             //
-             // if (states.animIsInteracting)
-             // {
-             //     states.isRunning = false;
-             //     v *= inputVar.moveAmount * controlStats.walkSpeed;
-             // }
-             // else
-             // {
-             //     if (!states.isRunning)
-             //         v *= inputVar.moveAmount * controlStats.moveSpeed;
-             //     else
-             //         v *= inputVar.moveAmount * controlStats.sprintSpeed;
-             // }
-
-             myRigidbody.velocity = v;
-         }
-
-         private void HandleRotation()
-         {
-             // var targetDir = (states.isLockedOn == false)
-             //     ? inputVar.moveDir
-             //     : inputVar.lockOnTransform.position - myTransform.position;
-             //
-             // targetDir.y = 0f;
-             // if (targetDir == Vector3.zero)
-             //     targetDir = myTransform.forward;
-             //
-             // var tr = Quaternion.LookRotation(targetDir);
-             // var targetRotation = Quaternion.Slerp(
-             //     myTransform.rotation, tr, deltaTime * controlStats.rotateSpeed * inputVar.moveAmount);
-             // myTransform.rotation = targetRotation;
-         }
-
-         private void HandleMovementAnimations()
-         {
-             // myAnimator.SetBool(Lockon, states.isLockedOn);
-             //
-             // if (!states.isLockedOn)
-             // {
-             //     myAnimator.SetBool(StaticStrings.run, states.isRunning);
-             //     float move = inputVar.moveAmount;
-             //     if (states.animIsInteracting)
-             //     {
-             //         move = Mathf.Clamp(move, 0, 0.5f);
-             //     }
-             //
-             //     myAnimator.SetFloat(StaticStrings.vertical, move, 0.15f, deltaTime);
-             // }
-             // else
-             // {
-             //     myAnimator.SetFloat(StaticStrings.vertical, inputVar.vertical, 0.15f, deltaTime);
-             //     myAnimator.SetFloat(StaticStrings.horizontal, inputVar.horizontal, 0.15f, deltaTime);
-             // }
-         }
-
-         private void HandleAction(WeaponManager.ActionContainer actionContainer)
-         {
-             switch (actionContainer.action.actionType)
-             {
-                 case ActionType.ATTACK:
-                     var attackAction = (AttackAction) actionContainer.action.animationAction;
-                     PlayAttackAction(actionContainer, attackAction);
-                     break;
-                 case ActionType.BLOCK:
-                     break;
-                 case ActionType.PARRY:
-                     break;
-                 case ActionType.SPELL:
-                     var spellAction = (SpellAction) actionContainer.action.animationAction;
-                     PlaySpellAction(actionContainer, spellAction);
-                     break;
-             }
-         }
-
-         private void PlayAttackAction(WeaponManager.ActionContainer actionContainer, AttackAction attackAction)
-         {
-             //  Is the action a right-handed action or left?
-             myAnimator.SetBool(StaticStrings.mirror, actionContainer.isMirrored);
-
-             //  Play the Attack Animation
-             PlayActionAnimation(attackAction.attackAnimation.value);
-
-             //  Change the anim speed if necessary            
-             if (attackAction.changeSpeed)
-             {
-                 myAnimator.SetFloat(Speed, attackAction.animSpeed);
-             }
-
-             //  Switch State
-             ChangeState(CharacterState.OVERRIDE_INTERACTING);
-         }
-
-         private void PlaySpellAction(WeaponManager.ActionContainer actionContainer, SpellAction spellAction)
-         {
-             string targetAnimation = spellAction.startAnimation.value;
-             targetAnimation += (actionContainer.isMirrored) ? "_l" : "_r";
-
-             //  Is the action a right-handed action or left?
-             myAnimator.SetBool(StaticStrings.mirror, actionContainer.isMirrored);
-
-             //  Play the Attack Animation
-             myAnimator.CrossFade(targetAnimation, 0.2f);
-
-             //  Is it a spell?
-             states.isSpellCasting = true;
-             states.animIsInteracting = true;
-             myAnimator.SetBool(StaticStrings.spellCasting, states.isSpellCasting);
-
-             //  Change the anim speed if necessary            
-             if (spellAction.changeSpeed)
-             {
-                 myAnimator.SetFloat(Speed, spellAction.animSpeed);
-             }
-
-             //  Switch State
-             ChangeState(CharacterState.INTERACTING);
-             _savedTime = Time.realtimeSinceStartup;
-             _currentSpellAction = spellAction;
-         }
-
-         private void PlaySavedSpellAction()
-         {
-             myAnimator.SetBool(StaticStrings.spellCasting, states.isSpellCasting);
-             PlayActionAnimation(_currentSpellAction.castAnimation.value);
-             ChangeState(CharacterState.OVERRIDE_INTERACTING);
-             states.animIsInteracting = false;
          }
 
          public void CastSpellActual()
          {
-             if (!(_currentSpellAction is ProjectileSpell)) return;
-             var projectile = (ProjectileSpell) _currentSpellAction;
-             var go = Instantiate(projectile.projectile);
-
-             Vector3 tp = myTransform.position;
-             var forward = myTransform.forward;
-             tp += forward;
-             tp.y += 1.5f;
-
-             go.transform.position = tp;
-             go.transform.rotation = transform.rotation;
-
-             var rb = go.GetComponent<Rigidbody>();
-             rb.AddForce(forward * 10f, ForceMode.Impulse);
+             // if (!(_currentSpellAction is ProjectileSpell)) return;
+             // var projectile = (ProjectileSpell) _currentSpellAction;
+             // var go = Instantiate(projectile.projectile);
+             //
+             // Vector3 tp = myTransform.position;
+             // var forward = myTransform.forward;
+             // tp += forward;
+             // tp.y += 1.5f;
+             //
+             // go.transform.position = tp;
+             // go.transform.rotation = transform.rotation;
+             //
+             // var rb = go.GetComponent<Rigidbody>();
+             // rb.AddForce(forward * 10f, ForceMode.Impulse);
          }
 
-         private void PlayActionAnimation(string animationName)
+         public void PlayAnimation(string targetAnim)
          {
-             //  The layer parameter is referring to Animator Controller Layer 
-             // m_animator.PlayInFixedTime(_animationName, 5, 0.2f);    //  Pass in the Override Layer where attacks take place
-             // Debug.Log("Playing Animation : " + _animationName);
-             myAnimator.CrossFade(animationName, 0.2f);
-         } //  PlayInFixedTime is kinda similar to CrossFade Animation but slightly better
-
-         private void ChangeState(CharacterState state)
+             myAnimator.CrossFade(targetAnim, 0.2f);
+             myAnimator.SetBool(IsInteracting, true);
+         }
+         
+         public void PlayAttackAnimation(InputButton inp)
          {
-             if (characterState == state) return;
-             characterState = state;
-             switch (state)
+             switch (inp)
              {
-                 case CharacterState.MOVING:
-                     animatorHook.rm_mult = 1;
-                     myAnimator.applyRootMotion = false;
+                 case InputButton.RB:
+                     PlayAnimation("oh_attack_1");
                      break;
-                 case CharacterState.INTERACTING:
-                     animatorHook.rm_mult = 1;
-                     myAnimator.applyRootMotion = false;
+                 case InputButton.LB:
+                     PlayAnimation("oh_attack_2");
                      break;
-                 case CharacterState.OVERRIDE_INTERACTING:
-                     animatorHook.rm_mult = 1;
-                     myAnimator.applyRootMotion = true;
-                     myAnimator.SetBool(IsInteracting, true);
-                     states.isInteracting = true;
+                 case InputButton.RT:
+                     PlayAnimation("oh_attack_3");
                      break;
-                 case CharacterState.ON_AIR:
-                     animatorHook.rm_mult = 1;
-                     myAnimator.applyRootMotion = false;
-                     break;
-                 case CharacterState.ROLL:
-                     myAnimator.applyRootMotion = true;
-                     myAnimator.SetBool(IsInteracting, true);
-                     states.isInteracting = true;
+                 case InputButton.LT:
+                     PlayAnimation("oh_attack_3");
                      break;
              }
-         }
-
-         private WeaponManager.ActionContainer GetAction(InputType inputType)
-         {
-             var ac = weaponManager.GetAction(inputType);
-
-             if (ac == null)
-                 return null;
-
-             inventoryManager.SetLastInput(inputType);
-             return ac;
-         }
-
-         public void HandleRoll()
-         {
-             // Vector3 relativeDir = myTransform.InverseTransformDirection(inputVar.moveDir);
-             // float v = relativeDir.z;
-             // float h = relativeDir.x;
-             //
-             // if (relativeDir == Vector3.zero)
-             // {
-             //     //  if no directional input, play step back animation
-             //     inputVar.moveDir = -myTransform.forward;
-             //     inputVar.targetRollSpeed = controlStats.backStepSpeed;
-             // }
-             // else
-             // {
-             //     //  else roll using directional input
-             //     inputVar.targetRollSpeed = controlStats.rollSpeed;
-             // }
-             //
-             // //  Override root motion multiplier
-             // animatorHook.rm_mult = inputVar.targetRollSpeed;
-             //
-             // //  Set Animations floats using relative Direction
-             // myAnimator.SetFloat(StaticStrings.vertical, v);
-             // myAnimator.SetFloat(StaticStrings.horizontal, h);
-             //
-             // //  Play Animation and change state
-             // PlayActionAnimation(StaticStrings.rolls);
-             // ChangeState(CharacterState.ROLL);
          }
 
          public void SetDamageColliderStatus(bool status)
          {
-             var wHook = inventoryManager.GetWeaponInUse().weaponHook;
-
-             if (wHook != null)
-             {
-                 if (status)
-                 {
-                     wHook.OpenDamageColliders();
-                 }
-                 else
-                 {
-                     wHook.CloseDamageColliders();
-                 }
-             }
-             else
-             {
-                 Debug.LogError("Weapon hook came back null from : " + gameObject.name);
-             }
+             // var wHook = inventoryManager.GetWeaponInUse().weaponHook;
+             //
+             // if (wHook != null)
+             // {
+             //     if (status)
+             //     {
+             //         //wHook.OpenDamageColliders();
+             //     }
+             //     else
+             //     {
+             //         //wHook.CloseDamageColliders();
+             //     }
+             // }
+             // else
+             // {
+             //     Debug.LogError("Weapon hook came back null from : " + gameObject.name);
+             // }
          }
 
          public void HandleDamageCollision(StateManager targetStateManager)
@@ -666,11 +190,7 @@ using Actions = ANM.Scriptables.Action;
 
          private void GetHit()
          {
-             if (states.isGettingHit) return;
-             PlayActionAnimation("hit1");
-             states.isGettingHit = true;
-             _timeSinceLastHit = Time.realtimeSinceStartup;
-             ChangeState(CharacterState.OVERRIDE_INTERACTING);
+
          }
 
          private void Save()
@@ -687,123 +207,13 @@ using Actions = ANM.Scriptables.Action;
              _lastKnownLocation = SaveGameState.Load<SerializableVector3>(name + "WorldPosition");
              transform.position = _lastKnownLocation.ToVector();
          }
-     }
 
-     [Serializable]
-     public class WeaponManager
-     {
-         //  Control what actions to do based on button input
-         public ActionContainer[] actions;
-
-         public ActionContainer GetAction(InputType inputType)
+         public enum InputButton
          {
-             return actions.FirstOrDefault(t => t.inputType == inputType);
+             RB,
+             LB,
+             RT,
+             LT
          }
-
-         public void Init()
-         {
-             actions = new ActionContainer[4];
-             for (var x = 0; x < actions.Length; x++)
-             {
-                 var a = new ActionContainer {inputType = (InputType) x};
-                 actions[x] = a;
-             }
-         }
-
-         [Serializable]
-         public class ActionContainer
-         {
-             public InputType inputType;
-             public Actions action;
-             public bool isMirrored;
-         }
-     }
-
-     [Serializable]
-     public class InventoryManager
-     {
-         private InputType _lastInput;
-
-         //  Equipped Weapon Data
-         public Inventory.RuntimeWeapon rightSlot;
-         public Inventory.RuntimeWeapon leftSlot;
-
-         //  Attached Item Data
-         public Item rightItem;
-         public Item leftItem;
-         public Item consumableHandSlot;
-         public Item spellHandSlot;
-
-
-         public void SetLastInput(InputType type)
-         {
-             _lastInput = type;
-         }
-
-         public Inventory.RuntimeWeapon GetWeaponInUse()
-         {
-             switch (_lastInput)
-             {
-                 case InputType.RB:
-                 case InputType.RT:
-                     return rightSlot;
-                 case InputType.LB:
-                 case InputType.LT:
-                     return leftSlot;
-                 default:
-                     Debug.LogError("Last input was not recognized!");
-                     return null;
-             }
-         }
-     }
-
-     [Serializable]
-     public class InputVariables
-     {
-         public float horizontal;
-         public float vertical;
-         public float moveAmount;
-
-         public Vector3 moveDir;
-         public Vector3 animationDelta;
-         public Transform lockOnTransform;
-
-         public bool rt;
-         public bool lt;
-         public bool rb;
-         public bool lb;
-
-         public float targetRollSpeed;
-     }
-
-     [Serializable]
-     public class States
-     {
-         public bool onGround;
-         public bool isRunning;
-         public bool isLockedOn;
-         public bool isInAction;
-         public bool isMoveEnabled;
-         public bool isDamageOn;
-         public bool isRotateEnabled;
-         public bool isAttackEnabled;
-         public bool isSpellCasting;
-         public bool isIkEnabled;
-         public bool isUsingItem;
-         public bool isAbleToBeParried;
-         public bool isParryOn;
-         public bool isLeftHand;
-         public bool animIsInteracting;
-         public bool isInteracting;
-         public bool closeWeapons;
-         public bool isInvisible;
-         public bool isGettingHit;
-     }
-
-     [Serializable]
-     public class NetworkStates
-     {
-         public bool isLocal;
-         public bool isInRoom;
      }
  }

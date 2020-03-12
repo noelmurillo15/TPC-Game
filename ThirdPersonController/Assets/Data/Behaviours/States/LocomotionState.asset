@@ -14,10 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transitions:
   - id: 0
-    condition: {fileID: 11400000, guid: b76405a7fc766474ab2215ffd222d959, type: 2}
-    targetState: {fileID: 11400000, guid: 5062069eb3e4774469f9b01af5a824fd, type: 2}
+    condition: {fileID: 11400000, guid: b281d68cccd63c54aab82228f8f8bee0, type: 2}
+    targetState: {fileID: 11400000, guid: 2b52bc3e50003e740b30a712f00040cb, type: 2}
     disable: 0
-  onEnter: []
+  - id: 1
+    condition: {fileID: 11400000, guid: d91436e370ff91a43bff68079f778508, type: 2}
+    targetState: {fileID: 11400000, guid: 21e2f3a6db4bbf44a8f43267a0c27f98, type: 2}
+    disable: 0
+  onEnter:
+  - {fileID: 11400000, guid: 692b0c2899e759d4db77d68b8eece92e, type: 2}
   onUpdate:
   - {fileID: 11400000, guid: f2538418f5e3ae74c810dc8da0f9d8ad, type: 2}
   - {fileID: 11400000, guid: cc4a39fe7d119fa4da0b59d67bd6a762, type: 2}
@@ -26,4 +31,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d6c90cfbf14772c44b46ca1fb24e1b9e, type: 2}
   - {fileID: 11400000, guid: a6d859bac4e30324e9cec4b0be9d5f93, type: 2}
   onExit: []
-  idCount: 1
+  idCount: 2

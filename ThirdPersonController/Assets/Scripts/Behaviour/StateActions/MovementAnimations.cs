@@ -9,15 +9,15 @@ using ANM.Managers;
 
 namespace ANM.Behaviour.StateActions
 {
-    [CreateAssetMenu(menuName = "MonoActions/Move Animation")]
+    [CreateAssetMenu(menuName = "Behaviours/StateAction/Movement Animation")]
     public class MovementAnimations : StateAction
     {
         public string verticalFloatName;
         
         
-        public override void Execute(StateManager stateManager)
+        public override void Execute(StateManager state)
         {
-            stateManager.myAnimator.SetFloat(verticalFloatName, stateManager.moveAmount, 0.2f, stateManager.deltaTime);
+            state.myAnimator.SetFloat(verticalFloatName, state.moveAmount, 0.2f, state.deltaTime);
         }
     }
 }

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0748f44f568bf940bf2f85fd0bd57c2, type: 3}
-  m_Name: Y
+  m_Name: B
   m_EditorClassIdentifier: 
-  actionName: Y
   isPressed: 0
+  actionName: Roll
   buttonState: 0
   controller: {fileID: 11400000, guid: e3ebbb1bcb29f0c42b1de3ac18524d18, type: 2}

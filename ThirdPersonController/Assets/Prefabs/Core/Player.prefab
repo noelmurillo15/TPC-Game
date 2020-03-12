@@ -399,71 +399,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: {fileID: 11400000, guid: 5acccbc7dc6f75549b1bd1b80ec20ecf, type: 2}
-  characterState: 0
-  controlStats: {fileID: 11400000, guid: 4211322a3dba51344992ff160fc3998b, type: 2}
-  states:
-    onGround: 0
-    isRunning: 0
-    isLockedOn: 0
-    isInAction: 0
-    isMoveEnabled: 0
-    isDamageOn: 0
-    isRotateEnabled: 0
-    isAttackEnabled: 0
-    isSpellCasting: 0
-    isIkEnabled: 0
-    isUsingItem: 0
-    isAbleToBeParried: 0
-    isParryOn: 0
-    isLeftHand: 0
-    animIsInteracting: 0
-    isInteracting: 0
-    closeWeapons: 0
-    isInvisible: 0
-    isGettingHit: 0
-  inputVar:
-    horizontal: 0
-    vertical: 0
-    moveAmount: 0
-    moveDir: {x: 0, y: 0, z: 0}
-    animationDelta: {x: 0, y: 0, z: 0}
-    lockOnTransform: {fileID: 0}
-    rt: 0
-    lt: 0
-    rb: 0
-    lb: 0
-    targetRollSpeed: 0
-  weaponManager:
-    actions:
-    - inputType: 2
-      action:
-        actionType: 0
-        animationAction: {fileID: 0}
-      isMirrored: 0
-    - inputType: 3
-      action:
-        actionType: 0
-        animationAction: {fileID: 0}
-      isMirrored: 1
-    - inputType: 0
-      action:
-        actionType: 0
-        animationAction: {fileID: 0}
-      isMirrored: 0
-    - inputType: 1
-      action:
-        actionType: 0
-        animationAction: {fileID: 0}
-      isMirrored: 1
-  inventoryManager:
-    rightItem: {fileID: 11400000, guid: 3782cd4d1ac6c95489092b6197c1ee61, type: 2}
-    leftItem: {fileID: 11400000, guid: 5dfb073fb047de840bbc23a0539dc842, type: 2}
-    consumableHandSlot: {fileID: 0}
-    spellHandSlot: {fileID: 0}
-  resourcesManager: {fileID: 0}
-  activeModel: {fileID: 0}
-  deltaTime: 0
-  forceInit: 0
+  activeModel: {fileID: 8051707835196491887}
   myTransform: {fileID: 0}
   myAnimator: {fileID: 0}
   myRigidbody: {fileID: 0}
@@ -478,7 +414,12 @@ MonoBehaviour:
   vertical: 0
   horizontal: 0
   moveAmount: 0
-  moveDirection: {x: 0, y: 0, z: 0}
+  rotateDirection: {x: 0, y: 0, z: 0}
+  rb: 0
+  rt: 0
+  lb: 0
+  lt: 0
+  deltaTime: 0
 --- !u!114 &4165652683963794706
 MonoBehaviour:
   m_ObjectHideFlags: 0

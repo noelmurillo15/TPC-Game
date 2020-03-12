@@ -9,7 +9,7 @@ using ANM.Scriptables.Variables;
 
 namespace ANM.Behaviour.Actions
 {
-    [CreateAssetMenu(menuName = "MonoActions/RotateViaInputAxis")]
+    [CreateAssetMenu(menuName = "Behaviours/MonoActions/RotateViaInputAxis")]
     public class RotateViaInputAxis : Action
     {
         public bool clamp;

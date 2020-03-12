@@ -9,12 +9,12 @@ using ANM.Managers;
 
 namespace ANM.Behaviour.StateActions
 {
-    [CreateAssetMenu(menuName = "MonoActions/Is Grounded")]
+    [CreateAssetMenu(menuName = "Behaviours/StateAction/Is Grounded")]
     public class IsGrounded : StateAction
     {
-        public override void Execute(StateManager stateManager)
+        public override void Execute(StateManager state)
         {
-            Vector3 origin = stateManager.myTransform.position;
+            Vector3 origin = state.myTransform.position;
             origin.y += 0.7f;
             var dir = -Vector3.up;
             var distance = 1.4f;
@@ -22,7 +22,7 @@ namespace ANM.Behaviour.StateActions
 
             if (!Physics.Raycast(origin, dir, out var hit, distance)) return;
             Vector3 targetPosition = hit.point;
-            stateManager.transform.position = targetPosition;
+            state.transform.position = targetPosition;
         }
     }
 }

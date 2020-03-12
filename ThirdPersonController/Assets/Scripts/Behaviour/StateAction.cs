@@ -11,6 +11,6 @@ namespace ANM.Behaviour
 {
     public abstract class StateAction : ScriptableObject
     {
-        public abstract void Execute(StateManager stateManager);
+        public abstract void Execute(StateManager state);
     }
 }

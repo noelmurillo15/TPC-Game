@@ -4,8 +4,8 @@
  * Last Edited : 3/2/2020
  */
 
-using ANM.Input;
 using System.Linq;
+using ANM.Managers;
 using UnityEngine;
 using ANM.Scriptables.Variables;
 using Actions = ANM.Scriptables.Action;
@@ -27,12 +27,12 @@ namespace ANM.Inventory
             type = ItemType.WEAPON;
         }
         
-        private ActionHolder GetActionHolder(InputType input)
+        private ActionHolder GetActionHolder(StateManager.InputButton input)
         {
             return actions.FirstOrDefault(t => t.input == input);
         }
 
-        public Actions GetAction(InputType input)
+        public Actions GetAction(StateManager.InputButton input)
         {
             var ah = GetActionHolder(input);
             return ah?.action;
@@ -42,7 +42,7 @@ namespace ANM.Inventory
     [System.Serializable]
     public class ActionHolder
     {
-        public InputType input;
+        public StateManager.InputButton input;
         public Actions action;
     }
 }

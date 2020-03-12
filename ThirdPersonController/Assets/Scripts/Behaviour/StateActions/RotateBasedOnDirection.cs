@@ -10,19 +10,19 @@ using ANM.Scriptables.Variables;
 
 namespace ANM.Behaviour.StateActions
 {
-    [CreateAssetMenu(menuName = "MonoActions/RotateViaDirection")]
+    [CreateAssetMenu(menuName = "Behaviours/StateAction/Rotate Via Direction")]
     public class RotateBasedOnDirection : StateAction
     {
         public TransformVariable cameraTransform;
         public float speed = 8;
         
         
-        public override void Execute(StateManager stateManager)
+        public override void Execute(StateManager state)
         {
             if (cameraTransform.value == null) return;
 
-            var valueX = stateManager.horizontal;
-            var valueY = stateManager.vertical;
+            var valueX = state.horizontal;
+            var valueY = state.vertical;
 
             Vector3 targetDirection = cameraTransform.value.forward * valueY;
             targetDirection += cameraTransform.value.right * valueX;
@@ -30,13 +30,13 @@ namespace ANM.Behaviour.StateActions
 
             targetDirection.y = 0;
             if (targetDirection == Vector3.zero)
-                targetDirection = stateManager.transform.forward;
+                targetDirection = state.transform.forward;
 
             var tr = Quaternion.LookRotation(targetDirection);
-            var targetRotation = Quaternion.Slerp(stateManager.transform.rotation,
-                tr, stateManager.deltaTime * stateManager.moveAmount * speed);
+            var targetRotation = Quaternion.Slerp(state.transform.rotation,
+                tr, state.deltaTime * state.moveAmount * speed);
 
-            stateManager.transform.rotation = targetRotation;
+            state.transform.rotation = targetRotation;
         }
     }
 }
