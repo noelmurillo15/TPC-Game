@@ -1,7 +1,7 @@
 ﻿/*
- * StateActions - the logic to execute when in the current State
+ * StateActions - Used by the Behaviour Node Editor to add logic (action) to a State
  * Created by : Allan N. Murillo
- * Last Edited : 3/10/2020
+ * Last Edited : 3/12/2020
  */
 
 using UnityEngine;

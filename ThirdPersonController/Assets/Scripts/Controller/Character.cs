@@ -1,7 +1,7 @@
 ﻿/*
- * Character - 
+ * Character - Used for equipping items on a Character
  * Created by : Allan N. Murillo
- * Last Edited : 3/2/2020
+ * Last Edited : 3/12/2020
  */
 
 using System;

@@ -1,7 +1,7 @@
 ﻿/*
-* RotateBasedOnDirection - 
+* RotateBasedOnCamera - Rotates the state based on movement input
 * Created by : Allan N. Murillo
-* Last Edited : 3/11/2020
+* Last Edited : 3/12/2020
 */
 
 using UnityEngine;
@@ -10,7 +10,7 @@ using ANM.Scriptables.Variables;
 
 namespace ANM.Behaviour.StateActions
 {
-    [CreateAssetMenu(menuName = "Behaviours/StateAction/Rotate Via Direction")]
+    [CreateAssetMenu(menuName = "Behaviours/StateAction/Rotate Via Camera")]
     public class RotateBasedOnDirection : StateAction
     {
         public TransformVariable cameraTransform;

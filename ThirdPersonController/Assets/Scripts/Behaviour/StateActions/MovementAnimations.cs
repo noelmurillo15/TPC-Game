@@ -1,7 +1,7 @@
 ﻿/*
-* MovementAnimations - 
+* MovementAnimations - Plays the locomotion animation based on vertical (MoveForward) movement
 * Created by : Allan N. Murillo
-* Last Edited : 3/11/2020
+* Last Edited : 3/12/2020
 */
 
 using UnityEngine;

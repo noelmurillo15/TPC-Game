@@ -1,16 +1,18 @@
 ﻿/*
-* MonitorRolls - 
+* MonitorRolls - Based on Roll Input (currently Xbox B || PC Left Shift) will tell the State to
+*     BackStep (press roll input with no direction), Roll(press roll input with a direction) or
+*     Sprint (hold roll input for longer than 0.5 seconds)
 * Created by : Allan N. Murillo
-* Last Edited : 3/10/2020
+* Last Edited : 3/13/2020
 */
 
+using ANM.Actions;
 using UnityEngine;
 using ANM.Managers;
-using ANM.Behaviour.Actions;
 
 namespace ANM.Behaviour.Conditions
 {
-    [CreateAssetMenu(menuName = "Behaviours/Conditions/Roll Movement")]
+    [CreateAssetMenu(menuName = "Behaviours/Conditions/Monitor Roll Input")]
     public class MonitorRolls : Condition
     {
         public InputManager inpManager;
@@ -20,9 +22,9 @@ namespace ANM.Behaviour.Conditions
 
         public override bool CheckCondition(StateManager state)
         {
-            bool retVal = false;
+            var retVal = false;
 
-            if (inpManager.B.isPressed)
+            if (inpManager.b.isPressed)
             {
                 _bTimer += Time.deltaTime;
                 if (_bTimer > .5f)
@@ -36,6 +38,8 @@ namespace ANM.Behaviour.Conditions
                 {
                     retVal = true;
                     state.generalDelta = 0f;
+                    state.isBackstep = false;
+                    
                     if (state.moveAmount > 0f)
                     {
                         state.myAnimator.SetFloat(Vertical, 1);
@@ -43,6 +47,7 @@ namespace ANM.Behaviour.Conditions
                     }
                     else
                     {
+                        state.isBackstep = true;
                         state.myAnimator.SetFloat(Vertical, 0);
                         state.rollDirection = -state.myTransform.forward;
                     }

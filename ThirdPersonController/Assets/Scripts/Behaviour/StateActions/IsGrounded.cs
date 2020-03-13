@@ -1,5 +1,5 @@
 ﻿/*
-* IsGrounded - 
+* IsGrounded - Forces the state's position onto the ground (within 1.4f max distance)
 * Created by : Allan N. Murillo
 * Last Edited : 3/10/2020
 */
@@ -18,7 +18,7 @@ namespace ANM.Behaviour.StateActions
             origin.y += 0.7f;
             var dir = -Vector3.up;
             var distance = 1.4f;
-            Debug.DrawRay(origin, dir * distance);
+            //Debug.DrawRay(origin, dir * distance);
 
             if (!Physics.Raycast(origin, dir, out var hit, distance)) return;
             Vector3 targetPosition = hit.point;

@@ -1,12 +1,15 @@
 ﻿﻿/*
- * StateManager - 
+ * StateManager - Handles all states of a Character
  * Created by : Allan N. Murillo
- * Last Edited : 3/10/2020
+ * Last Edited : 3/13/2020
  */
  
 using ANM.Saving;
 using UnityEngine;
 using ANM.Behaviour;
+using ANM.Inventory;
+using ANM.Scriptables;
+using ANM.Scriptables.Variables;
 using ANM.Utilities;
 using Actions = ANM.Scriptables.Action;
 
@@ -15,6 +18,7 @@ using Actions = ANM.Scriptables.Action;
      public class StateManager : MonoBehaviour
      {
          public State currentState;
+         public StateAction initAction;
 
          [Header("References")] public GameObject activeModel;
          [HideInInspector] public Transform myTransform;
@@ -37,6 +41,14 @@ using Actions = ANM.Scriptables.Action;
          public bool rt;
          public bool lb;
          public bool lt;
+
+         public bool isBackstep;
+
+         [Space] [Header("Inventory")] 
+         public PlayerProfile playerProfile;
+         public AbstractInventory inventory;
+         public Vector3Variable leftHandPosition;
+         public Vector3Variable leftHandRotation;
 
          [Space] [Header("Local Info")] public float deltaTime;
 
@@ -62,6 +74,8 @@ using Actions = ANM.Scriptables.Action;
                  myAnimator = activeModel.GetComponent<Animator>();
 
              Initialize();
+             
+             initAction?.Execute(this);
          }
 
          public void Initialize()

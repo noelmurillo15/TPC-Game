@@ -17,8 +17,8 @@ MonoBehaviour:
   minClamp: -35
   maxClamp: 35
   speed: 1.5
-  angle: -282.46808
-  axis: {fileID: 11400000, guid: e2e86ca3008958c44bdf2e574b1876f4, type: 2}
+  angle: -347.59125
+  axis: {fileID: 11400000, guid: 252a04bb6fb85d94b85fe908a9d89c94, type: 2}
   targetAxis: 1
   targetInputAxis: 0
   targetTransform: {fileID: 11400000, guid: 62ee014dd734f5040a35986cd00787ce, type: 2}

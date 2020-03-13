@@ -1,7 +1,7 @@
 ﻿/*
- * ResourcesManager SO - 
+ * ResourcesManager - Contains a reference to all created AbstractItems
  * Created by : Allan N. Murillo
- * Last Edited : 3/2/2020
+ * Last Edited : 3/13/2020
  */
 
 using UnityEngine;
@@ -13,69 +13,40 @@ namespace ANM.Managers
     [CreateAssetMenu(menuName = "Single Instances/Resources Manager")]
     public class ResourcesManager : ScriptableObject
     {
-        public RuntimeReferences runtime;
-        private InventoryData _inventoryData;
-        private Inventory.Inventory _inventory;
+        public List<AbstractItem> allItems = new List<AbstractItem>();
+        private readonly Dictionary<string, AbstractItem> _itemDict = new Dictionary<string, AbstractItem>();
 
 
         public void Initialize()
         {
-            runtime = Resources.Load("RuntimeReferences") as RuntimeReferences;
-            runtime?.Initialize();
-
-            _inventory = Resources.Load("Inventory") as Inventory.Inventory;
-            _inventory?.Initialize();
-
-            _inventoryData = Resources.Load("PlayerInventory") as InventoryData;
-        }
-
-        public void InitPlayerInventory()
-        {
-            _inventoryData.data.Clear();
-        }
-
-        private void AddItemOnInventory(string id)
-        {
-            Item newItem = GetItem(id);
-            AddItemOnInventory(newItem);
-        }
-
-        private void AddItemOnInventory(Item item)
-        {
-            if (item == null) return;
-            Item newItem = Instantiate(item);
-            _inventoryData.data.Add(newItem);
-        }
-
-        public Item GetItem(string id)
-        {
-            return _inventory.GetItem(id);
-        }
-
-        public Weapon GetWeapon(string id)
-        {
-            var item = GetItem(id);
-            return (Weapon) item;
-        }
-
-        public Armor GetArmor(string id)
-        {
-            var item = GetItem(id);
-            return (Armor) item;
-        }
-
-        public List<Item> GetAllItemsOfType(ItemType itemType)
-        {
-            var itemsOfType = new List<Item>();
-            for (var x = 0; x < itemsOfType.Count; x++)
+            foreach (var item in allItems)
             {
-                if (_inventory.allItems[x].type == itemType)
+                if (!_itemDict.ContainsKey(item.name))
                 {
-                    itemsOfType.Add(_inventory.allItems[x]);
+                    _itemDict.Add(item.name, item);
+                }
+                else
+                {
+                    Debug.Log("Duplicate Item");
                 }
             }
+        }
 
-            return itemsOfType;
+        public AbstractItem GetItem(string id)
+        {
+            _itemDict.TryGetValue(id, out var item);
+            return item;
+        }
+        
+        public AbstractItem GetItemInstance(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            
+            var defaultItem = GetItem(id);
+            var item = Instantiate(defaultItem);
+            item.name = defaultItem.name;
+            
+            return item;
         }
     }
 }

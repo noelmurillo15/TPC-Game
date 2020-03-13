@@ -1,7 +1,7 @@
 ﻿/*
-* MoveWithRootMotion - 
+* MoveWithRootMotion - Used to move a states' position when playing an animation that uses RootMotion
 * Created by : Allan N. Murillo
-* Last Edited : 3/10/2020
+* Last Edited : 3/12/2020
 */
 
 using UnityEngine;

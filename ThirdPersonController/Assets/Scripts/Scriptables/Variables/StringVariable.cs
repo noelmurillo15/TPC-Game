@@ -1,7 +1,7 @@
 ﻿/*
- * StringVariable SO - 
+ * StringVariable - 
  * Created by : Allan N. Murillo
- * Last Edited : 2/28/2020
+ * Last Edited : 3/13/2020
  */
 
 using UnityEngine;

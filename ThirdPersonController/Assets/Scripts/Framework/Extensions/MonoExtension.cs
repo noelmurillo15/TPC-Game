@@ -6,18 +6,18 @@
 
 using UnityEngine;
 using System.Collections;
-using Actions = System.Action;
+using Action = System.Action;
 
 namespace ANM.Framework.Extensions
 {
     public static class MonoExtension
     {
-        public static void InvokeAfter(this MonoBehaviour mono, Actions method, float delay)
+        public static void InvokeAfter(this MonoBehaviour mono, Action method, float delay)
         {
             mono.StartCoroutine(InvokeAfterRoutine(method, delay));
         }
 
-        private static IEnumerator InvokeAfterRoutine(Actions method, float delay)
+        private static IEnumerator InvokeAfterRoutine(Action method, float delay)
         {
             yield return new WaitForSeconds(delay);
             method();

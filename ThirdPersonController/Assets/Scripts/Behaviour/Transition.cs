@@ -1,7 +1,7 @@
 ﻿/*
- * Transition -
+ * Transition - Used by Behaviour Node Editor to change to a different state when a condition is met
  * Created by : Allan N. Murillo
- * Last Edited : 3/10/2020
+ * Last Edited : 3/12/2020
  */
 
 namespace ANM.Behaviour

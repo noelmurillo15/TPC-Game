@@ -4,12 +4,11 @@
  * Last Edited : 3/10/2020
  */
 
-using ANM.Behaviour;
 using UnityEngine;
 using UnityEditor;
+using ANM.Behaviour;
 using ANM.Editor.Nodes;
 using UnityEditorInternal;
-using ANM.Behaviour.Conditions;
 using State = ANM.Behaviour.State;
 
 namespace ANM.Editor

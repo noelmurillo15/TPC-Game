@@ -1,12 +1,12 @@
 ﻿/*
 * OnEnableAssignStateManager - 
 * Created by : Allan N. Murillo
-* Last Edited : 3/11/2020
+* Last Edited : 3/12/2020
 */
 
 using UnityEngine;
 using ANM.Managers;
-using ANM.Scriptables;
+using ANM.Scriptables.Variables;
 
 namespace ANM.Utilities
 {

@@ -15,22 +15,21 @@ namespace ANM.Framework.Managers
 {
     public class MenuManager : MonoBehaviour
     {
-        [Header("Menu Panels")] [SerializeField]
-        private GameObject mainPanel = null;
-
+        [Header("Menu Panels")] 
+        [SerializeField] private GameObject mainPanel = null;
         [SerializeField] private GameObject pausePanel = null;
         [SerializeField] private AudioOptionsPanel audioOptionsPanel = null;
         [SerializeField] private VideoOptionsPanel videoOptionsPanel = null;
         [SerializeField] private QuitOptionsPanel quitOptionsPanel = null;
-
-        [Space] [SerializeField] private Button mainPanelSelectedObj = null;
+        [Space] 
+        [SerializeField] private Button mainPanelSelectedObj = null;
         [SerializeField] private Button pausePanelSelectedObj = null;
         [SerializeField] private Button quitPanelSelectedObj = null;
 
         [SerializeField] private Scriptables.Controller controls;
         
-        [Space] [Header("Local Game Info")] [SerializeField]
-        private bool isSceneTransitioning = false;
+        [Space] [Header("Local Game Info")] 
+        [SerializeField] private bool isSceneTransitioning = false;
         [SerializeField] private bool isMainMenuActive = false;
         [SerializeField] private int lastSceneBuildIndex = 0;
 

@@ -1,5 +1,5 @@
 ﻿/*
- * StateNode SO -
+ * StateNode -
  * Created by : Allan N. Murillo
  * Last Edited : 3/10/2020
  */

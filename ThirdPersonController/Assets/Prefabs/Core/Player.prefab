@@ -399,6 +399,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: {fileID: 11400000, guid: 5acccbc7dc6f75549b1bd1b80ec20ecf, type: 2}
+  initAction: {fileID: 11400000, guid: af7eda88885b7034ba8fa8c8a76e301b, type: 2}
   activeModel: {fileID: 8051707835196491887}
   myTransform: {fileID: 0}
   myAnimator: {fileID: 0}
@@ -415,10 +416,19 @@ MonoBehaviour:
   horizontal: 0
   moveAmount: 0
   rotateDirection: {x: 0, y: 0, z: 0}
+  rollDirection: {x: 0, y: 0, z: 0}
+  generalDelta: 0
   rb: 0
   rt: 0
   lb: 0
   lt: 0
+  isBackstep: 0
+  playerProfile: {fileID: 11400000, guid: 569357a7a9fbfb043b1075b78dd7df8a, type: 2}
+  inventory:
+    rightHandWeapon: {fileID: 0}
+    leftHandWeapon: {fileID: 0}
+  leftHandPosition: {fileID: 11400000, guid: a5ade9f41d35a0844b583e8ec53b4092, type: 2}
+  leftHandRotation: {fileID: 11400000, guid: 2c2027f97ae0d5343b1e8661f04a70e7, type: 2}
   deltaTime: 0
 --- !u!114 &4165652683963794706
 MonoBehaviour:
@@ -445,7 +455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff6bbb0a53334fb8a2b1cbd7446c10f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  variable: {fileID: 11400000, guid: e5f8ef9b78bffab40a9f9077c2bf8c4d, type: 2}
+  variable: {fileID: 11400000, guid: 231523024ab1b4d419e6fd49a77ce0cd, type: 2}
 --- !u!65 &271479980957405795
 BoxCollider:
   m_ObjectHideFlags: 0

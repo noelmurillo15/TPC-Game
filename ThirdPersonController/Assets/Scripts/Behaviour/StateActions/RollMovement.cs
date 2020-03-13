@@ -1,7 +1,7 @@
 ﻿/*
-* RollMovement - 
+* RollMovement - Root Motion Movement when in Rolling State
 * Created by : Allan N. Murillo
-* Last Edited : 3/10/2020
+* Last Edited : 3/13/2020
 */
 
 using UnityEngine;
@@ -13,7 +13,8 @@ namespace ANM.Behaviour.StateActions
     public class RollMovement : StateAction
     {
         public AnimationCurve speedCurve;
-        public float speed = 3f;
+        public float rollSpeed = 3f;
+        public float backstepSpeed = 2f;
         
         
         public override void Execute(StateManager state)
@@ -22,39 +23,14 @@ namespace ANM.Behaviour.StateActions
             state.generalDelta += Time.deltaTime;
             
             Vector3 velocity = state.myRigidbody.velocity;
-            Vector3 targetVelocity = state.rollDirection;
+            Vector3 targetVelocity = (state.isBackstep) 
+                ? state.rollDirection * backstepSpeed 
+                : state.rollDirection * rollSpeed;
             
-            targetVelocity *= speedCurve.Evaluate(state.generalDelta) * speed;
+            targetVelocity.y = 0f;
+            targetVelocity *= speedCurve.Evaluate(state.generalDelta);
             targetVelocity.y = velocity.y;
             state.myRigidbody.velocity = targetVelocity;
         }
-        
-        // Vector3 relativeDir = stateManager.myTransform.InverseTransformDirection(stateManager.rotateDirection);
-        // float v = relativeDir.z;
-        // float h = relativeDir.x;
-            
-        //
-        // if (relativeDir == Vector3.zero)
-        // {
-        //     //  if no directional input, play step back animation
-        //     inputVar.moveDir = -myTransform.forward;
-        //     inputVar.targetRollSpeed = controlStats.backStepSpeed;
-        // }
-        // else
-        // {
-        //     //  else roll using directional input
-        //     inputVar.targetRollSpeed = controlStats.rollSpeed;
-        // }
-        //
-        // //  Override root motion multiplier
-        // animatorHook.rm_mult = inputVar.targetRollSpeed;
-        //
-        // //  Set Animations floats using relative Direction
-        // myAnimator.SetFloat(StaticStrings.vertical, v);
-        // myAnimator.SetFloat(StaticStrings.horizontal, h);
-        //
-        // //  Play Animation and change state
-        // PlayActionAnimation(StaticStrings.rolls);
-        // ChangeState(CharacterState.ROLL);
     }
 }

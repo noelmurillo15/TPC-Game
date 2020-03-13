@@ -21,8 +21,7 @@ MonoBehaviour:
     condition: {fileID: 11400000, guid: d91436e370ff91a43bff68079f778508, type: 2}
     targetState: {fileID: 11400000, guid: 21e2f3a6db4bbf44a8f43267a0c27f98, type: 2}
     disable: 0
-  onEnter:
-  - {fileID: 11400000, guid: 692b0c2899e759d4db77d68b8eece92e, type: 2}
+  onEnter: []
   onUpdate:
   - {fileID: 11400000, guid: f2538418f5e3ae74c810dc8da0f9d8ad, type: 2}
   - {fileID: 11400000, guid: cc4a39fe7d119fa4da0b59d67bd6a762, type: 2}

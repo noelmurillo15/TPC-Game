@@ -1,20 +1,18 @@
 ﻿/*
- * TransitionNode SO -
+ * TransitionNode -
  * Created by : Allan N. Murillo
- * Last Edited : 3/10/2020
+ * Last Edited : 3/12/2020
  */
 
 using UnityEditor;
 using UnityEngine;
 using ANM.Behaviour;
-using ANM.Behaviour.Conditions;
 
 namespace ANM.Editor.Nodes
 {
     [CreateAssetMenu(menuName = "BehaviourEditor/Nodes/Transition Node")]
     public class TransitionNode : DrawNode
     {
-
         public void Init(StateNode stateToEnter, Transition transition)
         {
 

@@ -1,7 +1,7 @@
 ﻿/*
-* MonitorAttackInput - 
+* MonitorAttackInput - Based on Input, plays an attack animation
 * Created by : Allan N. Murillo
-* Last Edited : 3/10/2020
+* Last Edited : 3/12/2020
 */
 
 using UnityEngine;

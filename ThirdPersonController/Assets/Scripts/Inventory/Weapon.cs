@@ -1,14 +1,14 @@
 ﻿/*
- * Weapon SO - 
+ * Weapon - 
  * Created by : Allan N. Murillo
  * Last Edited : 3/2/2020
  */
 
 using System.Linq;
-using ANM.Managers;
 using UnityEngine;
+using ANM.Managers;
 using ANM.Scriptables.Variables;
-using Actions = ANM.Scriptables.Action;
+using Action = ANM.Scriptables.Action;
 
 namespace ANM.Inventory
 {
@@ -32,7 +32,7 @@ namespace ANM.Inventory
             return actions.FirstOrDefault(t => t.input == input);
         }
 
-        public Actions GetAction(StateManager.InputButton input)
+        public Action GetAction(StateManager.InputButton input)
         {
             var ah = GetActionHolder(input);
             return ah?.action;
@@ -43,6 +43,6 @@ namespace ANM.Inventory
     public class ActionHolder
     {
         public StateManager.InputButton input;
-        public Actions action;
+        public Action action;
     }
 }

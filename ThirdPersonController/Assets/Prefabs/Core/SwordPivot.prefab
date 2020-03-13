@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4731789117351011667}
+  - component: {fileID: 8646078538814601903}
   m_Layer: 0
   m_Name: SwordPivot
   m_TagString: Untagged
@@ -31,6 +32,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8646078538814601903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2390084025570577617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d591e4581904da78dc884b2bb055210, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2761180390427644856
 GameObject:
   m_ObjectHideFlags: 0
@@ -41,6 +54,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4123720618631924612}
   - component: {fileID: 8146849193157141516}
+  - component: {fileID: 4696405296379756133}
   m_Layer: 9
   m_Name: DamageColliders
   m_TagString: Untagged
@@ -75,6 +89,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.12, y: 0.02, z: 0.8}
   m_Center: {x: 0, y: 0, z: 0.08}
+--- !u!114 &4696405296379756133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2761180390427644856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5c140e146a24f12b2d53674fb04c1e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collider: {fileID: 8146849193157141516}
 --- !u!1001 &1646937575857408183
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -85,17 +112,17 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: e6f2f2ce34060fe4492d14432369c9d2,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 16.06
+      value: 14.8
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: e6f2f2ce34060fe4492d14432369c9d2,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 12.53
+      value: 12.1
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: e6f2f2ce34060fe4492d14432369c9d2,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 18.22
+      value: 17.5
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: e6f2f2ce34060fe4492d14432369c9d2,
         type: 3}

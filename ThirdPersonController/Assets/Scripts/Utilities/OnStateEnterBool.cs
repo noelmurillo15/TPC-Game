@@ -6,7 +6,7 @@
 
 using UnityEngine;
 
-namespace ANM
+namespace ANM.Utilities
 {
     public class OnStateEnterBool : StateMachineBehaviour
     {

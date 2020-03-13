@@ -1,7 +1,7 @@
 ﻿/*
-* MoveForward - 
+* MoveForward - Applies a velocity to the states based on a moveAmount via the state's forward Vector3
 * Created by : Allan N. Murillo
-* Last Edited : 3/11/2020
+* Last Edited : 3/12/2020
 */
 
 using UnityEngine;

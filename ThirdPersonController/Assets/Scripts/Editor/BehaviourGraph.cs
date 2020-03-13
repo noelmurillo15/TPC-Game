@@ -15,7 +15,7 @@ namespace ANM.Editor
     {
         public List<BaseNode> windows = new List<BaseNode>();
         public int idCount;
-        private List<int> _indexToDelete = new List<int>();
+        private readonly List<int> _indexToDelete = new List<int>();
 
 
         #region Helper Methods

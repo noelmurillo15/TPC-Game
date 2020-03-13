@@ -4,8 +4,8 @@
  * Last Edited : 2/24/2020
  */
 
-using ANM.Managers;
 using UnityEngine;
+using ANM.Managers;
 
 namespace ANM.Utilities
 {

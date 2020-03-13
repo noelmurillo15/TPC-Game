@@ -1,5 +1,5 @@
 ﻿/*
- * CommentNode SO -
+ * CommentNode -
  * Created by : Allan N. Murillo
  * Last Edited : 3/6/2020
  */
