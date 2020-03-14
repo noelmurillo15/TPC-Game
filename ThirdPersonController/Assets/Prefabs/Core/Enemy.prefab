@@ -72,8 +72,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_stats
       value: 
-      objectReference: {fileID: 11400000, guid: 4211322a3dba51344992ff160fc3998b,
-        type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
         type: 3}
       propertyPath: m_inventoryManager.rightItem
@@ -107,15 +106,9 @@ PrefabInstance:
         type: 2}
     - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
         type: 3}
-      propertyPath: initAction
-      value: 
-      objectReference: {fileID: 11400000, guid: af7eda88885b7034ba8fa8c8a76e301b,
-        type: 2}
-    - target: {fileID: 5098062463415657512, guid: 3a48b3449cf16214b8d1402b80f80d76,
-        type: 3}
       propertyPath: playerProfile
       value: 
-      objectReference: {fileID: 11400000, guid: 569357a7a9fbfb043b1075b78dd7df8a,
+      objectReference: {fileID: 11400000, guid: cecce05eceadd484ca1122c2214f7f20,
         type: 2}
     - target: {fileID: 5384227096225598490, guid: 3a48b3449cf16214b8d1402b80f80d76,
         type: 3}

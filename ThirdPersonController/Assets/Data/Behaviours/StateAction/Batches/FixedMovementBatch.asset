@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89a2789a1177e88429687c8709c9bed8, type: 3}
+  m_Name: FixedMovementBatch
+  m_EditorClassIdentifier: 
+  stateActions:
+  - {fileID: 11400000, guid: f2538418f5e3ae74c810dc8da0f9d8ad, type: 2}
+  - {fileID: 11400000, guid: d6c90cfbf14772c44b46ca1fb24e1b9e, type: 2}
+  - {fileID: 11400000, guid: a6d859bac4e30324e9cec4b0be9d5f93, type: 2}

@@ -17,7 +17,7 @@ namespace ANM.Actions
         public ButtonState buttonState;
         private InputAction _currentAction;
         private ThirdPersonInput.CharacterInputActions _inputs;
-        [SerializeField] private Scriptables.Controller controller;
+        [SerializeField] private Scriptables.Utils.Controller controller;
 
 
         private void OnEnable()

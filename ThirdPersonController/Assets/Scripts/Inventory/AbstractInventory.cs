@@ -9,7 +9,7 @@ namespace ANM.Inventory
     [System.Serializable]
     public class AbstractInventory
     {
-        public AbstractWeapon rightHandWeapon;
-        public AbstractWeapon leftHandWeapon;
+        public AbstractItem rightHandWeapon;
+        public AbstractItem leftHandWeapon;
     }
 }

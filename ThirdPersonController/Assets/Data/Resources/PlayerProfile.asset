@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09a373d787034bb1996a626d92d74f54, type: 3}
   m_Name: PlayerProfile
   m_EditorClassIdentifier: 
-  profileName: Allan
+  profileName: Default_Player
   rightHandWeaponId: Sword
-  leftHandWeaponId: Sword
+  leftHandWeaponId: AbstractItem
   allItemsEquipped: []

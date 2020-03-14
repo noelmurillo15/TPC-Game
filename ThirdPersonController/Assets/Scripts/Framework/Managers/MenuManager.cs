@@ -26,7 +26,7 @@ namespace ANM.Framework.Managers
         [SerializeField] private Button pausePanelSelectedObj = null;
         [SerializeField] private Button quitPanelSelectedObj = null;
 
-        [SerializeField] private Scriptables.Controller controls;
+        [SerializeField] private Scriptables.Utils.Controller controls;
         
         [Space] [Header("Local Game Info")] 
         [SerializeField] private bool isSceneTransitioning = false;

@@ -12,7 +12,7 @@ namespace ANM.Actions
     public class MovementInputAxis : Action
     {
         public Vector2 value;
-        public Scriptables.Controller controls;
+        public Scriptables.Utils.Controller controls;
 
         private void OnEnable()
         {

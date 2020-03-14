@@ -10,7 +10,7 @@ using ANM.Inventory;
 
 namespace ANM.Behaviour.StateActions
 {
-    [CreateAssetMenu(menuName = "Behaviours/StateAction/Initialize Inventory")]
+    [CreateAssetMenu(menuName = "Behaviours/StateAction/Init/Inventory")]
     public class InitializeInventory : StateAction
     {
 
@@ -20,26 +20,45 @@ namespace ANM.Behaviour.StateActions
 
             var rm = LevelManager.GetResourcesManager();
 
-            var item = rm.GetItemInstance(state.playerProfile.rightHandWeaponId);
-            if (item != null)
+            var rightHandItem = rm.GetItemInstance(state.playerProfile.rightHandWeaponId);
+            if (rightHandItem != null)
             {
-                var rightHandWeapon = (AbstractWeapon) item;
-                rightHandWeapon.Init();
-                ParentUnderBone(state, rightHandWeapon, HumanBodyBones.RightHand);
-                state.inventory.rightHandWeapon = rightHandWeapon;
+                if (rightHandItem as AbstractWeapon != null)
+                {
+                    var rightWeapon = (AbstractWeapon) rightHandItem;
+                    rightWeapon.Init();
+                    ParentWeaponUnderBone(state, rightWeapon, HumanBodyBones.RightHand);
+                    state.inventory.rightHandWeapon = rightWeapon;
+                }
+                else if (rightHandItem as AbstractEquippableItem != null)
+                {
+                    var rightEquipItem = (AbstractEquippableItem) rightHandItem;
+                    rightEquipItem.Init();
+                    state.inventory.rightHandWeapon = rightEquipItem;
+                }
             }
 
-            item = rm.GetItemInstance(state.playerProfile.leftHandWeaponId);
-            if (item != null)
+            var leftHandItem = rm.GetItemInstance(state.playerProfile.leftHandWeaponId);
+            if (leftHandItem != null)
             {
-                var leftHandWeapon = (AbstractWeapon) item;
-                leftHandWeapon.Init();
-                ParentUnderBone(state, leftHandWeapon, HumanBodyBones.LeftHand, true);
-                state.inventory.leftHandWeapon = leftHandWeapon;
+                if (leftHandItem as AbstractWeapon != null)
+                {
+                    var leftWeapon = ((AbstractWeapon) leftHandItem);
+                    leftWeapon.Init();
+                    ParentWeaponUnderBone(state, leftWeapon, HumanBodyBones.LeftHand, true);
+                    state.inventory.leftHandWeapon = leftWeapon;
+                }
+                else if (leftHandItem as AbstractEquippableItem != null)
+                {
+                    var leftEquipItem = (AbstractEquippableItem) leftHandItem;
+                    leftEquipItem.Init();
+                    state.inventory.leftHandWeapon = leftEquipItem;
+                }
             }
         }
 
-        private static void ParentUnderBone(StateManager state, AbstractWeapon weapon, HumanBodyBones targetBone, bool isLeft = false)
+        private static void ParentWeaponUnderBone(StateManager state, AbstractWeapon weapon, HumanBodyBones targetBone,
+            bool isLeft = false)
         {
             var bone = state.myAnimator.GetBoneTransform(targetBone);
             weapon.runtime.ModelInstance.transform.parent = bone;
@@ -54,7 +73,7 @@ namespace ANM.Behaviour.StateActions
                 weapon.runtime.ModelInstance.transform.localPosition = Vector3.zero;
                 weapon.runtime.ModelInstance.transform.localEulerAngles = Vector3.zero;
             }
-            
+
             weapon.runtime.ModelInstance.transform.localScale = Vector3.one;
             weapon.runtime.ModelInstance.SetActive(true);
         }

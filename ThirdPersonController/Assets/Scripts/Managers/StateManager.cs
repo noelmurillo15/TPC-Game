@@ -8,10 +8,9 @@ using ANM.Saving;
 using UnityEngine;
 using ANM.Behaviour;
 using ANM.Inventory;
-using ANM.Scriptables;
-using ANM.Scriptables.Variables;
 using ANM.Utilities;
-using Actions = ANM.Scriptables.Action;
+using ANM.Scriptables.Utils;
+using ANM.Scriptables.Variables;
 
  namespace ANM.Managers
  {
@@ -44,8 +43,7 @@ using Actions = ANM.Scriptables.Action;
 
          public bool isBackstep;
 
-         [Space] [Header("Inventory")] 
-         public PlayerProfile playerProfile;
+         [Space] [Header("Inventory")] public PlayerProfile playerProfile;
          public AbstractInventory inventory;
          public Vector3Variable leftHandPosition;
          public Vector3Variable leftHandRotation;
@@ -57,59 +55,26 @@ using Actions = ANM.Scriptables.Action;
          private static readonly int IsInteracting = Animator.StringToHash("isInteracting");
          private static readonly int Lockon = Animator.StringToHash("lockon");
          private static readonly int Speed = Animator.StringToHash("speed");
+         private static readonly int Mirror = Animator.StringToHash("mirror");
 
 
          private void Start()
          {
-             myTransform = transform;
-             myRigidbody = GetComponent<Rigidbody>(); //  This will fail if no animator is attached
-             if (activeModel == null)
-             {
-                 //  If designer forgets to attach the active Model ~ this will find the model via Animator
-                 myAnimator = GetComponentInChildren<Animator>();
-                 activeModel = myAnimator.gameObject;
-             }
-
-             if (myAnimator == null) //  If animator has not been found, find via ActiveModel
-                 myAnimator = activeModel.GetComponent<Animator>();
-
              Initialize();
-             
              initAction?.Execute(this);
          }
 
-         public void Initialize()
+         private void Initialize()
          {
-             SetupAnimator();
-             SetupRigidBody();
-
+             myTransform = transform;
              myCollider = GetComponent<Collider>();
+             myRigidbody = GetComponent<Rigidbody>();
+             myAnimator = GetComponentInChildren<Animator>();
+             activeModel = myAnimator.gameObject;
 
-             //  Layer masks
              gameObject.layer = 8;
              ignoreLayers = ~(1 << 9);
              ignoreForGroundCheck = ~(1 << 9 | 1 << 10);
-         }
-
-         private void SetupAnimator()
-         {
-             if (myAnimator == null) return;
-
-             myAnimator.applyRootMotion = false;
-             myAnimator.GetBoneTransform(HumanBodyBones.LeftHand).localScale = Vector3.one;
-             myAnimator.GetBoneTransform(HumanBodyBones.RightHand).localScale = Vector3.one;
-
-             animatorHook = activeModel.AddComponent<AnimatorHook>();
-             animatorHook.Init(this);
-         }
-
-         private void SetupRigidBody()
-         {
-             myRigidbody.angularDrag = 999;
-             myRigidbody.drag = 4;
-             myRigidbody.constraints = RigidbodyConstraints.FreezeRotationX
-                                       | RigidbodyConstraints.FreezeRotationY
-                                       | RigidbodyConstraints.FreezeRotationZ;
          }
 
          private void FixedUpdate()
@@ -150,29 +115,12 @@ using Actions = ANM.Scriptables.Action;
              // rb.AddForce(forward * 10f, ForceMode.Impulse);
          }
 
-         public void PlayAnimation(string targetAnim)
+         public void PlayAnimation(string targetAnim, bool isMirror = false)
          {
-             myAnimator.CrossFade(targetAnim, 0.2f);
+             if (string.IsNullOrEmpty(targetAnim)) return;
              myAnimator.SetBool(IsInteracting, true);
-         }
-         
-         public void PlayAttackAnimation(InputButton inp)
-         {
-             switch (inp)
-             {
-                 case InputButton.RB:
-                     PlayAnimation("oh_attack_1");
-                     break;
-                 case InputButton.LB:
-                     PlayAnimation("oh_attack_2");
-                     break;
-                 case InputButton.RT:
-                     PlayAnimation("oh_attack_3");
-                     break;
-                 case InputButton.LT:
-                     PlayAnimation("oh_attack_3");
-                     break;
-             }
+             myAnimator.SetBool(Mirror, isMirror);
+             myAnimator.CrossFade(targetAnim, 0.2f);
          }
 
          public void SetDamageColliderStatus(bool status)

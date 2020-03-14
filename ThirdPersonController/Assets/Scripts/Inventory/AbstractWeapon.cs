@@ -5,6 +5,7 @@
 */
 
 using UnityEngine;
+using ANM.Scriptables.Variables;
 
 namespace ANM.Inventory
 {
@@ -13,13 +14,17 @@ namespace ANM.Inventory
     {
         public GameObject modelPrefab;
         public AbstractRuntimeWeapon runtime;
-        
+        public StringVariable anim1;
+        public StringVariable anim2;
+        public StringVariable anim3;
+        public StringVariable anim4;
+
 
         public void Init()
         {
             runtime = new AbstractRuntimeWeapon {ModelInstance = Instantiate(modelPrefab)};
             runtime.ModelInstance.SetActive(false);
-            
+
             runtime.WeaponHook = runtime.ModelInstance.GetComponentInChildren<AbstractWeaponHook>();
             runtime.WeaponHook.Init();
         }
