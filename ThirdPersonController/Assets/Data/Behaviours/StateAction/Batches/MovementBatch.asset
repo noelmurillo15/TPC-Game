@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: MovementBatch
   m_EditorClassIdentifier: 
   stateActions:
-  - {fileID: 11400000, guid: f2538418f5e3ae74c810dc8da0f9d8ad, type: 2}
-  - {fileID: 11400000, guid: cc4a39fe7d119fa4da0b59d67bd6a762, type: 2}
+  - {fileID: 11400000, guid: 89ae1ad389fee1e4c8af778979a80ce8, type: 2}
+  - {fileID: 11400000, guid: 4de939f7d6621904f8ae37803e3a3cb3, type: 2}

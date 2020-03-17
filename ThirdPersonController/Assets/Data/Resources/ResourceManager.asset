@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ResourceManager
   m_EditorClassIdentifier: 
   allItems:
-  - {fileID: 11400000, guid: 11102ddc357e6d64aa85cbd2dcba9816, type: 2}
-  - {fileID: 11400000, guid: fa41047e1f994634d8286378d4cf8c8e, type: 2}
+  - {fileID: 11400000, guid: b8c1fa6e7e61df04fbb7e0062bdb41fc, type: 2}
+  - {fileID: 11400000, guid: 3c0810ea13e75614784f24e167f67444, type: 2}

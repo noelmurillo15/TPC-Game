@@ -8,8 +8,8 @@ using UnityEditor;
 using UnityEngine;
 using System.Linq;
 using ANM.Managers;
-using ANM.Behaviour;
 using ANM.Editor.Nodes;
+using ANM.Scriptables.Behaviour;
 
 namespace ANM.Editor
 {

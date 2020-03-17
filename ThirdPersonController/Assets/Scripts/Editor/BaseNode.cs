@@ -6,10 +6,10 @@
 
 using UnityEngine;
 using UnityEditor;
-using ANM.Behaviour;
 using ANM.Editor.Nodes;
 using UnityEditorInternal;
-using State = ANM.Behaviour.State;
+using ANM.Scriptables.Behaviour;
+using State = ANM.Scriptables.Behaviour.State;
 
 namespace ANM.Editor
 {

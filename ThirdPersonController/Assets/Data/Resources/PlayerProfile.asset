@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: PlayerProfile
   m_EditorClassIdentifier: 
   profileName: Default_Player
-  rightHandWeaponId: Sword
-  leftHandWeaponId: AbstractItem
+  rightHandWeaponId: Clay Sword
+  leftHandWeaponId: Clay Sword
   allItemsEquipped: []

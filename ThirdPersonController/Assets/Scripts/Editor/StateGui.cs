@@ -7,7 +7,7 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEditorInternal;
-using State = ANM.Behaviour.State;
+using State = ANM.Scriptables.Behaviour.State;
 
 namespace ANM.Editor
 {

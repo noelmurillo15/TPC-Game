@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e27336707e264c3297b3d358a4b2b297, type: 3}
+  m_Name: Hp Potion
+  m_EditorClassIdentifier: 
+  uiName: 
+  uiIcon: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  modelPrefab: {fileID: -927199367670048503, guid: e56eb389bb36723439c8fffcdd8e532e,
+    type: 3}
+  throwAnim: {fileID: 11400000, guid: 0e2ca4773ea9bd84b9a527ef70313258, type: 2}
+  useAnim: {fileID: 11400000, guid: 3eb27a220021df544905b24c765ecb89, type: 2}

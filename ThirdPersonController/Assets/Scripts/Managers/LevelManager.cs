@@ -5,6 +5,7 @@
 */
 
 using UnityEngine;
+using ANM.Scriptables.Managers;
 
 namespace ANM.Managers
 {

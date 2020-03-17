@@ -7,8 +7,8 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEditorInternal;
-using State = ANM.Behaviour.State;
-using Transition = ANM.Behaviour.Transition;
+using State = ANM.Scriptables.Behaviour.State;
+using Transition = ANM.Scriptables.Behaviour.Transition;
 
 namespace ANM.Editor.Nodes
 {

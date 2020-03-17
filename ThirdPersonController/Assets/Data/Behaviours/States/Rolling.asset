@@ -13,15 +13,14 @@ MonoBehaviour:
   m_Name: Rolling
   m_EditorClassIdentifier: 
   transitions:
-  - id: 0
+  - id: 2
     condition: {fileID: 11400000, guid: bc54b7ebd43b91f4ca5c991e843a9e97, type: 2}
     targetState: {fileID: 11400000, guid: 5acccbc7dc6f75549b1bd1b80ec20ecf, type: 2}
     disable: 0
   onEnter: []
   onUpdate:
-  - {fileID: 11400000, guid: f2538418f5e3ae74c810dc8da0f9d8ad, type: 2}
+  - {fileID: 11400000, guid: 89ae1ad389fee1e4c8af778979a80ce8, type: 2}
   onFixed:
-  - {fileID: 11400000, guid: f2538418f5e3ae74c810dc8da0f9d8ad, type: 2}
-  - {fileID: 11400000, guid: 27c1d33840a61684c9261a3bc18da989, type: 2}
+  - {fileID: 11400000, guid: d87aa8e5b843e2a41905dc581a528787, type: 2}
   onExit: []
-  idCount: 1
+  idCount: 3

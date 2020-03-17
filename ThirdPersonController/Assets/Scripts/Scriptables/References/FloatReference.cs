@@ -4,7 +4,9 @@
  * Last Edited : 2/17/2020
  */
 
-namespace ANM.Scriptables.Variables
+using ANM.Scriptables.Variables;
+
+namespace ANM.Scriptables.References
 {
     [System.Serializable]
     public class FloatReference

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fb42ca869644a2b8b5109adb4912c3b, type: 3}
   m_Name: MonitorRolls
   m_EditorClassIdentifier: 
-  inpManager: {fileID: 11400000, guid: c957c2008ecf126468aa63c9b50b0e8b, type: 2}
+  inpManager: {fileID: 11400000, guid: 2656c06ba4736c84795333fc08992c61, type: 2}

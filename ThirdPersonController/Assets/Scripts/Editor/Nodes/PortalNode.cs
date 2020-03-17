@@ -6,7 +6,7 @@
 
 using UnityEditor;
 using UnityEngine;
-using ANM.Behaviour;
+using ANM.Scriptables.Behaviour;
 
 namespace ANM.Editor.Nodes
 {

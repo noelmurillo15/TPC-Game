@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FixedMovementBatch
   m_EditorClassIdentifier: 
   stateActions:
-  - {fileID: 11400000, guid: f2538418f5e3ae74c810dc8da0f9d8ad, type: 2}
-  - {fileID: 11400000, guid: d6c90cfbf14772c44b46ca1fb24e1b9e, type: 2}
-  - {fileID: 11400000, guid: a6d859bac4e30324e9cec4b0be9d5f93, type: 2}
+  - {fileID: 11400000, guid: 89ae1ad389fee1e4c8af778979a80ce8, type: 2}
+  - {fileID: 11400000, guid: f5dab2281f4771f45b577c0dc7734a1f, type: 2}
+  - {fileID: 11400000, guid: 022779f6ceed944428d9826b1d1408f4, type: 2}

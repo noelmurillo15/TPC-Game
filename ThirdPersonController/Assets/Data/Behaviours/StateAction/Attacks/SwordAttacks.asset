@@ -12,8 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ca0070d6ab14945bc84fb1b9c7df606, type: 3}
   m_Name: SwordAttacks
   m_EditorClassIdentifier: 
-  buttonVariable: {fileID: 11400000, guid: 0221ea4e3dff83e45b0df4b3138dc36e, type: 2}
-  rbAttackName: {fileID: 11400000, guid: a90c25d46da2b07428ad1409552ce675, type: 2}
-  lbAttackName: {fileID: 11400000, guid: 576dc3b3f92bead488821841f42dacf3, type: 2}
-  rtAttackName: {fileID: 11400000, guid: 29658884c62ebaf4bb98e8d56d8eeee4, type: 2}
-  ltAttackName: {fileID: 11400000, guid: 29658884c62ebaf4bb98e8d56d8eeee4, type: 2}
+  button: {fileID: 11400000, guid: 0221ea4e3dff83e45b0df4b3138dc36e, type: 2}

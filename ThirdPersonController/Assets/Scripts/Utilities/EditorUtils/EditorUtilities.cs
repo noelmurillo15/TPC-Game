@@ -6,12 +6,11 @@
  */
 
 #if UNITY_EDITOR
-using UnityEditor;
 using System.Linq;
+using UnityEditor;
 using System.Collections.Generic;
 
-
-namespace ANM.Utilities.Editor
+namespace ANM.Utilities.EditorUtils
 {
     public static class EditorUtilities
     {

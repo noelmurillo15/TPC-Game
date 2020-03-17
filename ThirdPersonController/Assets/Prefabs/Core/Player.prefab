@@ -399,7 +399,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: {fileID: 11400000, guid: 5acccbc7dc6f75549b1bd1b80ec20ecf, type: 2}
-  initAction: {fileID: 11400000, guid: f49fb296b225f4e44ac9f0d44ce94a55, type: 2}
+  initializeAction: {fileID: 11400000, guid: f49fb296b225f4e44ac9f0d44ce94a55, type: 2}
   activeModel: {fileID: 8051707835196491887}
   myTransform: {fileID: 0}
   myAnimator: {fileID: 0}

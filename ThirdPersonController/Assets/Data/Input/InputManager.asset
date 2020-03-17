@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: InputManager
   m_EditorClassIdentifier: 
   a: {fileID: 11400000, guid: de36e5c4e09913245b4d4d7c2b5d1781, type: 2}
-  b: {fileID: 11400000, guid: 1f82d8fd90217e74ea98c47aabed1592, type: 2}
-  x: {fileID: 11400000, guid: aad47984d5e21084e8f190d78f157ea3, type: 2}
-  y: {fileID: 11400000, guid: d49663fe738218841bddabcf2757d4cb, type: 2}
-  rt: {fileID: 11400000, guid: 2e63b66f9b16abc4c966ae1ec2d62c79, type: 2}
-  lt: {fileID: 11400000, guid: ddb66f521cd70ce43bc0a95a912c39ec, type: 2}
-  rb: {fileID: 11400000, guid: c1c5515789a246b4aa446948290bae99, type: 2}
-  lb: {fileID: 11400000, guid: b12fb2eed6ad45648a6433ccd1824ff8, type: 2}
-  cameraAxis: {fileID: 11400000, guid: 252a04bb6fb85d94b85fe908a9d89c94, type: 2}
-  movementAxis: {fileID: 11400000, guid: c7699e516e0078c4e85feed59f946bb2, type: 2}
+  b: {fileID: 11400000, guid: 0286b5edb451ae848925b5e5a7391ac7, type: 2}
+  x: {fileID: 11400000, guid: 5db2eaa1ab770bb41953f55c5162840f, type: 2}
+  y: {fileID: 11400000, guid: 25e19448e4d21444ebcfd9eefb4d4d86, type: 2}
+  rt: {fileID: 11400000, guid: 31a8885f136d0334cb4617c474f8217a, type: 2}
+  lt: {fileID: 11400000, guid: 8e2e7502254d2c24889d2e0c8c3ab770, type: 2}
+  rb: {fileID: 11400000, guid: b3c5d7080ddb5fe418ddfbce89224e28, type: 2}
+  lb: {fileID: 11400000, guid: e452c667484dbb945ba3771094956f65, type: 2}
+  cameraAxis: {fileID: 11400000, guid: e4cb67590c632f3499cadd5f55581cbb, type: 2}
+  movementAxis: {fileID: 11400000, guid: 4358704874a03154eb2f502291a16d44, type: 2}
   moveAmount: 0
   rotateDirection: {x: 0, y: 0, z: 0}
   cameraTransform: {fileID: 11400000, guid: 62ee014dd734f5040a35986cd00787ce, type: 2}

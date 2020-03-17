@@ -7,6 +7,7 @@
 using System;
 using UnityEngine;
 using ANM.Inventory;
+using ANM.Scriptables.Inventory;
 
 namespace ANM.Controller
 {

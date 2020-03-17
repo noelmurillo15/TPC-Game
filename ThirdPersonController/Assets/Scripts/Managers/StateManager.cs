@@ -6,10 +6,10 @@
  
 using ANM.Saving;
 using UnityEngine;
-using ANM.Behaviour;
 using ANM.Inventory;
 using ANM.Utilities;
 using ANM.Scriptables.Utils;
+using ANM.Scriptables.Behaviour;
 using ANM.Scriptables.Variables;
 
  namespace ANM.Managers
@@ -17,9 +17,10 @@ using ANM.Scriptables.Variables;
      public class StateManager : MonoBehaviour
      {
          public State currentState;
-         public StateAction initAction;
+         public StateAction initializeAction;
 
-         [Header("References")] public GameObject activeModel;
+         [Header("References")] 
+         public GameObject activeModel;
          [HideInInspector] public Transform myTransform;
          [HideInInspector] public Animator myAnimator;
          [HideInInspector] public Rigidbody myRigidbody;
@@ -29,7 +30,8 @@ using ANM.Scriptables.Variables;
          [HideInInspector] public LayerMask ignoreLayers;
          [HideInInspector] public LayerMask ignoreForGroundCheck;
 
-         [Space] [Header("Inputs")] public float vertical;
+         [Space] [Header("Inputs")] 
+         public float vertical;
          public float horizontal;
          public float moveAmount;
          public Vector3 rotateDirection;
@@ -43,25 +45,24 @@ using ANM.Scriptables.Variables;
 
          public bool isBackstep;
 
-         [Space] [Header("Inventory")] public PlayerProfile playerProfile;
+         [Space] [Header("Inventory")] 
+         public PlayerProfile playerProfile;
          public AbstractInventory inventory;
          public Vector3Variable leftHandPosition;
          public Vector3Variable leftHandRotation;
 
-         [Space] [Header("Local Info")] public float deltaTime;
-
+         [Space] [Header("Local Info")] 
+         public float deltaTime;
          private SerializableVector3 _lastKnownLocation;
 
+         private static readonly int MirrorAnimation = Animator.StringToHash("mirror");
          private static readonly int IsInteracting = Animator.StringToHash("isInteracting");
-         private static readonly int Lockon = Animator.StringToHash("lockon");
-         private static readonly int Speed = Animator.StringToHash("speed");
-         private static readonly int Mirror = Animator.StringToHash("mirror");
 
 
          private void Start()
          {
              Initialize();
-             initAction?.Execute(this);
+             initializeAction?.Execute(this);
          }
 
          private void Initialize()
@@ -79,7 +80,6 @@ using ANM.Scriptables.Variables;
 
          private void FixedUpdate()
          {
-             //    Fixed Update runs before Update
              deltaTime = Time.deltaTime;
              if (currentState != null)
              {
@@ -89,7 +89,6 @@ using ANM.Scriptables.Variables;
 
          private void Update()
          {
-             //    Update runs After Fixed Update
              deltaTime = Time.deltaTime;
              if (currentState != null)
              {
@@ -119,7 +118,7 @@ using ANM.Scriptables.Variables;
          {
              if (string.IsNullOrEmpty(targetAnim)) return;
              myAnimator.SetBool(IsInteracting, true);
-             myAnimator.SetBool(Mirror, isMirror);
+             myAnimator.SetBool(MirrorAnimation, isMirror);
              myAnimator.CrossFade(targetAnim, 0.2f);
          }
 
