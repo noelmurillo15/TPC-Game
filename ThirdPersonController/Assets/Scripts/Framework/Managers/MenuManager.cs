@@ -1,15 +1,17 @@
 ﻿/*
  * MenuManager - Handles interactions with the Menu Ui
  * Created by : Allan N. Murillo
- * Last Edited : 3/11/2020
+ * Last Edited : 4/18/2020
  */
 
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using ANM.Framework.Options;
+using UnityEngine.InputSystem;
 using ANM.Framework.Extensions;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 
 namespace ANM.Framework.Managers
 {
@@ -17,6 +19,7 @@ namespace ANM.Framework.Managers
     {
         [Header("Menu Panels")] 
         [SerializeField] private GameObject mainPanel = null;
+
         [SerializeField] private GameObject pausePanel = null;
         [SerializeField] private AudioOptionsPanel audioOptionsPanel = null;
         [SerializeField] private VideoOptionsPanel videoOptionsPanel = null;
@@ -27,7 +30,7 @@ namespace ANM.Framework.Managers
         [SerializeField] private Button quitPanelSelectedObj = null;
 
         [SerializeField] private Scriptables.Utils.Controller controls;
-        
+
         [Space] [Header("Local Game Info")] 
         [SerializeField] private bool isSceneTransitioning = false;
         [SerializeField] private bool isMainMenuActive = false;
@@ -36,16 +39,17 @@ namespace ANM.Framework.Managers
         private bool _isPaused;
         private Camera _menuUiCamera;
         private EventSystem _eventSystem;
+        private InputSystemUIInputModule _inputUi;
         private GameManager _gameManager;
         private IPanel[] _menuPanels;
         
-
 
         private void Awake()
         {
             isSceneTransitioning = true;
             _gameManager = GameManager.Instance;
             _eventSystem = FindObjectOfType<EventSystem>();
+            _inputUi = _eventSystem.GetComponent<InputSystemUIInputModule>();
             if (!SaveSettings.SettingsLoadedIni) SaveSettings.DefaultSettings();
         }
 
@@ -56,6 +60,7 @@ namespace ANM.Framework.Managers
             _menuPanels = FindObjectsOfType<MonoBehaviour>().OfType<IPanel>().ToArray();
             SceneExtension.FinishSceneLoadEvent += OnFinishLoadScene;
             SceneExtension.StartSceneLoadEvent += OnStartLoadScene;
+            _inputUi.cancel.action.performed += CancelInput;
             ApplyIniSettings();
             TurnOffAllPanels();
             TurnOnMainPanel();
@@ -89,6 +94,7 @@ namespace ANM.Framework.Managers
 
         private void OnDestroy()
         {
+            _inputUi.cancel.action.performed -= CancelInput;
             SceneExtension.StartSceneLoadEvent -= OnStartLoadScene;
             SceneExtension.FinishSceneLoadEvent -= OnFinishLoadScene;
         }
@@ -103,11 +109,7 @@ namespace ANM.Framework.Managers
         private void OnFinishLoadScene(bool b1, bool b2)
         {
             isMainMenuActive = SceneExtension.IsThisSceneActive(SceneExtension.MenuUiSceneName);
-            if (isMainMenuActive)
-            {
-                TurnOnMainPanel();
-            }
-
+            if (isMainMenuActive) TurnOnMainPanel();
             _menuUiCamera.gameObject.SetActive(isMainMenuActive);
             isSceneTransitioning = false;
         }
@@ -116,6 +118,7 @@ namespace ANM.Framework.Managers
         {
             lastSceneBuildIndex = SceneExtension.GetCurrentSceneBuildIndex();
             if (!SceneExtension.TrySwitchToScene(SceneExtension.MenuUiSceneName)) return;
+            _inputUi.cancel.action.performed += CancelInput;
             TurnOnMainPanel();
             _isPaused = true;
         }
@@ -123,9 +126,17 @@ namespace ANM.Framework.Managers
         private void OnResume()
         {
             if (!SceneExtension.TrySwitchToScene(lastSceneBuildIndex)) return;
+            _inputUi.cancel.action.performed -= CancelInput;
             _menuUiCamera.gameObject.SetActive(false);
             TurnOffAllPanels();
             _isPaused = false;
+        }
+
+        private void CancelInput(InputAction.CallbackContext callbackContext)
+        {
+            if (audioOptionsPanel.enabled) CancelAudioSettings();
+            if (videoOptionsPanel.enabled) CancelVideoSettings();
+            if (quitOptionsPanel.enabled) QuitCancel();
         }
 
         private void TurnOnMainPanel()
@@ -148,10 +159,7 @@ namespace ANM.Framework.Managers
         {
             mainPanel.SetActive(false);
             pausePanel.SetActive(false);
-            foreach (var panel in _menuPanels)
-            {
-                panel.TurnOffPanel();
-            }
+            foreach (var panel in _menuPanels) panel.TurnOffPanel();
         }
 
         private void ApplyIniSettings()
@@ -168,6 +176,7 @@ namespace ANM.Framework.Managers
 
         public void StartGame()
         {
+            _inputUi.cancel.action.performed -= CancelInput;
             StartCoroutine(SceneExtension.LoadMultiSceneSequence(
                 SceneExtension.GameplaySceneName, true));
         }
@@ -188,7 +197,8 @@ namespace ANM.Framework.Managers
 
             TurnOffAllPanels();
             _gameManager.HardReset();
-            StartCoroutine(SceneExtension.ForceMenuSceneSequence(true, true, true, lastSceneBuildIndex));
+            StartCoroutine(SceneExtension.ForceMenuSceneSequence(
+                true, true, true, lastSceneBuildIndex));
             TurnOnMainPanel();
         }
 
@@ -211,6 +221,7 @@ namespace ANM.Framework.Managers
         {
             _gameManager.HardReset();
             Invoke(nameof(LoadCredits), 0.15f);
+            _inputUi.cancel.action.performed -= CancelInput;
         }
 
         public void Audio()
