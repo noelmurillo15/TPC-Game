@@ -1,7 +1,7 @@
 ﻿/*
 * MoveWithRootMotion - Used to move a states' position when playing an animation that uses RootMotion
 * Created by : Allan N. Murillo
-* Last Edited : 3/14/2020
+* Last Edited : 5/7/2020
 */
 
 using UnityEngine;
@@ -14,6 +14,7 @@ namespace ANM.Scriptables.Behaviour.StateActions.Movement
     {
         public override void Execute(StateManager state)
         {
+            state.myRigidbody.isKinematic = false;
             var velocity = state.myRigidbody.velocity;
             var targetVelocity = state.myAnimator.deltaPosition;
             targetVelocity *= 60f;

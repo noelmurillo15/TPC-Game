@@ -1,9 +1,9 @@
 ﻿﻿/*
  * StateManager - Handles all states of a Character
  * Created by : Allan N. Murillo
- * Last Edited : 3/13/2020
+ * Last Edited : 5/7/2020
  */
- 
+
 using ANM.Saving;
 using UnityEngine;
 using ANM.Inventory;
@@ -19,24 +19,23 @@ using ANM.Scriptables.Variables;
          public State currentState;
          public StateAction initializeAction;
 
-         [Header("References")] 
+         [Header("References")]
          public GameObject activeModel;
          [HideInInspector] public Transform myTransform;
          [HideInInspector] public Animator myAnimator;
          [HideInInspector] public Rigidbody myRigidbody;
-         [HideInInspector] public Collider myCollider;
          [HideInInspector] public AnimatorHook animatorHook;
-
          [HideInInspector] public LayerMask ignoreLayers;
          [HideInInspector] public LayerMask ignoreForGroundCheck;
 
-         [Space] [Header("Inputs")] 
+         [Space] [Header("Inputs")]
          public float vertical;
          public float horizontal;
          public float moveAmount;
+         public float generalDelta;
+
          public Vector3 rotateDirection;
          public Vector3 rollDirection;
-         public float generalDelta;
 
          public bool rb;
          public bool rt;
@@ -44,14 +43,15 @@ using ANM.Scriptables.Variables;
          public bool lt;
 
          public bool isBackstep;
+         public bool isGrounded;
 
-         [Space] [Header("Inventory")] 
+         [Space] [Header("Inventory")]
          public PlayerProfile playerProfile;
          public AbstractInventory inventory;
          public Vector3Variable leftHandPosition;
          public Vector3Variable leftHandRotation;
 
-         [Space] [Header("Local Info")] 
+         [Space] [Header("Local Info")]
          public float deltaTime;
          private SerializableVector3 _lastKnownLocation;
 
@@ -68,7 +68,6 @@ using ANM.Scriptables.Variables;
          private void Initialize()
          {
              myTransform = transform;
-             myCollider = GetComponent<Collider>();
              myRigidbody = GetComponent<Rigidbody>();
              myAnimator = GetComponentInChildren<Animator>();
              activeModel = myAnimator.gameObject;

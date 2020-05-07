@@ -16,8 +16,7 @@ MonoBehaviour:
   negative: 0
   minClamp: -20
   maxClamp: 45
-  speed: 1.5
-  angle: 15
+  speed: 90
   axis: {fileID: 11400000, guid: e4cb67590c632f3499cadd5f55581cbb, type: 2}
   targetAxis: 0
   targetInputAxis: 1

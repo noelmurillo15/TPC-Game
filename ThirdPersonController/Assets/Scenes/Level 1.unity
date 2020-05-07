@@ -481,5 +481,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: InputHandler
       objectReference: {fileID: 0}
+    - target: {fileID: 9009529393761774879, guid: a0b795436949dc946b1c7263790b4e1a,
+        type: 3}
+      propertyPath: updateActions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9009529393761774879, guid: a0b795436949dc946b1c7263790b4e1a,
+        type: 3}
+      propertyPath: updateActions.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 2656c06ba4736c84795333fc08992c61,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a0b795436949dc946b1c7263790b4e1a, type: 3}

@@ -385,7 +385,7 @@ CapsuleCollider:
   m_Radius: 0.3
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 0.95, z: 0}
 --- !u!114 &5098062463415657512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,7 +404,6 @@ MonoBehaviour:
   myTransform: {fileID: 0}
   myAnimator: {fileID: 0}
   myRigidbody: {fileID: 0}
-  myCollider: {fileID: 0}
   animatorHook: {fileID: 0}
   ignoreLayers:
     serializedVersion: 2
@@ -415,18 +414,19 @@ MonoBehaviour:
   vertical: 0
   horizontal: 0
   moveAmount: 0
+  generalDelta: 0
   rotateDirection: {x: 0, y: 0, z: 0}
   rollDirection: {x: 0, y: 0, z: 0}
-  generalDelta: 0
   rb: 0
   rt: 0
   lb: 0
   lt: 0
   isBackstep: 0
+  isGrounded: 0
   playerProfile: {fileID: 11400000, guid: 569357a7a9fbfb043b1075b78dd7df8a, type: 2}
   inventory:
-    rightHandWeapon: {fileID: 0}
-    leftHandWeapon: {fileID: 0}
+    rightHandItem: {fileID: 0}
+    leftHandItem: {fileID: 0}
   leftHandPosition: {fileID: 11400000, guid: a5ade9f41d35a0844b583e8ec53b4092, type: 2}
   leftHandRotation: {fileID: 11400000, guid: 2c2027f97ae0d5343b1e8661f04a70e7, type: 2}
   deltaTime: 0

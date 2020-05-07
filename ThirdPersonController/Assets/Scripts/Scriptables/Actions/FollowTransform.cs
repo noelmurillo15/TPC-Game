@@ -21,7 +21,7 @@ namespace ANM.Scriptables.Actions
         {
             if (targetTransform.value == null) return;
             if (currentTransform.value == null) return;
-            
+
             var targetPosition = Vector3.Lerp(currentTransform.value.position,
                 targetTransform.value.position, Time.deltaTime * speed);
 
