@@ -103,14 +103,16 @@ SkinnedMeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100002, guid: 47616bd0cda748d4cbedcfc908506b9d, type: 3}
+  - {fileID: -39278709968978379, guid: e6f2f2ce34060fe4492d14432369c9d2, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1004,14 +1006,16 @@ SkinnedMeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100002, guid: 47616bd0cda748d4cbedcfc908506b9d, type: 3}
+  - {fileID: -39278709968978379, guid: e6f2f2ce34060fe4492d14432369c9d2, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1125,7 +1129,7 @@ MonoBehaviour:
   meshRenderer: {fileID: 13230751832187504}
   defaultMesh: {fileID: 7208924622587382261, guid: df32e04b20967934dafead5b4a890030,
     type: 3}
-  defaultMaterial: {fileID: 2100002, guid: 47616bd0cda748d4cbedcfc908506b9d, type: 3}
+  defaultMaterial: {fileID: 2100000, guid: 9fb5e6407675c2d4d87cf27176fcd736, type: 2}
 --- !u!1 &3386231970972265213
 GameObject:
   m_ObjectHideFlags: 0
@@ -1787,14 +1791,16 @@ SkinnedMeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100002, guid: 47616bd0cda748d4cbedcfc908506b9d, type: 3}
+  - {fileID: -39278709968978379, guid: e6f2f2ce34060fe4492d14432369c9d2, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1908,7 +1914,7 @@ MonoBehaviour:
   meshRenderer: {fileID: 3207926157591015294}
   defaultMesh: {fileID: 2346716986137308042, guid: df32e04b20967934dafead5b4a890030,
     type: 3}
-  defaultMaterial: {fileID: 2100002, guid: 47616bd0cda748d4cbedcfc908506b9d, type: 3}
+  defaultMaterial: {fileID: 2100000, guid: 9fb5e6407675c2d4d87cf27176fcd736, type: 2}
 --- !u!1 &6402042651461180641
 GameObject:
   m_ObjectHideFlags: 0
@@ -1952,14 +1958,16 @@ SkinnedMeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ca3a18f44cc2fb3488bd21a229257294, type: 2}
+  - {fileID: -39278709968978379, guid: e6f2f2ce34060fe4492d14432369c9d2, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2016,8 +2024,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   armorItemType: {fileID: 11400000, guid: d47b0f10a1eb6894492c2d69dbd34047, type: 2}
   meshRenderer: {fileID: 5661705411784560778}
-  defaultMesh: {fileID: 0}
-  defaultMaterial: {fileID: 0}
+  defaultMesh: {fileID: 6986836958077651477, guid: df32e04b20967934dafead5b4a890030,
+    type: 3}
+  defaultMaterial: {fileID: 2100000, guid: 9fb5e6407675c2d4d87cf27176fcd736, type: 2}
 --- !u!1 &6420653639277141576
 GameObject:
   m_ObjectHideFlags: 0
@@ -2246,14 +2255,16 @@ SkinnedMeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100002, guid: 47616bd0cda748d4cbedcfc908506b9d, type: 3}
+  - {fileID: -39278709968978379, guid: e6f2f2ce34060fe4492d14432369c9d2, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2367,7 +2378,7 @@ MonoBehaviour:
   meshRenderer: {fileID: 5035601118292346753}
   defaultMesh: {fileID: 5949695006547949565, guid: df32e04b20967934dafead5b4a890030,
     type: 3}
-  defaultMaterial: {fileID: 2100002, guid: 47616bd0cda748d4cbedcfc908506b9d, type: 3}
+  defaultMaterial: {fileID: 2100000, guid: 9fb5e6407675c2d4d87cf27176fcd736, type: 2}
 --- !u!1 &6831288993419777423
 GameObject:
   m_ObjectHideFlags: 0
@@ -3018,7 +3029,7 @@ MonoBehaviour:
   myArmorManager: {fileID: 1988531302649691429}
   myWeaponManager: {fileID: 0}
   myTarget: {fileID: 0}
-  leftWeapon: {fileID: 0}
+  leftWeapon: {fileID: 11400000, guid: 35a45273138aa794d83ba4bcc7b12467, type: 2}
   rightWeapon: {fileID: 11400000, guid: 35a45273138aa794d83ba4bcc7b12467, type: 2}
   startingArmor:
   - {fileID: 11400000, guid: 183591f472fa26d4799f0fe24f6a6898, type: 2}

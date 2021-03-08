@@ -12,8 +12,8 @@ namespace ANM.TPC.StateActions
     public class MonitorInteractingAnimation : StateAction
     {
         private readonly CharacterStateManager _csm;
-        private string _targetStateId;
-        private string _targetBool;
+        private readonly string _targetStateId;
+        private readonly string _targetBool;
 
         public MonitorInteractingAnimation(CharacterStateManager stateManager, string targetBool, string targetStateId)
         {
@@ -27,7 +27,6 @@ namespace ANM.TPC.StateActions
         {
             var isInteracting = _csm.myAnimator.GetBool(_targetBool);
             if (isInteracting) return false;
-
             _csm.ChangeState(_targetStateId);
             return true;
         }

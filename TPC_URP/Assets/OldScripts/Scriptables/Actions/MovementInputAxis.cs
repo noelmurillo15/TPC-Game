@@ -1,10 +1,11 @@
 ﻿/*
-* MovementInputAxis - Reads Movement value from ThirdPersonInput ActionMap
+* MovementInputAxis ( OLD ) - Reads Movement value from ThirdPersonInput ActionMap
 * Created by : Allan N. Murillo
-* Last Edited : 3/12/2020
+* Last Edited : 3/8/2021
 */
 
 using UnityEngine;
+using ANM.TPC.Input;
 
 namespace ANM.Scriptables.Actions
 {
@@ -12,10 +13,11 @@ namespace ANM.Scriptables.Actions
     public class MovementInputAxis : Action
     {
         public Vector2 value;
-        public Managers.Controller controls;
+        public Controller controls;
 
         private void OnEnable()
         {
+            Debug.Log("[MoveInputAxis]: OnEnable");
 #if !UNITY_EDITOR
             Debug.Log("Enabling Movement Input Axis");
             if (controls == null) return;
@@ -25,6 +27,7 @@ namespace ANM.Scriptables.Actions
 
         private void OnDisable()
         {
+            Debug.Log("[MoveInputAxis]: OnDisable");
 #if !UNITY_EDITOR
             Debug.Log("Disabling Movement Input Axis");
             if (controls == null) return;
@@ -34,7 +37,8 @@ namespace ANM.Scriptables.Actions
 
         public override void Execute()
         {
-            value = controls.input.CharacterInput.Movement.ReadValue<Vector2>();
+            Debug.Log("[MoveInputAxis]: Execute is Empty");
+            //value = controls.GetInput().CharacterInput.Movement.ReadValue<Vector2>();
         }
     }
 }

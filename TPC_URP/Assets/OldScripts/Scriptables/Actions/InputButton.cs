@@ -1,10 +1,11 @@
 ﻿/*
-* InputButton - Reads Button values from ThirdPersonInput ActionMap based on ID
+* InputButton ( OLD ) - Reads Button values from ThirdPersonInput ActionMap based on ID
 * Created by : Allan N. Murillo
-* Last Edited : 5/7/2020
+* Last Edited : 3/8/2021
 */
 
 using UnityEngine;
+using ANM.TPC.Input;
 using UnityEngine.InputSystem;
 
 namespace ANM.Scriptables.Actions
@@ -17,12 +18,12 @@ namespace ANM.Scriptables.Actions
         public ButtonState buttonState;
         private InputAction _currentAction;
         private ThirdPersonInput.CharacterInputActions _inputs;
-        [SerializeField] private Managers.Controller controller;
+        [SerializeField] private Controller controller;
 
 
         private void OnEnable()
         {
-            _inputs = controller.input.CharacterInput;
+            _inputs = controller.GetInput().CharacterInput;
             _currentAction?.Disable();
             _currentAction = null;
 
@@ -68,10 +69,12 @@ namespace ANM.Scriptables.Actions
 
             _inputs.Enable();
             _currentAction?.Enable();
+            Debug.Log($"[InputButton-({actionName})]: OnEnable");
         }
 
         private void OnDisable()
         {
+            Debug.Log($"[InputButton-({actionName})]: OnDisable");
             switch (actionName)
             {
                 case "A":
@@ -109,7 +112,13 @@ namespace ANM.Scriptables.Actions
 
         public override void Execute()
         {
-            if (controller.input.Contains(_currentAction))
+            Debug.Log("[InputButton]: Execute is Empty");
+            //ExecuteButtonAction();
+        }
+
+        private void ExecuteButtonAction()
+        {
+            if (controller.GetInput().Contains(_currentAction))
             {
                 switch (actionName)
                 {

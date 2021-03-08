@@ -22,9 +22,9 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Pause",
+                    "name": "Quit",
                     "type": "Button",
-                    "id": "e50ffb79-be6d-4f28-a626-149a184009be",
+                    "id": "983e9e1d-ed3e-482d-8e63-075333b7ad3c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
@@ -103,50 +103,6 @@
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "fb93c7ad-847b-4010-bfa5-7c4fa72ece08",
-                    "path": "<Keyboard>/tab",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "Pause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "a1c13fb7-c659-43aa-a641-7d564579d2bc",
-                    "path": "<XInputController>/start",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Xbox",
-                    "action": "Pause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4fd18712-1041-4da5-81c7-7e6b359b5a52",
-                    "path": "<SwitchProControllerHID>/start",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Nintendo",
-                    "action": "Pause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "acc5c9aa-4048-430f-848f-3332dda5ae4b",
-                    "path": "<DualShock4GamepadHID>/start",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PS4",
-                    "action": "Pause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "46ce1872-15a3-4143-92c2-16af3cb98d2f",
@@ -672,6 +628,17 @@
                     "processors": "",
                     "groups": "PS4",
                     "action": "LT",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "14adf1bb-f080-42ff-a4c6-5e7fd00cbed0",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Quit",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -35,9 +35,9 @@ public class @ThirdPersonInput : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Pause"",
+                    ""name"": ""Quit"",
                     ""type"": ""Button"",
-                    ""id"": ""e50ffb79-be6d-4f28-a626-149a184009be"",
+                    ""id"": ""983e9e1d-ed3e-482d-8e63-075333b7ad3c"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -116,50 +116,6 @@ public class @ThirdPersonInput : IInputActionCollection, IDisposable
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""fb93c7ad-847b-4010-bfa5-7c4fa72ece08"",
-                    ""path"": ""<Keyboard>/tab"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PC"",
-                    ""action"": ""Pause"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""a1c13fb7-c659-43aa-a641-7d564579d2bc"",
-                    ""path"": ""<XInputController>/start"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Xbox"",
-                    ""action"": ""Pause"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""4fd18712-1041-4da5-81c7-7e6b359b5a52"",
-                    ""path"": ""<SwitchProControllerHID>/start"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Nintendo"",
-                    ""action"": ""Pause"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""acc5c9aa-4048-430f-848f-3332dda5ae4b"",
-                    ""path"": ""<DualShock4GamepadHID>/start"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PS4"",
-                    ""action"": ""Pause"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": """",
                     ""id"": ""46ce1872-15a3-4143-92c2-16af3cb98d2f"",
@@ -687,6 +643,17 @@ public class @ThirdPersonInput : IInputActionCollection, IDisposable
                     ""action"": ""LT"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""14adf1bb-f080-42ff-a4c6-5e7fd00cbed0"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""Quit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1127,7 +1094,7 @@ public class @ThirdPersonInput : IInputActionCollection, IDisposable
         m_CharacterInput = asset.FindActionMap("CharacterInput", throwIfNotFound: true);
         m_CharacterInput_Movement = m_CharacterInput.FindAction("Movement", throwIfNotFound: true);
         m_CharacterInput_CameraRotation = m_CharacterInput.FindAction("Camera Rotation", throwIfNotFound: true);
-        m_CharacterInput_Pause = m_CharacterInput.FindAction("Pause", throwIfNotFound: true);
+        m_CharacterInput_Quit = m_CharacterInput.FindAction("Quit", throwIfNotFound: true);
         m_CharacterInput_LockOnToggle = m_CharacterInput.FindAction("LockOnToggle", throwIfNotFound: true);
         m_CharacterInput_RB = m_CharacterInput.FindAction("RB", throwIfNotFound: true);
         m_CharacterInput_LB = m_CharacterInput.FindAction("LB", throwIfNotFound: true);
@@ -1198,7 +1165,7 @@ public class @ThirdPersonInput : IInputActionCollection, IDisposable
     private ICharacterInputActions m_CharacterInputActionsCallbackInterface;
     private readonly InputAction m_CharacterInput_Movement;
     private readonly InputAction m_CharacterInput_CameraRotation;
-    private readonly InputAction m_CharacterInput_Pause;
+    private readonly InputAction m_CharacterInput_Quit;
     private readonly InputAction m_CharacterInput_LockOnToggle;
     private readonly InputAction m_CharacterInput_RB;
     private readonly InputAction m_CharacterInput_LB;
@@ -1214,7 +1181,7 @@ public class @ThirdPersonInput : IInputActionCollection, IDisposable
         public CharacterInputActions(@ThirdPersonInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_CharacterInput_Movement;
         public InputAction @CameraRotation => m_Wrapper.m_CharacterInput_CameraRotation;
-        public InputAction @Pause => m_Wrapper.m_CharacterInput_Pause;
+        public InputAction @Quit => m_Wrapper.m_CharacterInput_Quit;
         public InputAction @LockOnToggle => m_Wrapper.m_CharacterInput_LockOnToggle;
         public InputAction @RB => m_Wrapper.m_CharacterInput_RB;
         public InputAction @LB => m_Wrapper.m_CharacterInput_LB;
@@ -1239,9 +1206,9 @@ public class @ThirdPersonInput : IInputActionCollection, IDisposable
                 @CameraRotation.started -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnCameraRotation;
                 @CameraRotation.performed -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnCameraRotation;
                 @CameraRotation.canceled -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnCameraRotation;
-                @Pause.started -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnPause;
-                @Pause.performed -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnPause;
-                @Pause.canceled -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnPause;
+                @Quit.started -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnQuit;
+                @Quit.performed -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnQuit;
+                @Quit.canceled -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnQuit;
                 @LockOnToggle.started -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnLockOnToggle;
                 @LockOnToggle.performed -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnLockOnToggle;
                 @LockOnToggle.canceled -= m_Wrapper.m_CharacterInputActionsCallbackInterface.OnLockOnToggle;
@@ -1279,9 +1246,9 @@ public class @ThirdPersonInput : IInputActionCollection, IDisposable
                 @CameraRotation.started += instance.OnCameraRotation;
                 @CameraRotation.performed += instance.OnCameraRotation;
                 @CameraRotation.canceled += instance.OnCameraRotation;
-                @Pause.started += instance.OnPause;
-                @Pause.performed += instance.OnPause;
-                @Pause.canceled += instance.OnPause;
+                @Quit.started += instance.OnQuit;
+                @Quit.performed += instance.OnQuit;
+                @Quit.canceled += instance.OnQuit;
                 @LockOnToggle.started += instance.OnLockOnToggle;
                 @LockOnToggle.performed += instance.OnLockOnToggle;
                 @LockOnToggle.canceled += instance.OnLockOnToggle;
@@ -1442,7 +1409,7 @@ public class @ThirdPersonInput : IInputActionCollection, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnCameraRotation(InputAction.CallbackContext context);
-        void OnPause(InputAction.CallbackContext context);
+        void OnQuit(InputAction.CallbackContext context);
         void OnLockOnToggle(InputAction.CallbackContext context);
         void OnRB(InputAction.CallbackContext context);
         void OnLB(InputAction.CallbackContext context);

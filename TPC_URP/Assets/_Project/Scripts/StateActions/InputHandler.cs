@@ -1,19 +1,19 @@
 ﻿/*
 * InputHandler -
 * Created by : Allan N. Murillo
-* Last Edited : 8/18/2020
+* Last Edited : 3/8/2021
 */
 
 using UnityEngine;
+using ANM.TPC.Input;
 using ANM.TPC.Behaviour;
-using ANM.Scriptables.Managers;
 using ANM.TPC.StateManagers;
 
 namespace ANM.TPC.StateActions
 {
     public class InputHandler : StateAction
     {
-        [Header("Input Buttons")]
+        [Header("Input Buttons")] 
         public bool a, b, x, y;
         public bool rt, lt, rb, lb;
 
@@ -60,43 +60,33 @@ namespace ANM.TPC.StateActions
                 return;
             }
 
-            controls.input.CharacterInput.Movement.performed += context =>
+            controls.OnMovementEvent += moveVector =>
             {
-                var inp = context.ReadValue<Vector2>();
-                _psm.vertical = inp.y;
-                _psm.horizontal = inp.x;
+                _psm.vertical = moveVector.y;
+                _psm.horizontal = moveVector.x;
                 _psm.moveAmount = Mathf.Clamp01(
                     Mathf.Abs(_psm.horizontal) + Mathf.Abs(_psm.vertical));
             };
-            controls.input.CharacterInput.CameraRotation.performed += context =>
+            controls.OnRotationEvent += rotateVector =>
             {
-                var inp = context.ReadValue<Vector2>();
-                _psm.mouseX = inp.x;
-                _psm.mouseY = inp.y;
+                _psm.mouseX = rotateVector.x;
+                _psm.mouseY = rotateVector.y;
             };
 
-            controls.input.CharacterInput.A.performed += context => a = true;
-            controls.input.CharacterInput.A.canceled += context => a = false;
-            controls.input.CharacterInput.X.performed += context => x = true;
-            controls.input.CharacterInput.X.canceled += context => x = false;
-            controls.input.CharacterInput.Y.performed += context => y = true;
-            controls.input.CharacterInput.Y.canceled += context => y = false;
-            controls.input.CharacterInput.Roll.performed += context => b = true;
-            controls.input.CharacterInput.Roll.canceled += context => b = false;
+            controls.OnAEvent += isPressed => a = isPressed;
+            controls.OnBEvent += isPressed => b = isPressed;
+            controls.OnXEvent += isPressed => x = isPressed;
+            controls.OnYEvent += isPressed => y = isPressed;
 
-            controls.input.CharacterInput.LB.performed += context => lb = true;
-            controls.input.CharacterInput.LB.canceled += context => lb = false;
-            controls.input.CharacterInput.LT.performed += context => lt = true;
-            controls.input.CharacterInput.LT.canceled += context => lt = false;
-            controls.input.CharacterInput.RT.performed += context => rt = true;
-            controls.input.CharacterInput.RT.canceled += context => rt = false;
-            controls.input.CharacterInput.RB.performed += context => rb = true;
-            controls.input.CharacterInput.RB.canceled += context => rb = false;
+            controls.OnLbEvent += isPressed => lb = isPressed;
+            controls.OnRbEvent += isPressed => rb = isPressed;
+            controls.OnRtEvent += isPressed => rt = isPressed;
+            controls.OnLtEvent += isPressed => lt = isPressed;
 
-            controls.input.CharacterInput.LockOnToggle.performed += context =>
+            controls.OnLockonToggleEvent += () =>
             {
                 _psm.isLockedOn = !_psm.isLockedOn;
-                if(!_psm.isLockedOn) _psm.OnClearLookOverride();
+                if (!_psm.isLockedOn) _psm.OnClearLookOverride();
                 else _psm.OnAssignLookOverride(_psm.myTarget);
             };
         }
