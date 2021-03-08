@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad15ac94e37285d48bd860bafb2eba99, type: 3}
+  m_Name: EmptyGraph
+  m_EditorClassIdentifier: 
+  windows:
+  - id: 0
+    drawNode: {fileID: 11400000, guid: 81058f33b7229a748ba8c980a8ff7f31, type: 2}
+    windowRect:
+      serializedVersion: 2
+      x: 345
+      y: 148
+      width: 200
+      height: 90
+    windowTitle: Comment
+    enterNode: 0
+    targetNode: 0
+    isDuplicate: 0
+    isAssigned: 0
+    comment: "\n   This is an Empty Graph !\n\n"
+    collapse: 0
+    previousCollapse: 0
+    stateRefs:
+      currentState: {fileID: 0}
+      previousState: {fileID: 0}
+    transRefs:
+      previousCondition: {fileID: 0}
+      transitionId: 0
+  idCount: 1
