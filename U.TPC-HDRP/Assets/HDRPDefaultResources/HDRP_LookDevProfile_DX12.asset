@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4959205570191839499
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d877a03bef431a847adca8ab343db3e1, type: 3}
+  m_Name: RayTracingSettings
+  m_EditorClassIdentifier: 
+  active: 0
+  rayBias:
+    m_OverrideState: 1
+    m_Value: 0.001
+  extendShadowCulling:
+    m_OverrideState: 1
+    m_Value: 1
+  extendCameraCulling:
+    m_OverrideState: 1
+    m_Value: 1
+  directionalShadowRayLength:
+    m_OverrideState: 1
+    m_Value: 1000
+  directionalShadowFallbackIntensity:
+    m_OverrideState: 1
+    m_Value: 1
+  buildMode:
+    m_OverrideState: 0
+    m_Value: 0
+--- !u!114 &-1604332681999398990
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31394aa05878563408489d5c1688f3a0, type: 3}
+  m_Name: PathTracing
+  m_EditorClassIdentifier: 
+  active: 0
+  enable:
+    m_OverrideState: 1
+    m_Value: 1
+  layerMask:
+    m_OverrideState: 1
+    m_Value:
+      serializedVersion: 2
+      m_Bits: 4294967295
+  maximumSamples:
+    m_OverrideState: 1
+    m_Value: 256
+  minimumDepth:
+    m_OverrideState: 1
+    m_Value: 1
+  maximumDepth:
+    m_OverrideState: 1
+    m_Value: 4
+  maximumIntensity:
+    m_OverrideState: 1
+    m_Value: 10
+  tilingParameters:
+    m_OverrideState: 0
+    m_Value: {x: 1, y: 1, z: 0, w: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: HDRP_LookDevProfile_DX12
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: -1604332681999398990}
+  - {fileID: -4959205570191839499}
+  - {fileID: 7174439906666965635}
+--- !u!114 &7174439906666965635
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 464ccca2a3ef3ce429c63a5b5cd3be58, type: 3}
+  m_Name: SubSurfaceScattering
+  m_EditorClassIdentifier: 
+  active: 0
+  rayTracing:
+    m_OverrideState: 1
+    m_Value: 1
+  sampleCount:
+    m_OverrideState: 1
+    m_Value: 1
